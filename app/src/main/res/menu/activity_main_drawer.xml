@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/inicio"
+            android:icon="@drawable/inicioimg2"
+            android:title="Inicio" />
+        <item
+            android:id="@+id/gotas"
+            android:icon="@drawable/ic_febril"
+            android:title="Gotas Gruesas" />
+        <item
+            android:id="@+id/captura"
+            android:icon="@drawable/ic_criadero"
+            android:title="Captura Anopheles" />
+        <item
+            android:id="@+id/pesquisa"
+            android:icon="@drawable/ic_entomologia"
+            android:title="Pesquisa Larvaria" />
+        <item
+            android:id="@+id/colvol"
+            android:icon="@drawable/ic_colvol"
+            android:title="Colvol" />
+        <item
+            android:id="@+id/criadero"
+            android:icon="@drawable/ic_colvol"
+            android:title="Criaderos" />
+        <item
+            android:id="@+id/salir"
+            android:icon="@drawable/ic_salir"
+            android:title="Salir" />
+    </group>
+
+    <item android:title="Configuración">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_cambiar"
+                android:title="Cambiar Clave" />
+            <item
+                android:id="@+id/tab"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Tabs" />
+        </menu>
+    </item>
+
+</menu>
