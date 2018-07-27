@@ -1,5 +1,6 @@
 package com.example.administrador.sinavec;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,8 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.example.administrador.sinavec.clases.Utilidades;
 import com.example.administrador.sinavec.fragment.ColvolFragment;
 import com.example.administrador.sinavec.fragment.ContenedorFragment;
 import com.example.administrador.sinavec.fragment.CriaderoFragment;
@@ -22,6 +23,7 @@ import com.example.administrador.sinavec.fragment.FebrilFragment;
 import com.example.administrador.sinavec.fragment.LenguajesFragment;
 import com.example.administrador.sinavec.fragment.MainFragment;
 import com.example.administrador.sinavec.fragment.PesquisaFragment;
+import com.example.administrador.sinavec.sqlite.OpenHelperBd;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -50,6 +52,13 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
+
+        //instancia de la bd. se tendra acceso a los metodos de la bd
+        //OpenHelperBd bdHelper = new OpenHelperBd(this);
+        OpenHelperBd helper=new OpenHelperBd(this);
+        SQLiteDatabase db = helper.getWritableDatabase();
+
+        Toast.makeText(this,"Exito",Toast.LENGTH_SHORT).show();
 
 
         }
