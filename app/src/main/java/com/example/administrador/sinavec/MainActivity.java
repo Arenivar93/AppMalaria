@@ -1,5 +1,6 @@
 package com.example.administrador.sinavec;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.example.administrador.sinavec.fragment.CapturaFragment;
 import com.example.administrador.sinavec.fragment.FebrilFragment;
 import com.example.administrador.sinavec.fragment.LenguajesFragment;
 import com.example.administrador.sinavec.fragment.MainFragment;
+import com.example.administrador.sinavec.fragment.MapFragment;
 import com.example.administrador.sinavec.fragment.PesquisaFragment;
 import com.example.administrador.sinavec.sqlite.OpenHelperBd;
 
@@ -116,12 +118,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.criadero) {
             fragmentManager.beginTransaction().replace(R.id.contenedor,new CriaderoFragment()).commit();
         } else if (id == R.id.colvol) {
-            fragmentManager.beginTransaction().replace(R.id.contenedor,new ColvolFragment()).commit();
+            //fragmentManager.beginTransaction().replace(R.id.contenedor,new ColvolFragment()).commit();
+            fragmentManager.beginTransaction().replace(R.id.contenedor,new MapFragment()).commit();
         } else if (id == R.id.salir) {
-            //Intent siguiente= new Intent(MainActivity.this,prueba.class);
-            //startActivity(siguiente);
-
-            finish();
+            Intent siguiente= new Intent(MainActivity.this,MapsActivity.class);
+            startActivity(siguiente);
+            //finish();
             //fragmentManager.beginTransaction().replace(R.id.contenedor,new LenguajesFragment()).commit();
         }else if (id == R.id.tab) {
             fragmentManager.beginTransaction().replace(R.id.contenedor,new ContenedorFragment()).commit();
