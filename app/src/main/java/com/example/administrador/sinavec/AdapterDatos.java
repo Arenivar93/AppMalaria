@@ -46,6 +46,7 @@ public class AdapterDatos
     }
 
         //comunicara el adaptador en tre la clase ViewHolderDatos
+    //Set de los datos a la plantilla en la vista
     @Override
     public void onBindViewHolder(ViewHolderDatos holder, int position) {
         holder.idNombre.setText(listDatos.get(position).getNombre());

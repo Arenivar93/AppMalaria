@@ -46,7 +46,7 @@ public class OpenHelperBd extends SQLiteOpenHelper {
             db.execSQL("INSERT INTO persona VALUES (2,'Vladimir','San Salvador')");
 
             db.execSQL("INSERT INTO mascota VALUES (1,1,'Escanor')");
-            db.execSQL("INSERT INTO mascota VALUES (2,4,'Lola')");
+            //db.execSQL("INSERT INTO mascota VALUES (2,4,'Lola')");
             db.execSQL("INSERT INTO mascota VALUES (2,2,'Lola2')");
 
 

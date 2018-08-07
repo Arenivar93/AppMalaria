@@ -57,6 +57,9 @@ public class LenguajesFragment extends Fragment {
         //ya no se usa this, yua que se esta en un fragment
         recyclerPersonajes.setLayoutManager(new LinearLayoutManager(getContext()));
         llenarLista();
+        //Creo el adapter el cual se le pasa la lista de datos y este servira
+        //para incrustarse en la recyclerView que se ha creado en el fragment
+        //anterior mente inflado.
         AdapterDatos adapter=new AdapterDatos(listaPersonaje);
 
         adapter.setOnClickListener(new View.OnClickListener() {
