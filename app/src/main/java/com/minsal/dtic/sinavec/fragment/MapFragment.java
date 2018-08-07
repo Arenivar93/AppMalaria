@@ -1,11 +1,14 @@
 package com.minsal.dtic.sinavec.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +26,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback{
+public class MapFragment extends Fragment implements OnMapReadyCallback,View.OnClickListener{
 
     private View viewrootView;
     private MapView mapView;
     private GoogleMap gmap;
+
+    private FloatingActionButton fab;
 
     public MapFragment() {
 
@@ -39,6 +44,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewrootView=inflater.inflate(R.layout.fragment_map, container, false);
+        fab=(FloatingActionButton) viewrootView.findViewById(R.id.fab);
+
+        fab.setOnClickListener(this);
         return viewrootView;
     }
 
@@ -54,14 +62,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             mapView.getMapAsync(this);
         }
 
-        this.verificarGPS();
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        this.verificarGPS();
+        //this.verificarGPS();
 
     }
 
@@ -70,14 +76,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             int gpsSignal= Settings.Secure.getInt(getActivity().getContentResolver(),Settings.Secure.LOCATION_MODE);
             if (gpsSignal==0){
                 //El gps no esta activado
-                Toast.makeText(getContext(),"Por favor active el GPS",Toast.LENGTH_LONG).show();
-                Intent intent=new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
+                //Toast.makeText(getContext(),"Por favor active el GPS",Toast.LENGTH_LONG).show();
+                showInfoAlert();
             }
 
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showInfoAlert(){
+        new AlertDialog.Builder(getContext())
+                .setTitle("Gps Signal")
+                .setMessage("Desea activar el gps?")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent=new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("No",null)
+                .show();
     }
 
     @Override
@@ -113,4 +133,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     }
 
 
+    @Override
+    public void onClick(View view) {
+        this.verificarGPS();
+    }
 }
