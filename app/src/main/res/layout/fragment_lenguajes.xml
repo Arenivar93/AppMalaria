@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.example.administrador.sinavec.fragment.LenguajesFragment">
+    tools:context="com.minsal.dtic.sinavec.fragment.LenguajesFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/reciclerId"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context="com.example.administrador.sinavec.prueba">
+    tools:context="com.minsal.dtic.sinavec.prueba">
 
     <TextView
         android:id="@+id/textView2"
