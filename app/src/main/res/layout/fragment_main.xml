@@ -6,7 +6,7 @@
     android:padding="10dp"
     android:background="@color/backgroundcolor"
     android:gravity="center"
-    tools:context="com.example.administrador.sinavec.fragment.MainFragment">
+    tools:context="com.minsal.dtic.sinavec.fragment.MainFragment">
 
     <LinearLayout
         android:clipToPadding="false"
