@@ -35,7 +35,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener,LocationListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener, LocationListener {
 
     private View viewrootView;
     private MapView mapView;
@@ -47,6 +47,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     private LocationManager locationManager;
     private Marker marker;
     private CameraPosition cameraZoom;
+    private CameraPosition camera;
 
     public MapFragment() {
 
@@ -113,6 +114,70 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 .show();
     }
 
+
+    @Override
+    public void onClick(View view) {
+        if (!this.isGPSEnabled()) {
+            showInfoAlert();
+        } else {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+            }
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(location==null){
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            currentLocation=location;
+            if(currentLocation != null){
+                createOrUpdateMarkerByLocation(location);
+                zoomToLocation(location);
+            }
+
+        }
+    }
+
+    private void createOrUpdateMarkerByLocation(Location location){
+        if (marker == null){
+            marker=gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())).draggable(true));
+        }else {
+            marker.setPosition(new LatLng(location.getLatitude(),location.getLongitude()));
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        //Toast.makeText(getContext(),"Changed ->"+location.getProvider(),Toast.LENGTH_LONG).show();
+        //gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())).draggable(true));
+        createOrUpdateMarkerByLocation(location);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    public void zoomLocation(Location location){
+        cameraZoom=new CameraPosition.Builder()
+                .target(new LatLng(location.getLatitude(),location.getLongitude()))
+                .zoom(15)
+                .bearing(0)
+                .tilt(30)
+                .build();
+        gmap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
+
+    }
+
+//Codigo para obtener permisos para geolocalizacion
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -122,6 +187,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
 
         setUpMap();
+
         gmap.setMyLocationEnabled(false);
         //gmap.getUiSettings().setMyLocationButtonEnabled(false);
         /*Desabilita el boton que se crea en la
@@ -141,7 +207,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
 
 
-      }
+    }
+
+    private void zoomToLocation(Location location){
+        cameraZoom=new CameraPosition.Builder()
+                .target(new LatLng(location.getLatitude(),location.getLongitude()))
+                .zoom(15)
+                .bearing(0)
+                .tilt(30)
+                .build();
+        gmap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
+    }
 
     private void setUpMap() {
         gmap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -191,52 +267,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             return;
         }
         gmap.setMyLocationEnabled(true);
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        if(!this.isGPSEnabled()){
-            showInfoAlert();
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Toast.makeText(getContext(),"Changed ->"+location.getProvider(),Toast.LENGTH_LONG).show();
-        //gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())).draggable(true));
-
-        if (marker == null){
-            marker=gmap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(),location.getLongitude())).draggable(true));
-        }else {
-            marker.setPosition(new LatLng(location.getLatitude(),location.getLongitude()));
-        }
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    public void zoomLocation(Location location){
-        cameraZoom=new CameraPosition.Builder()
-                .target(new LatLng(location.getLatitude(),location.getLongitude()))
-                .zoom(15)
-                .bearing(0)
-                .tilt(30)
-                .build();
-        gmap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
-
     }
 }
 
