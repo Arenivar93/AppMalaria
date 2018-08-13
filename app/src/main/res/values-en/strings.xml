@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edtUser">User</string>
+    <string name="edtPass">Password</string>
+    <string name="btnLogin">Login</string>
+</resources>
