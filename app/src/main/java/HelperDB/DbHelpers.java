@@ -132,6 +132,7 @@ public class DbHelpers extends SQLiteOpenHelper {
         Log.i("usaurio", String.valueOf(existe));
         return existe;
     }
+    private 
 
     @Override
     public SQLiteDatabase getReadableDatabase() {

@@ -27,4 +27,6 @@
     <string name="edtUser">Usuario</string>
     <string name="edtPass">Contraseña</string>
     <string name="btnLogin">Ingresar</string>
+    <string name="swRemember">Recordar</string>
+    <string name="menuLogout">Cerrar Sesión</string>
 </resources>
