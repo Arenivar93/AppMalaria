@@ -3,4 +3,6 @@
     <string name="edtUser">User</string>
     <string name="edtPass">Password</string>
     <string name="btnLogin">Login</string>
+    <string name="swRemember">Remember</string>
+    <string name="menuLogout">Log Out</string>
 </resources>

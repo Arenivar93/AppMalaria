@@ -1,6 +1,8 @@
 package com.minsal.dtic.sinavec;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,13 +34,14 @@ public class MainActivity extends AppCompatActivity
         ContenedorFragment.OnFragmentInteractionListener,PesquisaFragment.OnFragmentInteractionListener,
         LenguajesFragment.OnFragmentInteractionListener,MainFragment.OnFragmentInteractionListener{
 
+    private SharedPreferences prefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //qsetSupportActionBar(toolbar);
-
+        setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -78,6 +81,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
@@ -85,12 +89,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()){
+            case R.id.menu_logout:
+                removeSharedPreferences();
+                logOut();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -124,6 +132,17 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    //Elimnara de la preferences los calores guardados para esta sesion
+    private void removeSharedPreferences(){
+        prefs.edit().clear().apply();
+
+    }
+    //no llevara a la pantalla del login
+    private void logOut(){
+        Intent i = new Intent(getApplicationContext(),LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+    }
 
 
     @Override
@@ -131,43 +150,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-   /* public void onClick(View v) {
-        //LenguajesFragment objeto=new LenguajesFragment();
-        switch (v.getId()){
-            case R.id.idGota:
-                //Utilidades.visualizacion=Utilidades.LIST;
-                Toast.makeText(this,"Gestion Gotas Gruesas",Toast.LENGTH_SHORT).show();
-                //objeto.construirRecycle();
-                break;
-            case R.id.idPesquisa:
-                Toast.makeText(this,"Gestion Pesquisas Larvarias",Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.idCaptura:
-                Toast.makeText(this,"Gestion Captura Anopheles",Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.idBotiquin:
-                Toast.makeText(this,"Gestion Seguimiento Botiquin",Toast.LENGTH_SHORT).show();
-                break;
-        }
-        //LenguajesFragment.construirRecycle(view);
-    }*/
+
 
 
 }
 
 
-/*public class StartFragment extends Fragment implements OnClickListener
-{ @Override public View onCreateView(LayoutInflater inflater,
-                                     ViewGroup container,
-                                     Bundle savedInstanceState)
-{
-    View v = inflater.inflate(R.layout.fragment_start, container,
-            false);
-    Button b = (Button) v.findViewById(R.id.StartButton);
-    b.setOnClickListener(this);
-    return v;
-} @Override
-public void onClick(View v)
-{ switch (v.getId())
-{ case R.id.StartButton: ... break;
-} } } */
