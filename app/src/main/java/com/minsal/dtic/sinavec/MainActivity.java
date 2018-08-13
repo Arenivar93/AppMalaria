@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //qsetSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity
 
         //instancia de la bd. se tendra acceso a los metodos de la bd
         //OpenHelperBd bdHelper = new OpenHelperBd(this);
-        OpenHelperBd helper=new OpenHelperBd(this);
-        SQLiteDatabase db = helper.getWritableDatabase();
+        //OpenHelperBd helper=new OpenHelperBd(this);
+       // SQLiteDatabase db = helper.getWritableDatabase();
 
         Toast.makeText(this,"Exito",Toast.LENGTH_SHORT).show();
 
