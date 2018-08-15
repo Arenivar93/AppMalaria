@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class DbHelpers extends SQLiteOpenHelper {
     private Context myContext;
     private  static File DATABASE_FILE;
     public static  final int DATABASE_VERSION =1;
-    public String eluser;
+    public String eluser, elpass;
 
     public DbHelpers(Context context) {
         super(context, DB_NAME, null, VERSIONDB);
@@ -67,6 +66,7 @@ public class DbHelpers extends SQLiteOpenHelper {
             copyDataBase.execute();
         }
     }
+
     //este metodo verifica si existe la base de datos
     public boolean checkDataBase() {
         boolean existe= false;
@@ -114,6 +114,11 @@ public class DbHelpers extends SQLiteOpenHelper {
     }
     public boolean validateLogin(String elUser,String elPass){
         this.eluser = elUser;
+        this.elpass= elPass;
+        String salt = getSalt(elUser);
+
+
+
         boolean existe = false;
         String sqlQUERY="select username from fos_user_user where username='"+elUser+"'";
 
@@ -132,7 +137,25 @@ public class DbHelpers extends SQLiteOpenHelper {
         Log.i("usaurio", String.valueOf(existe));
         return existe;
     }
-    private 
+    private String getSalt(String username){
+        SQLiteDatabase db = getReadableDatabase();
+        String salt="";
+        String sqlQuery="SELECT salt FROM fos_user_user WHERE username = '"+username+"'";
+        Cursor cursor = db.rawQuery(sqlQuery,null);
+        if(cursor.moveToFirst()){
+            do {
+                salt = cursor.getString(0);
+            }while (cursor.moveToNext());
+        }
+        db.close();
+        return salt;
+
+
+    }
+
+
+
+
 
     @Override
     public SQLiteDatabase getReadableDatabase() {
