@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.minsal.dtic.sinavec.clases.Utilidades;
+import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 import java.util.ArrayList;
 

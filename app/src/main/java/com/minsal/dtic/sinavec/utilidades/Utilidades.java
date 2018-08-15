@@ -1,4 +1,4 @@
-package com.minsal.dtic.sinavec.clases;
+package com.minsal.dtic.sinavec.utilidades;
 
 /**
  * Created by administrador on 07-18-18.

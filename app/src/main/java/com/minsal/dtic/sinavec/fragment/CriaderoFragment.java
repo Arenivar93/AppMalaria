@@ -103,44 +103,6 @@ public class CriaderoFragment extends Fragment {
             db.close();
             // Close database
         }
-
-
-
-       /* for (int i = 0; i < 5; i++) {
-            // Creation row
-            final TableRow tableRow = new TableRow(getContext());
-            tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
-
-            // Creation textView
-            final TextView text = new TextView(getContext());
-            text.setText("Test" + i);
-            text.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-
-            final TextView text2 = new TextView(getContext());
-            text2.setText("Test" + i);
-            text2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-
-            // Creation  button
-            final Button button = new Button(getContext());
-            button.setText("Delete");
-            button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final TableRow parent = (TableRow) v.getParent();
-                    table.removeView(parent);
-                }
-            });
-
-            tableRow.addView(text);
-            tableRow.addView(text2);
-            tableRow.addView(button);
-
-            table.addView(tableRow);
-        }*/
-
         return vista;
-
-
     }
 }
