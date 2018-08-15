@@ -13,7 +13,7 @@ import android.support.design.widget.TabLayout;
 
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.adapters.SeccionesAdapter;
-import com.minsal.dtic.sinavec.clases.Utilidades;
+import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 
 public class ContenedorFragment extends Fragment {
