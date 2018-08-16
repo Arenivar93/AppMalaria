@@ -22,11 +22,37 @@ public class DaoMaster extends AbstractDaoMaster {
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
         UserDao.createTable(db, ifNotExists);
+        BitacoraDao.createTable(db, ifNotExists);
+        CtlProcedenciaDao.createTable(db, ifNotExists);
+        ClaveDao.createTable(db, ifNotExists);
+        CtlPaisDao.createTable(db, ifNotExists);
+        CtlDepartamentoDao.createTable(db, ifNotExists);
+        CtlMunicipioDao.createTable(db, ifNotExists);
+        CtlCantonDao.createTable(db, ifNotExists);
+        CtlCaserioDao.createTable(db, ifNotExists);
+        PlTipoCapturaDao.createTable(db, ifNotExists);
+        PlTipoActividadDao.createTable(db, ifNotExists);
+        CtlInstitucionDao.createTable(db, ifNotExists);
+        CtlTipoEstablecimientoDao.createTable(db, ifNotExists);
+        CtlEstablecimientoDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
         UserDao.dropTable(db, ifExists);
+        BitacoraDao.dropTable(db, ifExists);
+        CtlProcedenciaDao.dropTable(db, ifExists);
+        ClaveDao.dropTable(db, ifExists);
+        CtlPaisDao.dropTable(db, ifExists);
+        CtlDepartamentoDao.dropTable(db, ifExists);
+        CtlMunicipioDao.dropTable(db, ifExists);
+        CtlCantonDao.dropTable(db, ifExists);
+        CtlCaserioDao.dropTable(db, ifExists);
+        PlTipoCapturaDao.dropTable(db, ifExists);
+        PlTipoActividadDao.dropTable(db, ifExists);
+        CtlInstitucionDao.dropTable(db, ifExists);
+        CtlTipoEstablecimientoDao.dropTable(db, ifExists);
+        CtlEstablecimientoDao.dropTable(db, ifExists);
     }
 
     /**
@@ -46,6 +72,19 @@ public class DaoMaster extends AbstractDaoMaster {
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
         registerDaoClass(UserDao.class);
+        registerDaoClass(BitacoraDao.class);
+        registerDaoClass(CtlProcedenciaDao.class);
+        registerDaoClass(ClaveDao.class);
+        registerDaoClass(CtlPaisDao.class);
+        registerDaoClass(CtlDepartamentoDao.class);
+        registerDaoClass(CtlMunicipioDao.class);
+        registerDaoClass(CtlCantonDao.class);
+        registerDaoClass(CtlCaserioDao.class);
+        registerDaoClass(PlTipoCapturaDao.class);
+        registerDaoClass(PlTipoActividadDao.class);
+        registerDaoClass(CtlInstitucionDao.class);
+        registerDaoClass(CtlTipoEstablecimientoDao.class);
+        registerDaoClass(CtlEstablecimientoDao.class);
     }
 
     public DaoSession newSession() {
