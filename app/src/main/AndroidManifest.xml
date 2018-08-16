@@ -73,7 +73,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingActivity" />
-        <activity android:name=".Synchronization"></activity>
+        <activity android:name=".Synchronization" />
+        <activity android:name=".BuscarCriaderoSinActivity" />
+        <activity android:name=".BuscarCriaderoCon"></activity>
     </application>
 
 </manifest>

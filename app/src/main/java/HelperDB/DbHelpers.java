@@ -117,8 +117,6 @@ public class DbHelpers extends SQLiteOpenHelper {
         this.elpass= elPass;
         String salt = getSalt(elUser);
 
-
-
         boolean existe = false;
         String sqlQUERY="select username from fos_user_user where username='"+elUser+"'";
 

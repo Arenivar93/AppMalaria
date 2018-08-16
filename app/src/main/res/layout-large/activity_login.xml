@@ -29,10 +29,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="365dp"
-                android:layout_height="335dp"
-                android:layout_marginStart="150dp"
-                android:layout_marginTop="40dp"
+                android:layout_width="465dp"
+                android:layout_height="435dp"
+                android:layout_marginStart="250dp"
+                android:layout_marginTop="90dp"
                 android:background="@drawable/esquinas"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -67,6 +67,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/swRemember" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="pruebba large"
+                    tools:text="prueba large" />
 
             </LinearLayout>
         </LinearLayout>
