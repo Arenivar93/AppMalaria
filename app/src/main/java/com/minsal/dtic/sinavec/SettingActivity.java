@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+
 import java.io.IOException;
 
 import HelperDB.DbHelpers;
@@ -14,6 +16,7 @@ import HelperDB.DbHelpers;
 public class SettingActivity extends AppCompatActivity {
     Button btnSetting;
     private DbHelpers objBaseDeDatos ;
+    DaoSession daoSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,8 @@ public class SettingActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if(!check){
-                    createDataBase();
+                    //createDataBase();
+                    daoSession = ((MyMalaria) getApplication()).getDaoSession();
                     btnSetting.setEnabled(false);
                     Intent i = new Intent(getApplicationContext(),LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
