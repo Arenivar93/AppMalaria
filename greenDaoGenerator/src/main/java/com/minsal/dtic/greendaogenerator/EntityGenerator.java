@@ -10,7 +10,7 @@ public class EntityGenerator {
         Schema schema = new Schema(1, "com.minsal.dtic.sinavec.EntityDAO"); // Your app package name and the (.db) is the folder where the DAO files will be generated into.
         schema.enableKeepSectionsByDefault();
 
-        addTables(schema);
+       // addTables(schema);
 
         //Entidades para catalogos de Malaria
 
@@ -174,7 +174,6 @@ public class EntityGenerator {
         bitacora.addStringProperty("operacion");
         bitacora.addStringProperty("sentenciaSql");
         bitacora.addStringProperty("nombreTabla");
-        bitacora.addLongProperty("idTablet");//Verificar si sera foranea
         bitacora.addStringProperty("banderaEstado");
         Property idTabletBitacora=bitacora.addLongProperty("idTablet").notNull().getProperty();
         bitacora.addToOne(ctlTablet,idTabletBitacora);
