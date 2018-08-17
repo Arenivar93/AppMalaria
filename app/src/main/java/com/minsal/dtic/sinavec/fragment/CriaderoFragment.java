@@ -16,12 +16,16 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
+import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 
 import HelperDB.DbHelpers;
 
 public class CriaderoFragment extends Fragment {
     View vista;
+    DaoSession daoSession;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -30,7 +34,9 @@ public class CriaderoFragment extends Fragment {
 
         final TableLayout tableLayout=(TableLayout) vista.findViewById(R.id.table);
 
-        DbHelpers dataHelper=new DbHelpers(getContext());
+        //DbHelpers dataHelper=new DbHelpers(getContext());
+        //daoSession = ((MyMalaria) getApplication()).getDaoSession();
+        daoSession=((MyMalaria)getActivity().getApplication()).getDaoSession();
 
         TableRow rowHeader = new TableRow(getContext());
         rowHeader.setBackgroundColor(Color.parseColor("#c0c0c0"));
@@ -51,14 +57,16 @@ public class CriaderoFragment extends Fragment {
 
         // Get data from sqlite database and add them to the table
         // Open the database for reading
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        //SQLiteDatabase db = dataHelper.getReadableDatabase();
         // Start the transaction.
-        db.beginTransaction();
+        daoSession.getDatabase().beginTransaction();
+
+        PlColvolDao colvolDao = daoSession.getPlColvolDao();
 
         try
         {
             String selectQuery = "SELECT * FROM pl_colvol";
-            Cursor cursor = db.rawQuery(selectQuery,null);
+            Cursor cursor = daoSession.getDatabase().rawQuery(selectQuery,null);
                 while (cursor.moveToNext()) {
                     // Read columns data
                     final int id= cursor.getInt(cursor.getColumnIndex("id"));
@@ -98,9 +106,9 @@ public class CriaderoFragment extends Fragment {
             e.printStackTrace();
         }
         finally{
-            db.endTransaction();
+            daoSession.getDatabase().endTransaction();
             // End the transaction.
-            db.close();
+            //daoSession.getDatabase().close();
             // Close database
         }
         return vista;

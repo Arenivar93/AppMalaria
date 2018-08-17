@@ -1,6 +1,7 @@
 package com.minsal.dtic.sinavec;
 
 import android.app.Application;
+import android.database.Cursor;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -18,8 +19,7 @@ public class MyMalaria extends Application{
 
     public static final boolean ENCRYPTED = true;
     private DaoSession daoSession;
-    private static String DB_PATH="/data/data/com.minsal.dtic.sinavec/databases/";
-    private static  String DB_NAME="malaria";
+    public String eluser;
 
 
     @Override
@@ -28,17 +28,10 @@ public class MyMalaria extends Application{
 
         DaoMaster.DevOpenHelper helper=new DaoMaster.DevOpenHelper(this,"malaria");
         Database db=helper.getWritableDb();
+        db.execSQL("insert into fos_user_user(username,password,tipo_empleado," +
+                "firstname,lastname,salt,id_sibasi)values ('user','12345',1,'jesus','ventura','salto',1)");
         db.execSQL("PRAGMA foreign_keys=ON;");
         daoSession = new DaoMaster(db).newSession();
-
-        boolean dbExist = checkDataBase();
-        if (dbExist==true) {
-
-
-        }else{
-
-        }
-
 
         SystemClock.sleep(2000);
     }
@@ -47,13 +40,7 @@ public class MyMalaria extends Application{
         return daoSession;
     }
 
-    //este metodo verifica si existe la base de datos
-    public boolean checkDataBase() {
-        boolean existe= false;
-        String myPath = DB_PATH + DB_NAME;
-        File file = new File(myPath);
-        existe=file.exists();
-        //si esxiste retorna true
-        return  existe;
-    }
+
+
+
 }
