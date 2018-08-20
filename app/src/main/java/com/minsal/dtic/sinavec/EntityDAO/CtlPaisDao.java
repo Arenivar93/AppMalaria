@@ -24,7 +24,7 @@ public class CtlPaisDao extends AbstractDao<CtlPais, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "ID");
         public final static Property Nombre = new Property(1, String.class, "nombre", false, "NOMBRE");
-        public final static Property Activo = new Property(2, Boolean.class, "activo", false, "ACTIVO");
+        public final static Property Activo = new Property(2, Integer.class, "activo", false, "ACTIVO");
     }
 
 
@@ -65,9 +65,9 @@ public class CtlPaisDao extends AbstractDao<CtlPais, Long> {
             stmt.bindString(2, nombre);
         }
  
-        Boolean activo = entity.getActivo();
+        Integer activo = entity.getActivo();
         if (activo != null) {
-            stmt.bindLong(3, activo ? 1L: 0L);
+            stmt.bindLong(3, activo);
         }
     }
 
@@ -85,9 +85,9 @@ public class CtlPaisDao extends AbstractDao<CtlPais, Long> {
             stmt.bindString(2, nombre);
         }
  
-        Boolean activo = entity.getActivo();
+        Integer activo = entity.getActivo();
         if (activo != null) {
-            stmt.bindLong(3, activo ? 1L: 0L);
+            stmt.bindLong(3, activo );
         }
     }
 
@@ -101,7 +101,7 @@ public class CtlPaisDao extends AbstractDao<CtlPais, Long> {
         CtlPais entity = new CtlPais( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // nombre
-            cursor.isNull(offset + 2) ? null : cursor.getShort(offset + 2) != 0 // activo
+            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2) // activo
         );
         return entity;
     }
@@ -110,7 +110,7 @@ public class CtlPaisDao extends AbstractDao<CtlPais, Long> {
     public void readEntity(Cursor cursor, CtlPais entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setNombre(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setActivo(cursor.isNull(offset + 2) ? null : cursor.getShort(offset + 2) != 0);
+        entity.setActivo(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
      }
     
     @Override

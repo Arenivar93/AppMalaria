@@ -16,7 +16,7 @@ public class CtlPais {
     @Id
     private Long id;
     private String nombre;
-    private Boolean activo;
+    private Integer activo;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -30,7 +30,7 @@ public class CtlPais {
     }
 
     @Generated
-    public CtlPais(Long id, String nombre, Boolean activo) {
+    public CtlPais(Long id, String nombre, Integer activo) {
         this.id = id;
         this.nombre = nombre;
         this.activo = activo;
@@ -52,11 +52,11 @@ public class CtlPais {
         this.nombre = nombre;
     }
 
-    public Boolean getActivo() {
+    public Integer getActivo() {
         return activo;
     }
 
-    public void setActivo(Boolean activo) {
+    public void setActivo(Integer activo) {
         this.activo = activo;
     }
 

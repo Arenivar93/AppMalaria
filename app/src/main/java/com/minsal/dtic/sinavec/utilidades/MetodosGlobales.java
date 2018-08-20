@@ -3,6 +3,7 @@ import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 
 import java.io.File;
@@ -46,4 +47,12 @@ public class MetodosGlobales{
         Log.i("usuario", String.valueOf(existe));
         return existe;
     }
+    public int consultaTabelt(){
+        CtlTabletDao tabletDao = daoSession.getCtlTabletDao();
+        int table = (int)tabletDao.count();
+        return table;
+
+    }
+
+
 }

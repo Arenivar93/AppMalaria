@@ -45,9 +45,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String elUser = edtUser.getText().toString().trim();
                 String elPass = edtPass.getText().toString().trim();
-                //objBaseDeDatos = new DbHelpers(getApplicationContext());
+
                 metodoGlobal = new MetodosGlobales(daoSession);
-                boolean check = metodoGlobal.checkDataBase();
+                boolean check = metodoGlobal.checkDataBase();// si exixte la base de datos
                 if (check){
                     //boolean existe = daoSession.validateLogin(elUser,elPass);
                     boolean existe = metodoGlobal.validateLogin(elUser,elPass);
