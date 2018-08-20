@@ -15,7 +15,7 @@ import HelperDB.DbHelpers;
 
 public class SettingActivity extends AppCompatActivity {
     Button btnSetting;
-    private DbHelpers objBaseDeDatos ;
+    private DbHelpers objBaseDeDatos;
     DaoSession daoSession;
 
     @Override
@@ -30,16 +30,16 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(!check){
+                if (!check) {
                     //createDataBase();
                     daoSession = ((MyMalaria) getApplication()).getDaoSession();
                     btnSetting.setEnabled(false);
-                    Intent i = new Intent(getApplicationContext(),LoginActivity.class);
+                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     //lo anterio es para que la app no vuelva a esta pantalla si presion en bonton de atras edel dispositivo
                     startActivity(i);
-                }else{
-                    Toast.makeText(getApplicationContext(),"Esta Tablet ya ha sido configurada",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Esta Tablet ya ha sido configurada", Toast.LENGTH_LONG).show();
 
                 }
 
@@ -48,11 +48,11 @@ public class SettingActivity extends AppCompatActivity {
     }
 
 
-    public void createDataBase()  {
+    public void createDataBase() {
         try {
             objBaseDeDatos = new DbHelpers(getApplicationContext());
             objBaseDeDatos.createDataBase();
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

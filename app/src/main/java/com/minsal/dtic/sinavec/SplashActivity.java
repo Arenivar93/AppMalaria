@@ -3,6 +3,7 @@ package com.minsal.dtic.sinavec;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import Utils.Util;
 
 public class SplashActivity extends AppCompatActivity {
     private DbHelpers objBaseDeDatos;
+    SQLiteDatabase sql;
     private SharedPreferences prefs;
 
 
@@ -19,6 +21,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         objBaseDeDatos = new DbHelpers(getApplicationContext());
+        sql = objBaseDeDatos.getReadableDatabase();
+        sql.execSQL("");
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         boolean check = objBaseDeDatos.checkDataBase();
         if(check){

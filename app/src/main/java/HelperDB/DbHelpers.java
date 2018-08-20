@@ -39,11 +39,13 @@ public class DbHelpers extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //no se crea la base ya que se traera una estructura realizada con dbeaver
+        inicializarBase(db);
 
     }
 
+
     public void inicializarBase(SQLiteDatabase db){
-        db.execSQL("INSERT INTO Municipio(id,nombre)VALUES(1,'Prueba')");
+
     }
 
     @Override
