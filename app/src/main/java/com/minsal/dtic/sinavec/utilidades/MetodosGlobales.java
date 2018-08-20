@@ -1,5 +1,4 @@
 package com.minsal.dtic.sinavec.utilidades;
-
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;

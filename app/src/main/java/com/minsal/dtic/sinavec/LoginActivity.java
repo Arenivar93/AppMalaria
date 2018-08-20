@@ -6,15 +6,14 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import java.io.IOException;
+import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.utilidades.MetodosGlobales;
 
 import HelperDB.DbHelpers;
 import Utils.Util;
@@ -25,6 +24,8 @@ public class LoginActivity extends AppCompatActivity {
     Button btnLogin;
     DbHelpers objBaseDeDatos ;
     SharedPreferences prefs;
+    MetodosGlobales metodoGlobal;
+    DaoSession daoSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = (Button)findViewById(R.id.btnLogin);
         swRemember = (Switch)findViewById(R.id.swRemeber);
         setCredential();
+        daoSession=((MyMalaria)getApplication()).getDaoSession();
 
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -43,10 +45,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String elUser = edtUser.getText().toString().trim();
                 String elPass = edtPass.getText().toString().trim();
-                objBaseDeDatos = new DbHelpers(getApplicationContext());
-                boolean check = objBaseDeDatos.checkDataBase();
+                //objBaseDeDatos = new DbHelpers(getApplicationContext());
+                metodoGlobal = new MetodosGlobales(daoSession);
+                boolean check = metodoGlobal.checkDataBase();
                 if (check){
-                    boolean existe = objBaseDeDatos.validateLogin(elUser,elPass);
+                    //boolean existe = daoSession.validateLogin(elUser,elPass);
+                    boolean existe = metodoGlobal.validateLogin(elUser,elPass);
                     if(existe){
                         saveOnPreferences(elUser,elPass);
                         Intent i = new Intent(getApplicationContext(),MainActivity.class);
@@ -84,7 +88,6 @@ public class LoginActivity extends AppCompatActivity {
             editor.apply();
         }
     }
-
 
 
 
