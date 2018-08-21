@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -55,37 +56,7 @@ public class SettingActivity extends AppCompatActivity {
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String url = "http://10.168.10.80/tablets/catalogos.php?imei=" + getIMEINumber();
-                RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONArray ja = new JSONArray(response);
-                                    for (int i = 0; i <ja.length() ; i++) {
-                                        JSONObject row = ja.getJSONObject(i);
-                                        guardarPrueba(row.getLong("id"), row.getString("nombre"),row.getInt("activo"));
-
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                                //  btnSetting.setText("Response is: "+ response.substring(0,500));
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), String.valueOf(error), Toast.LENGTH_LONG).show();
-                    }
-                });
-
-// Add the request to the RequestQueue.
-                cola.add(stringRequest);
-
-
+                new pruebaAsync().execute();
             }
         });
     }
@@ -129,10 +100,58 @@ public class SettingActivity extends AppCompatActivity {
         pais.setNombre(nombre);
         pais.setActivo(activo);
         ctlPaisDao.insert(pais);
-        Toast.makeText(getApplicationContext(),"Pais descargados con exito",Toast.LENGTH_LONG);
         finish();
 
     }
+    class pruebaAsync extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String url = "http://10.168.10.80/tablets/catalogos.php?imei=" + getIMEINumber();
+            RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                CtlPaisDao ctlPaisDao = daoSession.getCtlPaisDao();
+                                CtlPais pais = new CtlPais();
+                                JSONArray ja = new JSONArray(response);
+                                for (int i = 0; i <ja.length() ; i++) {
+                                    JSONObject row = ja.getJSONObject(i);
+                                    pais.setId(row.getLong("id"));
+                                    pais.setNombre(row.getString("nombre"));
+                                    pais.setActivo(row.getInt("activo"));
+                                    ctlPaisDao.insert(pais);
+                                    finish();
+                                    Log.i("ver***", row.getString("nombre"));
+                                   // guardarPrueba(row.getLong("id"), row.getString("nombre"),row.getInt("activo"));
+
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            //  btnSetting.setText("Response is: "+ response.substring(0,500));
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), String.valueOf(error), Toast.LENGTH_LONG).show();
+                }
+            });
+
+// Add the request to the RequestQueue.
+            cola.add(stringRequest);
+
+
+            return null;
+        }
+
+    }
+
+
+
+
 
 
 }
