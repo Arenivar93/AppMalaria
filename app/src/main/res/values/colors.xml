@@ -14,5 +14,7 @@
     <color name="principalicon">#0101DF</color>
     <color name="darkgrey">#A4A4A4</color>
 
+    <color name="divider_color">#a4a2a2</color>
+
 
 </resources>
