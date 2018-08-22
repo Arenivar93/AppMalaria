@@ -19,7 +19,7 @@ public class CtlTablet {
     @Id
     private Long id;
     private String codigo;
-    private String serie;
+    private String serie; //se usara como IMEI
     private long idSibasi;
 
     /** Used to resolve relations */

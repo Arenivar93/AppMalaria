@@ -23,7 +23,7 @@ public class CtlEstablecimiento {
     private String longitud;
     private long idMunicipio;
     private long idTipoEstablecimiento;
-    private long idEstablecimientoPadre;
+    private int idEstablecimientoPadre;
 
     /** Used to resolve relations */
     @Generated
@@ -33,8 +33,7 @@ public class CtlEstablecimiento {
     @Generated
     private transient CtlEstablecimientoDao myDao;
 
-    @ToOne(joinProperty = "idEstablecimientoPadre")
-    private CtlEstablecimiento ctlEstablecimiento;
+
 
     @Generated
     private transient Long ctlEstablecimiento__resolvedKey;
@@ -63,7 +62,7 @@ public class CtlEstablecimiento {
     }
 
     @Generated
-    public CtlEstablecimiento(Long id, String nombre, String latitud, String longitud, long idMunicipio, long idTipoEstablecimiento, long idEstablecimientoPadre) {
+    public CtlEstablecimiento(Long id, String nombre, String latitud, String longitud, long idMunicipio, long idTipoEstablecimiento, int idEstablecimientoPadre) {
         this.id = id;
         this.nombre = nombre;
         this.latitud = latitud;
@@ -128,41 +127,17 @@ public class CtlEstablecimiento {
         this.idTipoEstablecimiento = idTipoEstablecimiento;
     }
 
-    public long getIdEstablecimientoPadre() {
+    public int getIdEstablecimientoPadre() {
         return idEstablecimientoPadre;
     }
 
-    public void setIdEstablecimientoPadre(long idEstablecimientoPadre) {
+    public void setIdEstablecimientoPadre(int idEstablecimientoPadre) {
         this.idEstablecimientoPadre = idEstablecimientoPadre;
     }
 
-    /** To-one relationship, resolved on first access. */
-    @Generated
-    public CtlEstablecimiento getCtlEstablecimiento() {
-        long __key = this.idEstablecimientoPadre;
-        if (ctlEstablecimiento__resolvedKey == null || !ctlEstablecimiento__resolvedKey.equals(__key)) {
-            __throwIfDetached();
-            CtlEstablecimientoDao targetDao = daoSession.getCtlEstablecimientoDao();
-            CtlEstablecimiento ctlEstablecimientoNew = targetDao.load(__key);
-            synchronized (this) {
-                ctlEstablecimiento = ctlEstablecimientoNew;
-            	ctlEstablecimiento__resolvedKey = __key;
-            }
-        }
-        return ctlEstablecimiento;
-    }
 
-    @Generated
-    public void setCtlEstablecimiento(CtlEstablecimiento ctlEstablecimiento) {
-        if (ctlEstablecimiento == null) {
-            throw new DaoException("To-one property 'idEstablecimientoPadre' has not-null constraint; cannot set to-one to null");
-        }
-        synchronized (this) {
-            this.ctlEstablecimiento = ctlEstablecimiento;
-            idEstablecimientoPadre = ctlEstablecimiento.getId();
-            ctlEstablecimiento__resolvedKey = idEstablecimientoPadre;
-        }
-    }
+
+
 
     /** To-one relationship, resolved on first access. */
     @Generated

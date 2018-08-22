@@ -97,8 +97,7 @@ public class EntityGenerator {
         ctlEstablecimiento.addStringProperty("longitud");
         Property idMunicipioEst=ctlEstablecimiento.addLongProperty("idMunicipio").notNull().getProperty();
         Property idTipoEstablecimiento=ctlEstablecimiento.addLongProperty("idTipoEstablecimiento").notNull().getProperty();
-        Property idEstablecimientoPadre=ctlEstablecimiento.addLongProperty("idEstablecimientoPadre").notNull().getProperty();
-        ctlEstablecimiento.addToOne(ctlEstablecimiento,idEstablecimientoPadre);
+        ctlEstablecimiento.addLongProperty("idEstablecimientoPadre").notNull().getProperty();
         ctlEstablecimiento.addToOne(ctlMunicipio,idMunicipioEst);
         ctlEstablecimiento.addToOne(ctlTipoEstablecimiento,idTipoEstablecimiento);
 
