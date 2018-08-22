@@ -56,9 +56,7 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
                 "\"LONGITUD\" TEXT," + // 3: longitud
                 "\"ID_MUNICIPIO\" INTEGER NOT NULL ," + // 4: idMunicipio
                 "\"ID_TIPO_ESTABLECIMIENTO\" INTEGER NOT NULL ," + // 5: idTipoEstablecimiento
-                "\"ID_ESTABLECIMIENTO_PADRE\" INTEGER NOT NULL,"+"FOREIGN KEY(\"ID_TIPO_ESTABLECIMIENTO\")" +
-                " REFERENCES CTL_TIPO_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_ESTABLECIMIENTO_PADRE\")" +
-                " REFERENCES CTL_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_MUNICIPIO\")" +
+                "\"ID_ESTABLECIMIENTO_PADRE\" INTEGER,"+"FOREIGN KEY(\"ID_MUNICIPIO\")" +
                 " REFERENCES CTL_MUNICIPIO(\"ID\") ON DELETE CASCADE );"); // 6: idEstablecimientoPadre
     }
 
@@ -144,7 +142,7 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // longitud
             cursor.getLong(offset + 4), // idMunicipio
             cursor.getLong(offset + 5), // idTipoEstablecimiento
-            cursor.getLong(offset + 6) // idEstablecimientoPadre
+            cursor.getInt(offset + 6) // idEstablecimientoPadre
         );
         return entity;
     }
@@ -157,7 +155,7 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
         entity.setLongitud(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setIdMunicipio(cursor.getLong(offset + 4));
         entity.setIdTipoEstablecimiento(cursor.getLong(offset + 5));
-        entity.setIdEstablecimientoPadre(cursor.getLong(offset + 6));
+        entity.setIdEstablecimientoPadre(cursor.getInt(offset + 6));
      }
     
     @Override
@@ -211,11 +209,6 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
         CtlEstablecimiento entity = loadCurrent(cursor, 0, lock);
         int offset = getAllColumns().length;
 
-        CtlEstablecimiento ctlEstablecimiento = loadCurrentOther(daoSession.getCtlEstablecimientoDao(), cursor, offset);
-         if(ctlEstablecimiento != null) {
-            entity.setCtlEstablecimiento(ctlEstablecimiento);
-        }
-        offset += daoSession.getCtlEstablecimientoDao().getAllColumns().length;
 
         CtlMunicipio ctlMunicipio = loadCurrentOther(daoSession.getCtlMunicipioDao(), cursor, offset);
          if(ctlMunicipio != null) {
