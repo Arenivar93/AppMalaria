@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,9 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.MenuCriaderoFragment;
 import com.minsal.dtic.sinavec.fragment.ContenedorFragment;
 
 import com.minsal.dtic.sinavec.fragment.CapturaFragment;
@@ -27,8 +26,7 @@ import com.minsal.dtic.sinavec.fragment.LenguajesFragment;
 import com.minsal.dtic.sinavec.fragment.MainFragment;
 import com.minsal.dtic.sinavec.fragment.MapFragment;
 import com.minsal.dtic.sinavec.fragment.PesquisaFragment;
-
-import Utils.Util;
+import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 
 public class MainActivity extends AppCompatActivity
@@ -56,12 +54,12 @@ public class MainActivity extends AppCompatActivity
        // String user= Util.getUserPrefs(prefs);
 
 
-
-        //if (Utilidades.valida==true){
-        Fragment fragment = new MainFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, fragment).commit();
-        // Utilidades.valida=false;
-        //}
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (Utilidades.fragment==0){
+            fragmentManager.beginTransaction().replace(R.id.contenedor, new MainFragment()).commit();
+        }else if(Utilidades.fragment==1){
+            fragmentManager.beginTransaction().replace(R.id.contenedor, new MenuCriaderoFragment()).commit();
+        }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

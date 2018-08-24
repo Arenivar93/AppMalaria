@@ -32,6 +32,8 @@ public class Utilidades {
 
     public static int visualizacion=LIST;
 
+    public static int fragment=0;
+
 
     DaoSession daoSession;
     CtlMunicipioDao daoMunicipio;
