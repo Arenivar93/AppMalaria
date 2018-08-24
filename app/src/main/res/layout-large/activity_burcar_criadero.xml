@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
     tools:context=".BuscarCriaderoSinActivity">
 
     <LinearLayout
@@ -21,111 +21,149 @@
             android:text="Busqueda de Criaderos"
             android:textSize="19sp" />
     </LinearLayout>
-
-        <TextView
-            android:id="@+id/municipio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/spMun"
-            android:layout_marginTop="37dp"
-            android:text="Municipio"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <TextView
-            android:id="@+id/canton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/spCan"
-            android:layout_marginTop="37dp"
-            android:text="Canton"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <TextView
-            android:id="@+id/caserio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/spCas"
-            android:layout_marginTop="37dp"
-            android:text="Caserio"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <Spinner
-            android:id="@+id/spMun"
-            android:layout_width="221dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/municipio"
-            android:layout_marginStart="36dp"
-            android:layout_weight="1" />
-
-        <Spinner
-            android:id="@+id/spCan"
-            android:layout_width="219dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/canton"
-            android:layout_marginStart="281dp"
-            android:layout_weight="1" />
-
-        <Spinner
-            android:id="@+id/spCas"
-            android:layout_width="229dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/caserio"
-            android:layout_marginStart="535dp"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:id="@+id/buscarCriadero"
-            android:layout_width="53dp"
-            android:layout_height="51dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/caserio"
-            android:layout_marginEnd="77dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/buscar"/>
-    <View
-        android:id="@+id/divider1"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/spMun"
-        android:background="@color/divider_color"/>
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="138dp"
-        android:layout_weight="1"
-        android:text="Resultado"
-        android:textSize="19sp" />
+        android:orientation="horizontal">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_weight="1"
-        android:scrollbars="none"
-        android:layout_marginTop="168dp">
-
-        <HorizontalScrollView
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent">
-            <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/tableCriadero"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/municipio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="Municipio"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+            <Spinner
+                android:id="@+id/spMun"
+                android:layout_width="220dp"
+                android:layout_height="40dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/canton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp">
+                android:layout_height="wrap_content"
+                android:text="Canton"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+            <Spinner
+                android:id="@+id/spCan"
+                android:layout_width="220dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/caserio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Caserio"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+            <Spinner
+                android:id="@+id/spCas"
+                android:layout_width="220dp"
+                android:layout_height="40dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/buscarCriadero"
+                android:layout_width="53dp"
+                android:layout_height="51dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/buscar"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Resultado"
+                android:textSize="19sp"
+                android:gravity="center_vertical|center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center"
+            android:layout_marginTop="12dp">
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center">
+                <TableRow
+                    android:background="@color/colorPrimary">
+                    <TextView android:text="N°"
+                        android:layout_width="40dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:textColor="@color/headtableLetra"/>
+                    <TextView android:text="Nombre"
+                        android:layout_width="200dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:textColor="@color/headtableLetra"/>
+                    <TextView android:text="Canton"
+                        android:layout_width="200dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:textColor="@color/headtableLetra"/>
+                    <TextView android:text="Caserio"
+                        android:layout_width="200dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:textColor="@color/headtableLetra"/>
+                    <TextView android:text="Opciones"
+                        android:layout_width="150dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:textColor="@color/headtableLetra"/>
+                </TableRow>
+            <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center">
+                <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/tableCriadero"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|center"
+                    >
+                </TableLayout>
+            </ScrollView>
             </TableLayout>
+        </LinearLayout>
 
-        </HorizontalScrollView>
-
-
-    </ScrollView>
-</RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
