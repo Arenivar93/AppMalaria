@@ -28,8 +28,6 @@ public class MyMalaria extends Application{
 
         DaoMaster.DevOpenHelper helper=new DaoMaster.DevOpenHelper(this,"malaria");
         Database db=helper.getWritableDb();
-        db.execSQL("insert into fos_user_user(username,password,tipo_empleado," +
-                "firstname,lastname,salt,id_sibasi)values ('user','12345',1,'jesus','ventura','salto',1)");
         db.execSQL("PRAGMA foreign_keys=ON;");
         daoSession = new DaoMaster(db).newSession();
 

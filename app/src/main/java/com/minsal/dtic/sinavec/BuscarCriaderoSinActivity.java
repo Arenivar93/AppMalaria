@@ -1,10 +1,13 @@
 package com.minsal.dtic.sinavec;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
+import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -27,6 +30,7 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
@@ -61,6 +65,12 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
     Utilidades utilidades;
+    List<CtlPlCriadero> criaderos;
+    ProgressDialog progressDialog;
+    List<TableRow> rowTablas;
+    private ProgressDialog dialog;
+    private ProgressDialog progressDialog2;
+    Integer longitud;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,13 +83,15 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         listaCanton.add("Seleccione");
         listaCaserios.add("Seleccione");
 
+        progressDialog2 = new ProgressDialog(BuscarCriaderoSinActivity.this);
+        progressDialog2.setMessage("Cargando");
+
+
         daoSession=((MyMalaria)getApplicationContext()).getDaoSession();
         utilidades=new Utilidades(daoSession);
 
         municipios=utilidades.loadspinnerMunicipio(3);
         listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
-
-        //loadSpinerMun();
 
         adapter=new ArrayAdapter
                 (this,android.R.layout.simple_list_item_1,listaMunicipio);
@@ -94,10 +106,6 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                 (this,android.R.layout.simple_list_item_1,listaCaserios);
         spCaserio.setAdapter(adapter3);
         adapter3.notifyDataSetChanged();
-
-
-        encabezadoTabla(getApplicationContext());
-        buscarCriaderos(getApplicationContext());
 
         spMunicipio.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -138,7 +146,6 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                     spCaserio.setAdapter(adapter3);
                     adapter3.notifyDataSetChanged();
                     spCaserio.setSelection(0);
-                    Toast.makeText(parent.getContext(),cantones.get(position-1).getNombre()+"",Toast.LENGTH_LONG).show();
                 }else{
                     listaCaserios.clear();
                     listaCaserios.add("Seleccione");
@@ -155,64 +162,117 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         buscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Buscara Criadero",Toast.LENGTH_LONG).show();
+                tablaCriaderos.removeAllViews();
+                int idMuni=spMunicipio.getSelectedItemPosition();
+                int idCtn=spCanton.getSelectedItemPosition();
+                int idCas=spCaserio.getSelectedItemPosition();
+                int idMunicipio=0;
+                int idCanton=0;
+                int idCaserio=0;
+
+                if(idMuni!=0){
+                    llenarTablaCriadero();
+                    new MiTarea().execute();
+                }else{
+                    Toast.makeText(getApplicationContext(),"Seleccione un Municipio",Toast.LENGTH_LONG).show();
+                }
+
             }
         });
     }
 
-    private void buscarCriaderos(Context context) {
-        Toast.makeText(this,"Llena tabla",Toast.LENGTH_LONG).show();
-        try
-        {
-            //daoSession.getDatabase().beginTransaction();
-            String selectQuery = "SELECT id,nombre FROM ctl_pl_criadero";
-            Cursor cursor = daoSession.getDatabase().rawQuery(selectQuery,null);
-            //Toast.makeText(this,cursor.getCount()+"",Toast.LENGTH_LONG).show();
-            while (cursor.moveToNext()) {
-                // Read columns data
-                final int id= cursor.getInt(0);
-                String nombre= cursor.getString(1);
-                //String municipio= cursor.getString(cursor.getColumnIndex("nombre"));
-               // String canton= cursor.getString(cursor.getColumnIndex("nombre"));
-               // String caserio= cursor.getString(cursor.getColumnIndex("nombre"));
+    private class MiTarea extends AsyncTask<Void, TableRow, Integer>{
+        @Override
+        protected void onPreExecute() {
+            progressDialog2.show();
+        }
 
+        @Override
+        protected Integer doInBackground(Void... voids) {
+
+            CtlPlCriadero criadero;
+            for (int i=0;i<criaderos.size();i++){
+                criadero=new CtlPlCriadero();
+                criadero=criaderos.get(i);
+                final int idCriadero=(int)(long) criadero.getId();
                 // dara rows
-                TableRow row = new TableRow(context);
+                TableRow row = new TableRow(getApplicationContext());
                 row.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                         TableLayout.LayoutParams.WRAP_CONTENT));
-                String[] colText={nombre,nombre,nombre,nombre};
+                String[] colText={i+1+"",criadero.getNombre(),criadero.getNombre(),criadero.getNombre()};
+                TextView tv;
+                int j=0;
                 for(String text:colText) {
-                    TextView tv = new TextView(context);
-                    tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                            TableRow.LayoutParams.WRAP_CONTENT));
+                    tv = new TextView(getApplicationContext());
+                    if (j==0){
+                        tv.setLayoutParams(new TableRow.LayoutParams(75,
+                                TableRow.LayoutParams.WRAP_CONTENT));
+                        tv.setPadding(15, 5, 10, 5);
+                    }else{
+                        tv.setLayoutParams(new TableRow.LayoutParams(400,
+                                TableRow.LayoutParams.WRAP_CONTENT));
+                        tv.setPadding(15, 5, 10, 5);
+                    }
                     tv.setTextSize(16);
-                    tv.setPadding(85, 5, 85, 5);
                     tv.setText(text);
+
                     tv.setTextColor(Color.BLACK);
                     row.addView(tv);
+                    j++;
                 }
                 // Creation  button
-                final Button button = new Button(context);
+                final Button button = new Button(getApplicationContext());
                 button.setText("Map");
                 button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(),"Asignara Coordenadas id:"+id,Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Asignara Coordenadas id:"+idCriadero,Toast.LENGTH_LONG).show();
                     }
                 });
                 row.addView(button);
-                tablaCriaderos.addView(row);
+                publishProgress(row);
             }
-        }catch (SQLiteException e){
-            e.printStackTrace();
+            return null;
         }
-        /*finally{
-            daoSession.getDatabase().endTransaction();
-            // End the transaction.
-            //daoSession.getDatabase().close();
-            // Close database
-        }*/
+
+        @Override
+        protected void onProgressUpdate(TableRow... values) {
+            tablaCriaderos.addView(values[0]);
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            progressDialog2.dismiss();
+        }
+    }
+
+    private void llenarTablaCriadero(){
+        int idMuni=spMunicipio.getSelectedItemPosition();
+        int idCtn=spCanton.getSelectedItemPosition();
+        int idCas=spCaserio.getSelectedItemPosition();
+        int idMunicipio=0;
+        int idCanton=0;
+        int idCaserio=0;
+        criaderos=new ArrayList<CtlPlCriadero>();
+            if(idCtn!=0 && idCas==0){
+                //Ejecutara busqueda de municipio y canton
+                idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+                idCanton=(int) (long) cantones.get(idCtn-1).getId();
+                criaderos=utilidades.obtenerCaseriosByIds(daoSession,idMunicipio,idCanton,idCaserio);
+
+            }else if(idCtn!=0 && idCas!=0){
+                //Ejecutara busqueda de muni ctn y cass
+                idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+                idCanton=(int) (long) cantones.get(idCtn-1).getId();
+                idCaserio=(int) (long) caserios.get(idCas-1).getId();
+                criaderos=utilidades.obtenerCaseriosByIds(daoSession,idMunicipio,idCanton,idCaserio);
+            }else{
+                //ejecutara busqueda solo de municipio
+                idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+                criaderos=utilidades.obtenerCaseriosByIds(daoSession,idMunicipio,idCanton,idCaserio);
+            }
     }
 
     private void encabezadoTabla(Context context){
@@ -220,14 +280,14 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         rowHeader.setBackgroundColor(Color.parseColor("#c0c0c0"));
         rowHeader.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                 TableLayout.LayoutParams.WRAP_CONTENT));
-        String[] headerText={"NOMBRE","MUNICIPIO","CANTON","CASERIO","OPCIONES"};
+        String[] headerText={"N°","NOMBRE","CANTON","CASERIO","OPCIONES"};
         for(String c:headerText) {
             TextView tv = new TextView(context);
             tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                     TableRow.LayoutParams.WRAP_CONTENT));
-            tv.setGravity(Gravity.CENTER);
-            tv.setTextSize(18);
-            tv.setPadding(85, 5, 85, 5);
+            //tv.setGravity(Gravity.CENTER);
+            tv.setTextSize(15);
+            tv.setPadding(15, 5, 10, 5);
             tv.setText(c);
             rowHeader.addView(tv);
         }

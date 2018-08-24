@@ -1,12 +1,19 @@
 package com.minsal.dtic.sinavec.utilidades;
 
+import android.widget.Toast;
+
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
+import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+
+import org.greenrobot.greendao.query.Join;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +43,7 @@ public class Utilidades {
     List<CtlCanton> cantones;
     ArrayList<String> listaCaserios;
     List<CtlCaserio> caserios;
+    List<CtlPlCriadero> criaderos;
 
     public Utilidades(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -94,5 +102,52 @@ public class Utilidades {
             listaCaserios.add(caserios.get(i).getNombre());
         }
         return listaCaserios;
+    }
+
+    public List<CtlPlCriadero> obtenerCaseriosByIds(DaoSession daoSession,int idMuni,int idCtn, int idCas){
+        criaderos=new ArrayList<CtlPlCriadero>();
+        if(idMuni!=0){
+            if(idCtn!=0 && idCas==0){
+                //Ejecutara busqueda de municipio y canton
+                 /* QueryBuilder<User> queryBuilder = userDao.queryBuilder();
+                queryBuilder.join(Address.class, AddressDao.Properties.userId)
+                        .where(AddressDao.Properties.Street.eq("Sesame Street"));
+                List<User> users = queryBuilder.list();*/
+
+                CtlPlCriaderoDao criaderoDao=daoSession.getCtlPlCriaderoDao();
+
+                QueryBuilder<CtlPlCriadero> queryBuilder = criaderoDao.queryBuilder();
+                Join ctlCaserio =queryBuilder.join(CtlPlCriaderoDao.Properties.IdCaserio,CtlCaserio.class);
+                Join ctlCanton=queryBuilder.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
+                        CtlCanton.class,CtlCantonDao.Properties.Id);
+                ctlCanton.where(CtlCantonDao.Properties.Id.eq(idCtn));
+                criaderos=queryBuilder.orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
+
+            }else if(idCtn!=0 && idCas!=0){
+                //Ejecutara busqueda de muni ctn y cass
+                criaderos=daoSession.getCtlPlCriaderoDao()
+                        .queryBuilder()
+                        .where(CtlPlCriaderoDao.Properties.IdCaserio.eq(idCas))
+                        .orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
+
+            }else{
+                //ejecutara busqueda solo de municipio
+                CtlPlCriaderoDao criaderoDao=daoSession.getCtlPlCriaderoDao();
+
+                QueryBuilder<CtlPlCriadero> queryBuilder = criaderoDao.queryBuilder();
+                Join ctlCaserio =queryBuilder.join(CtlPlCriaderoDao.Properties.IdCaserio,CtlCaserio.class);
+                Join ctlCanton=queryBuilder.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
+                        CtlCanton.class,CtlCantonDao.Properties.Id);
+                Join ctlMunicipio=queryBuilder.join(ctlCanton,CtlCantonDao.Properties.IdMunicipio,
+                        CtlMunicipio.class,CtlMunicipioDao.Properties.Id);
+                ctlMunicipio.where(CtlMunicipioDao.Properties.Id.eq(idMuni));
+                criaderos=queryBuilder.orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
+            }
+            }else {
+
+        }
+
+        return criaderos;
+
     }
 }
