@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -36,6 +37,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPais;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPaisDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
+import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlProcedencia;
 import com.minsal.dtic.sinavec.EntityDAO.CtlProcedenciaDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTablet;
@@ -45,10 +48,13 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlTipoEstablecimientoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
+import com.minsal.dtic.sinavec.utilidades.MetodosGlobales;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Date;
 
 
 public class SettingActivity extends AppCompatActivity {
@@ -88,8 +94,8 @@ public class SettingActivity extends AppCompatActivity {
         return IMEINumber;
     }
 
-    public void saveUserSerer(long id, String firstname, String username, String lastname,
-                              String password, String salt, int tipoEmpleado, int idSibasi) {
+    public void saveFosUserUser(long id, String firstname, String username, String lastname,
+                                String password, String salt, int tipoEmpleado, int idSibasi) {
 
         FosUserUserDao fosUserUser = daoSession.getFosUserUserDao();
         FosUserUser user = new FosUserUser();
@@ -225,55 +231,79 @@ public class SettingActivity extends AppCompatActivity {
         estDao.insert(est);
     }
 
-    private void UnSegundo() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
+    public void saveCriadero(long id, long idCaserio, int tipo, long usuarioreg, int usuarioMod,
+                             String nombre, String descripcion, String latitud, String longitud, int log_cria,
+                             int ancho, String fechaReg, String fechaMod, long idSibasi) {
+        CtlPlCriaderoDao criaDao = daoSession.getCtlPlCriaderoDao();
+        CtlPlCriadero cria = new CtlPlCriadero();
+        cria.setId(id);
+        cria.setIdCaserio(idCaserio);
+        cria.setIdTipoCriadero(tipo);
+        cria.setIdUsarioReg(usuarioreg);
+        cria.setIdUsuarioMod(usuarioMod);
+        cria.setNombre(nombre);
+        cria.setDescripcion(descripcion);
+        cria.setLatitud(latitud);
+        cria.setLongitud(longitud);
+        cria.setLongitudCriadero(log_cria);
+        cria.setAnchoCriadero(ancho);
+        cria.setIdSibasi(idSibasi);
+        criaDao.insert(cria);
+    }
+
+
+    public void usarVolley() {
+        boolean red = MetodosGlobales.compruebaConexion(getApplicationContext());
+        if (!red) {
+            Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Solicitando Datos al Servidor, espere...", Toast.LENGTH_SHORT).show();
+            String imei = getIMEINumber();
+            String url = "http://10.168.10.80/tablets/catalogos.php?imei=" + imei;
+            RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+
+                                saveDowloadedCat e = new saveDowloadedCat();
+
+                                e.execute(jsonObject);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.i("eror", "no descarga datos");
+
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("eror", String.valueOf(error));
+
+                }
+            });
+
+            cola.add(stringRequest);
+
         }
 
     }
 
 
-    public void usarVolley() {
-        Toast.makeText(getApplicationContext(), "Solicitando Datos al Servidor, espere...", Toast.LENGTH_SHORT).show();
-        String url = "http://10.168.10.80/tablets/catalogos.php?imei=" + getIMEINumber();
-        RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-
-                            EjemploAsyncTask e = new EjemploAsyncTask();
-
-                            e.execute(jsonObject);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        cola.add(stringRequest);
-    }
-
-
-    private class EjemploAsyncTask extends AsyncTask<JSONObject, Integer, Boolean> {
+    private class saveDowloadedCat extends AsyncTask<JSONObject, Integer, Boolean> {
         JSONObject jsTotal;
-        int num=0;
+        int num = 0;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             Toast.makeText(getApplicationContext(), "Iniciando descarga de datos", Toast.LENGTH_SHORT).show();
-            pbSetting.setMax(15540);
+            pbSetting.setMax(15554);
             pbSetting.setProgress(0);
 
 
@@ -284,7 +314,6 @@ public class SettingActivity extends AppCompatActivity {
 
             try {
                 JSONObject jsTotal = jsonObjects[0];
-
                 JSONArray jaPaises = jsTotal.getJSONArray("paises");
                 JSONArray jaProcedencia = jsTotal.getJSONArray("procedencia");
                 JSONArray jaClave = jsTotal.getJSONArray("clave");
@@ -296,6 +325,8 @@ public class SettingActivity extends AppCompatActivity {
                 JSONArray jaInstitucion = jsTotal.getJSONArray("institucion");
                 JSONArray jaTipo = jsTotal.getJSONArray("tipoEstablecimiento");
                 JSONArray jaEst = jsTotal.getJSONArray("establecimiento");
+                JSONArray jaUser = jsTotal.getJSONArray("usuario");
+                JSONArray jaCriadero = jsTotal.getJSONArray("criadero");
 
                 for (int i = 0; i < jaPaises.length(); i++) {
                     JSONObject joPais = jaPaises.getJSONObject(i);
@@ -304,15 +335,12 @@ public class SettingActivity extends AppCompatActivity {
                     publishProgress(num);
 
                 }
-
-
                 for (int j = 0; j < jaProcedencia.length(); j++) {
                     JSONObject joProcedencia = jaProcedencia.getJSONObject(j);
                     saveProcedencia(joProcedencia.getLong("id"), joProcedencia.getString("nombre"));
                     num++;
                     publishProgress(num);
                 }
-
                 for (int k = 0; k < jaClave.length(); k++) {
                     JSONObject joClave = jaClave.getJSONObject(k);
                     saveClave(joClave.getLong("id"), joClave.getInt("id_departamento"), joClave.getInt("id_municipio"),
@@ -320,14 +348,12 @@ public class SettingActivity extends AppCompatActivity {
                     num++;
                     publishProgress(num);
                 }
-
                 for (int l = 0; l < jaDepartamento.length(); l++) {
                     JSONObject joDepto = jaDepartamento.getJSONObject(l);
                     saveDepartamento(joDepto.getLong("id"), joDepto.getString("nombre"), joDepto.getLong("id_pais"));
                     num++;
                     publishProgress(num);
                 }
-
                 for (int m = 0; m < jaMunicipio.length(); m++) {
                     JSONObject joMpo = jaMunicipio.getJSONObject(m);
                     int id_depto_apoyo;
@@ -340,14 +366,12 @@ public class SettingActivity extends AppCompatActivity {
                     num++;
                     publishProgress(num);
                 }
-
                 for (int n = 0; n < jaCanton.length(); n++) {
                     JSONObject joCanton = jaCanton.getJSONObject(n);
                     saveCanton(joCanton.getLong("id"), joCanton.getString("nombre"), joCanton.getLong("id_municipio"));
                     num++;
                     publishProgress(num);
                 }
-
                 for (int o = 0; o < jaCaserio.length(); o++) {
                     JSONObject joCaserio = jaCaserio.getJSONObject(o);
                     int id_depto_apoyo;
@@ -367,7 +391,6 @@ public class SettingActivity extends AppCompatActivity {
                     num++;
                     publishProgress(num);
                 }
-
                 for (int q = 0; q < jaInstitucion.length(); q++) {
                     JSONObject joIns = jaInstitucion.getJSONObject(q);
                     saveInstitucion(joIns.getLong("id"), joIns.getString("nombre"));
@@ -380,7 +403,6 @@ public class SettingActivity extends AppCompatActivity {
                     num++;
                     publishProgress(num);
                 }
-
                 saveMinsal();
                 for (int s = 0; s < jaEst.length(); s++) {
                     JSONObject joEst = jaEst.getJSONObject(s);
@@ -390,7 +412,6 @@ public class SettingActivity extends AppCompatActivity {
                     } else {
                         id_municipio = 0;
                     }
-
                     saveEstablecimiento(joEst.getLong("id"), joEst.getString("nombre"), joEst.getString("latitud"),
                             joEst.getString("longitud"), id_municipio, joEst.getInt("id_establecimiento_padre"),
                             joEst.getInt("id_tipo_establecimiento"));
@@ -405,9 +426,31 @@ public class SettingActivity extends AppCompatActivity {
                     num++;
                     publishProgress(num);
                 }
+                for (int q = 0; q < jaUser.length(); q++) {
+                    JSONObject joUser = jaUser.getJSONObject(q);
+                    saveFosUserUser(joUser.getLong("id"), joUser.getString("firstname"), joUser.getString("username"),
+                            joUser.getString("lastname"), joUser.getString("password"), joUser.getString("salt"),
+                            joUser.getInt("id_tipo_empleado"), joUser.getInt("id_sibasi"));
+                    num++;
+                    publishProgress(num);
+                }
+                for (int y = 0; y < jaCriadero.length(); y++) {
+                    JSONObject joCria = jaCriadero.getJSONObject(y);
+                    //int sibasi = joCria.getInt("id_sibasi");
+                    saveCriadero(joCria.getLong("id"), joCria.getLong("id_caserio"), joCria.getInt("id_tipo_criadero"),
+                            joCria.getLong("id_usuario_reg"), joCria.getInt("id_usuario_mod"),
+                            joCria.getString("nombre"), joCria.getString("descripcion"),
+                            joCria.getString("latitud"), joCria.getString("longitud"), joCria.getInt("longitud_criadero"),
+                            joCria.getInt("ancho_criadero"), joCria.getString("fecha_hora_reg"), joCria.getString("fecha_hora_mod"),
+                            joCria.getLong("id_sibasi"));
+                    num++;
+                    publishProgress(num);
+
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.d("error", String.valueOf(e));
             }
 
             return true;
@@ -430,16 +473,15 @@ public class SettingActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Descarga de datos con exito", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
+                finish();
             }
-
-
         }
 
         @Override
         protected void onCancelled() {
             super.onCancelled();
 
-            Toast.makeText(getBaseContext(), "Tarea Larga Ha sido cancelada", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "La Tarea ha sido cancelada por el usuario", Toast.LENGTH_SHORT).show();
         }
 
 

@@ -69,10 +69,10 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
                 "\"ANCHO_CRIADERO\" INTEGER NOT NULL ," + // 8: anchoCriadero
                 "\"FECHA_HORA_REG\" INTEGER," + // 9: fechaHoraReg
                 "\"FECHA_HORA_MOD\" INTEGER," + // 10: fechaHoraMod
-                "\"ID_USARIO_REG\" INTEGER NOT NULL ," + // 11: idUsarioReg
+                "\"ID_USARIO_REG\" INTEGER," + // 11: idUsarioReg
                 "\"ID_SIBASI\" INTEGER NOT NULL ," + // 12: idSibasi
                 "\"ID_CASERIO\" INTEGER NOT NULL ," + // 13: idCaserio
-                "\"ID_USUARIO_MOD\" INTEGER NOT NULL ,"+"FOREIGN KEY(\"ID_SIBASI\")" +
+                "\"ID_USUARIO_MOD\" INTEGER,"+"FOREIGN KEY(\"ID_SIBASI\")" +
                 " REFERENCES CTL_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_CASERIO\")" +
                 " REFERENCES CTL_CASERIO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_USUARIO_MOD\")" +
                 " REFERENCES FOS_USER_USER(\"ID\") ON DELETE CASCADE );"); // 14: idUsuarioMod
