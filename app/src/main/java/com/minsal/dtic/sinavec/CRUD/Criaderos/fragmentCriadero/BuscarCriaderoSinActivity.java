@@ -2,6 +2,7 @@ package com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
@@ -18,6 +19,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.GeolocalizarCriaderoActivity;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
@@ -62,6 +64,15 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_burcar_criadero);
+        Bundle geolocalizarDatos=this.getIntent().getExtras();
+        if(geolocalizarDatos!=null){
+
+            Toast.makeText(this,"Nombre Criadero principal="+geolocalizarDatos.getString("criadero"),Toast.LENGTH_LONG).show();
+
+        }
+
+
+
         //Me permite regresar  a la actividad anterior
         ActionBar actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -154,6 +165,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
 
             }
         });
+
         buscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,11 +176,25 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                 int idMunicipio=0;
                 int idCanton=0;
                 int idCaserio=0;
+
+                if(idCtn!=0 && idCas==0){
+                    idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+                    idCanton=(int) (long) cantones.get(idCtn-1).getId();
+
+                }else if(idCtn!=0 && idCas!=0){
+                    idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+                    idCanton=(int) (long) cantones.get(idCtn-1).getId();
+                    idCaserio=(int) (long) caserios.get(idCas-1).getId();
+                }else{
+                    idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+                }
+
+
                 result.setText("");
                 if(idMuni!=0){
-                    llenarTablaCriadero();
+                    llenarTablaCriadero(idMuni,idCtn,idCas);
                     if (criaderos.size()>0){
-                        new MiTarea().execute();
+                        new MiTarea().execute(idMunicipio,idCanton,idCaserio);
                     }else{
                         Toast.makeText(getApplicationContext(),"No se encontraron criaderos",Toast.LENGTH_LONG).show();
                         result.setText("Sin Resultados");
@@ -182,18 +208,21 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         });
     }
 
-    private class MiTarea extends AsyncTask<Void, TableRow, Integer>{
+    private class MiTarea extends AsyncTask<Integer, TableRow, Integer>{
         @Override
         protected void onPreExecute() {
             progressDialog.show();
         }
 
         @Override
-        protected Integer doInBackground(Void... voids) {
+        protected Integer doInBackground(Integer... idSpiner) {
+            final int idMunicipio=idSpiner[0];
+            final int idCanton=idSpiner[1];
+            final int idCaserio=idSpiner[2];
 
-            CtlPlCriadero criadero;
+
             for (int i=0;i<criaderos.size();i++){
-                criadero=new CtlPlCriadero();
+                CtlPlCriadero criadero=new CtlPlCriadero();
                 criadero=criaderos.get(i);
                 final int idCriadero=(int)(long) criadero.getId();
                 // dara rows
@@ -227,11 +256,20 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                 button.setBackground(null);
                 button.setPadding(60,10,0,10);
                 button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                final CtlPlCriadero finalCriadero = criadero;
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Intent geolocalizarCriadero=new Intent(BuscarCriaderoSinActivity.this, GeolocalizarCriaderoActivity.class);
 
-                        Toast.makeText(getApplicationContext(),"Asignara Coordenadas id:"+idCriadero,Toast.LENGTH_LONG).show();
+                        Bundle miBundle=new Bundle();
+                        miBundle.putInt("idMunicipio",idMunicipio);
+                        miBundle.putInt("idCanton",idCanton);
+                        miBundle.putInt("idCaserio",idCaserio);
+                        miBundle.putString("criadero", finalCriadero.getNombre());
+                        geolocalizarCriadero.putExtras(miBundle);
+                        startActivity(geolocalizarCriadero);
+                        //Toast.makeText(getApplicationContext(),"Asignara Coordenadas id:"+idCriadero,Toast.LENGTH_LONG).show();
                     }
                 });
                 row.addView(button);
@@ -252,10 +290,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         }
     }
 
-    private void llenarTablaCriadero(){
-        int idMuni=spMunicipio.getSelectedItemPosition();
-        int idCtn=spCanton.getSelectedItemPosition();
-        int idCas=spCaserio.getSelectedItemPosition();
+    private void llenarTablaCriadero(int idMuni,int idCtn,int idCas){
         int idMunicipio=0;
         int idCanton=0;
         int idCaserio=0;

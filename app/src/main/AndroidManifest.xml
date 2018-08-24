@@ -77,7 +77,7 @@
         <activity android:name=".Synchronization" />
         <activity
             android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoSinActivity"
-            android:label="Geolocalizar Criaderos"
+            android:label="Criaderos"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape">
             <meta-data
@@ -91,6 +91,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoCon" />
+        <activity
+            android:name=".CRUD.Criaderos.activityCriadero.GeolocalizarCriaderoActivity"
+            android:label="Geolocalizar Criadero"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>
