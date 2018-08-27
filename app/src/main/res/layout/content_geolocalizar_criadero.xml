@@ -20,5 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Geolocalizar Criaderos" />
+    <Button
+        android:id="@+id/idGuardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Guardar"/>
 
 </LinearLayout>

@@ -64,14 +64,6 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_burcar_criadero);
-        Bundle geolocalizarDatos=this.getIntent().getExtras();
-        if(geolocalizarDatos!=null){
-
-            Toast.makeText(this,"Nombre Criadero principal="+geolocalizarDatos.getString("criadero"),Toast.LENGTH_LONG).show();
-
-        }
-
-
 
         //Me permite regresar  a la actividad anterior
         ActionBar actionBar=getSupportActionBar();
@@ -86,18 +78,31 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         tablaCriaderos = (TableLayout)findViewById(R.id.tableCriadero);
         result = (TextView)findViewById(R.id.result);
 
-        listaCanton.add("Seleccione");
-        listaCaserios.add("Seleccione");
-
         progressDialog = new ProgressDialog(BuscarCriaderoSinActivity.this);
         progressDialog.setMessage("Cargando");
-
-
         daoSession=((MyMalaria)getApplicationContext()).getDaoSession();
         utilidades=new Utilidades(daoSession);
 
-        municipios=utilidades.loadspinnerMunicipio(3);
-        listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
+
+        Bundle geolocalizarDatos=this.getIntent().getExtras();
+        if(geolocalizarDatos!=null){
+            int idMuni=geolocalizarDatos.getInt("idMuni");
+            int idCtn=geolocalizarDatos.getInt("idCtn");
+            int idCas=geolocalizarDatos.getInt("idCas");
+
+           /* Toast.makeText(this,"Nombre Criadero " +
+                    "principal="+geolocalizarDatos.getString("criadero")
+                    +" idMunicipio="+geolocalizarDatos.getInt("idMuni")
+                    +" idCanton="+geolocalizarDatos.getInt("idCtn")
+                    +" idCaserio="+geolocalizarDatos.getInt("idCas"),Toast.LENGTH_LONG).show();*/
+
+        }else{
+            listaCanton.add("Seleccione");
+            listaCaserios.add("Seleccione");
+            municipios=utilidades.loadspinnerMunicipio(3);
+            listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
+        }
+
 
         adapter=new ArrayAdapter
                 (this,android.R.layout.simple_list_item_1,listaMunicipio);
