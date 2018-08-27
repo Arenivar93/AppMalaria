@@ -14,15 +14,13 @@ import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.utilidades.MetodosGlobales;
-
-import HelperDB.DbHelpers;
 import Utils.Util;
 
 public class LoginActivity extends AppCompatActivity {
     EditText edtUser, edtPass;
     Switch swRemember;
     Button btnLogin;
-    DbHelpers objBaseDeDatos ;
+
     SharedPreferences prefs;
     MetodosGlobales metodoGlobal;
     DaoSession daoSession;
@@ -79,7 +77,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
     private void saveOnPreferences(String user, String pass){
         if(swRemember.isChecked()){
             SharedPreferences.Editor editor = prefs.edit();
@@ -88,7 +85,5 @@ public class LoginActivity extends AppCompatActivity {
             editor.apply();
         }
     }
-
-
 
 }

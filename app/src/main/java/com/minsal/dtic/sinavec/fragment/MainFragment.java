@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.minsal.dtic.sinavec.CapturaAnopheles;
 import com.minsal.dtic.sinavec.R;
-import com.minsal.dtic.sinavec.prueba;
 
 
 public class MainFragment extends Fragment{
@@ -51,7 +51,7 @@ public class MainFragment extends Fragment{
         gotaCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),prueba.class);
+                Intent intent=new Intent(getActivity(),CapturaAnopheles.class);
                 startActivity(intent);
                 Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
             }
@@ -59,7 +59,7 @@ public class MainFragment extends Fragment{
         pesquisaCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),prueba.class);
+                Intent intent=new Intent(getActivity(),CapturaAnopheles.class);
                 startActivity(intent);
                 Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
             }
@@ -67,15 +67,14 @@ public class MainFragment extends Fragment{
         capturaCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),prueba.class);
+                Intent intent=new Intent(getActivity(),CapturaAnopheles.class);
                 startActivity(intent);
-                Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
             }
         });
         botiquinCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),prueba.class);
+                Intent intent=new Intent(getActivity(),CapturaAnopheles.class);
                 startActivity(intent);
                 Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
             }
@@ -117,19 +116,19 @@ public class MainFragment extends Fragment{
         Intent intent;
         switch (v.getId()){
             case R.id.idGota:
-                intent=new Intent(getActivity(),prueba.class);
+                intent=new Intent(getActivity(),CapturaAnopheles.class);
                 Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
             break;
             case R.id.idPesquisa:
-                intent=new Intent(getActivity(),prueba.class);
+                intent=new Intent(getActivity(),CapturaAnopheles.class);
                 Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
             break;
             case R.id.idCaptura:
-                intent=new Intent(getActivity(),prueba.class);
+                intent=new Intent(getActivity(),CapturaAnopheles.class);
                 Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
             break;
             case R.id.idBotiquin:
-                intent=new Intent(getActivity(),prueba.class);
+                intent=new Intent(getActivity(),CapturaAnopheles.class);
                 Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
             break;
 

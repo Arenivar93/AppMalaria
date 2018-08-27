@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/inicio"
-            android:icon="@drawable/inicioimg2"
+            android:icon="@drawable/if_home_173033"
             android:title="Inicio" />
         <item
             android:id="@+id/gotas"
@@ -30,7 +30,7 @@
             android:title="Criaderos" />
         <item
             android:id="@+id/salir"
-            android:icon="@drawable/ic_salir"
+            android:icon="@drawable/salir"
             android:title="Salir" />
     </group>
 

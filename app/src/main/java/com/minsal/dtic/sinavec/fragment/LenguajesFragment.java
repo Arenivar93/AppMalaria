@@ -63,7 +63,7 @@ public class LenguajesFragment extends Fragment {
                 Toast.makeText(getActivity(),
                         "Seleccion:"+listaPersonaje.get
                                 (recyclerPersonajes.getChildAdapterPosition(v)).getNombre(),Toast.LENGTH_SHORT).show();
-                //Intent siguiente=new Intent(MainActivity.this, prueba.class);
+                //Intent siguiente=new Intent(MainActivity.this, CapturaAnopheles.class);
                 //startActivity(siguiente);
             }
         });
@@ -144,7 +144,7 @@ public class LenguajesFragment extends Fragment {
                 Toast.makeText(getActivity(),
                         "Seleccion:"+listaPersonaje.get
                                 (recyclerPersonajes.getChildAdapterPosition(v)).getNombre(),Toast.LENGTH_SHORT).show();
-               // Intent siguiente=new Intent(getActivity(), prueba.class);
+               // Intent siguiente=new Intent(getActivity(), CapturaAnopheles.class);
                 //startActivity(siguiente);
             }
         });

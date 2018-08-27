@@ -233,7 +233,7 @@ public class SettingActivity extends AppCompatActivity {
 
     public void saveCriadero(long id, long idCaserio, int tipo, long usuarioreg, int usuarioMod,
                              String nombre, String descripcion, String latitud, String longitud, int log_cria,
-                             int ancho, String fechaReg, String fechaMod, long idSibasi) {
+                             int ancho, String fechaReg, String fechaMod, long idSibasi, int estado) {
         CtlPlCriaderoDao criaDao = daoSession.getCtlPlCriaderoDao();
         CtlPlCriadero cria = new CtlPlCriadero();
         cria.setId(id);
@@ -248,6 +248,7 @@ public class SettingActivity extends AppCompatActivity {
         cria.setLongitudCriadero(log_cria);
         cria.setAnchoCriadero(ancho);
         cria.setIdSibasi(idSibasi);
+        cria.setIdEstadoCriadero(estado);
         criaDao.insert(cria);
     }
 
@@ -442,7 +443,7 @@ public class SettingActivity extends AppCompatActivity {
                             joCria.getString("nombre"), joCria.getString("descripcion"),
                             joCria.getString("latitud"), joCria.getString("longitud"), joCria.getInt("longitud_criadero"),
                             joCria.getInt("ancho_criadero"), joCria.getString("fecha_hora_reg"), joCria.getString("fecha_hora_mod"),
-                            joCria.getLong("id_sibasi"));
+                            joCria.getLong("id_sibasi"),joCria.getInt("id_estado_criadero"));
                     num++;
                     publishProgress(num);
 
@@ -450,7 +451,8 @@ public class SettingActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.d("error", String.valueOf(e));
+                return false;
+
             }
 
             return true;
