@@ -1,4 +1,4 @@
-package com.minsal.dtic.sinavec;
+package com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.BuscarCriaderoSinActivity;
+import com.minsal.dtic.sinavec.R;
 
 
 public class MenuCriaderoFragment extends Fragment {

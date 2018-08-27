@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -76,8 +75,27 @@
         </activity>
         <activity android:name=".SettingActivity" />
         <activity android:name=".Synchronization" />
-        <activity android:name=".BuscarCriaderoSinActivity" />
-        <activity android:name=".BuscarCriaderoCon"></activity>
+        <activity
+            android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoSinActivity"
+            android:label="Criaderos"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.BuscarCriaderoSinActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoCon" />
+        <activity
+            android:name=".CRUD.Criaderos.activityCriadero.GeolocalizarCriaderoActivity"
+            android:label="Geolocalizar Criadero"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>

@@ -29,4 +29,5 @@
     <string name="btnLogin">Ingresar</string>
     <string name="swRemember">Recordar</string>
     <string name="menuLogout">Cerrar Sesión</string>
+    <string name="title_activity_geolocalizar_criadero">geolocalizarCriaderoActivity</string>
 </resources>

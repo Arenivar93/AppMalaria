@@ -1,7 +1,9 @@
-package com.minsal.dtic.sinavec;
+package com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.minsal.dtic.sinavec.R;
 
 public class BuscarCriaderoCon extends AppCompatActivity {
 
