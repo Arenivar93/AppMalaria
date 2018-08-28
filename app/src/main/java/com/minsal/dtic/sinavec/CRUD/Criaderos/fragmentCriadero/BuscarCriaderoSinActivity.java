@@ -60,10 +60,21 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
     List<CtlPlCriadero> criaderos;
     private ProgressDialog progressDialog;
     Integer longitud;
+    int bandera;
+    int contador;
+    int idMuni2=0;
+    int idCtn2=0;
+    int idCas2=0;
+    int controladorSaltos=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_burcar_criadero);
+
+        bandera=0;
+        contador=0;
+        controladorSaltos=0;
 
         //Me permite regresar  a la actividad anterior
         ActionBar actionBar=getSupportActionBar();
@@ -83,26 +94,10 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         daoSession=((MyMalaria)getApplicationContext()).getDaoSession();
         utilidades=new Utilidades(daoSession);
 
-
-        Bundle geolocalizarDatos=this.getIntent().getExtras();
-        if(geolocalizarDatos!=null){
-            int idMuni=geolocalizarDatos.getInt("idMuni");
-            int idCtn=geolocalizarDatos.getInt("idCtn");
-            int idCas=geolocalizarDatos.getInt("idCas");
-
-           /* Toast.makeText(this,"Nombre Criadero " +
-                    "principal="+geolocalizarDatos.getString("criadero")
-                    +" idMunicipio="+geolocalizarDatos.getInt("idMuni")
-                    +" idCanton="+geolocalizarDatos.getInt("idCtn")
-                    +" idCaserio="+geolocalizarDatos.getInt("idCas"),Toast.LENGTH_LONG).show();*/
-
-        }else{
-            listaCanton.add("Seleccione");
-            listaCaserios.add("Seleccione");
-            municipios=utilidades.loadspinnerMunicipio(3);
-            listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
-        }
-
+        listaCanton.add("Seleccione");
+        listaCaserios.add("Seleccione");
+        municipios=utilidades.loadspinnerMunicipio(3);
+        listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
 
         adapter=new ArrayAdapter
                 (this,android.R.layout.simple_list_item_1,listaMunicipio);
@@ -118,6 +113,23 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         spCaserio.setAdapter(adapter3);
         adapter3.notifyDataSetChanged();
 
+        Bundle geolocalizarDatos=this.getIntent().getExtras();
+        if(geolocalizarDatos!=null){
+            bandera=1;
+            contador=1;
+            idMuni2=geolocalizarDatos.getInt("idMuni");
+            idCtn2=geolocalizarDatos.getInt("idCtn");
+            idCas2=geolocalizarDatos.getInt("idCas");
+
+            for (int i=0;i<municipios.size();i++) {
+                if (municipios.get(i).getId() == idMuni2) {
+                    spMunicipio.setSelection(i + 1);
+                }
+            }
+            Toast.makeText(this,"EL caserio fue Georeferenciado con exito",Toast.LENGTH_LONG).show();
+        }
+
+
         spMunicipio.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -129,7 +141,19 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                             (parent.getContext(),android.R.layout.simple_list_item_1,listaCanton);
                     spCanton.setAdapter(adapter2);
                     adapter2.notifyDataSetChanged();
-                    spCanton.setSelection(0);
+                    if(bandera==1 && contador==1){
+                        if(idCtn2!=0){
+                            for (int i=0;i<cantones.size();i++) {
+                                if (cantones.get(i).getId() == idCtn2) {
+                                    spCanton.setSelection(i + 1);
+                                }
+                            }
+                        }else{
+                            spCanton.setSelection(0);
+                        }
+                    }else{
+                        spCanton.setSelection(0);
+                    }
                 }else{
                     listaCanton.clear();
                     listaCanton.add("Seleccione");
@@ -139,6 +163,12 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                     listaCaserios.add("Seleccione");
                     adapter3.notifyDataSetChanged();
                     spCaserio.setSelection(0);
+                }
+                if(bandera==1 && contador==1 && idCas2==0){
+                    if(controladorSaltos==1){
+                        realizarBusquedaCaserios();
+                    }
+                    controladorSaltos++;
                 }
             }
             @Override
@@ -156,12 +186,30 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                             (parent.getContext(),android.R.layout.simple_list_item_1,listaCaserios);
                     spCaserio.setAdapter(adapter3);
                     adapter3.notifyDataSetChanged();
-                    spCaserio.setSelection(0);
+                    if(bandera==1 && contador==1){
+                        if(idCas2!=0){
+                            for (int i=0;i<caserios.size();i++) {
+                                if (caserios.get(i).getId() == idCas2) {
+                                    spCaserio.setSelection(i + 1);
+                                }
+                            }
+                         }else{
+                            spCaserio.setSelection(0);
+                        }
+                    }else{
+                        spCaserio.setSelection(0);
+                    }
                 }else{
                     listaCaserios.clear();
                     listaCaserios.add("Seleccione");
                     adapter3.notifyDataSetChanged();
                     spCaserio.setSelection(0);
+                }
+                if(bandera==1 && contador==1){
+                    if(controladorSaltos==1){
+                        realizarBusquedaCaserios();
+                    }
+                    controladorSaltos++;
                 }
             }
 
@@ -174,44 +222,49 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         buscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tablaCriaderos.removeAllViews();
-                int idMuni=spMunicipio.getSelectedItemPosition();
-                int idCtn=spCanton.getSelectedItemPosition();
-                int idCas=spCaserio.getSelectedItemPosition();
-                int idMunicipio=0;
-                int idCanton=0;
-                int idCaserio=0;
-
-                if(idCtn!=0 && idCas==0){
-                    idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
-                    idCanton=(int) (long) cantones.get(idCtn-1).getId();
-
-                }else if(idCtn!=0 && idCas!=0){
-                    idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
-                    idCanton=(int) (long) cantones.get(idCtn-1).getId();
-                    idCaserio=(int) (long) caserios.get(idCas-1).getId();
-                }else{
-                    idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
-                }
-
-
-                result.setText("");
-                if(idMuni!=0){
-                    llenarTablaCriadero(idMuni,idCtn,idCas);
-                    if (criaderos.size()>0){
-                        new MiTarea().execute(idMunicipio,idCanton,idCaserio);
-                    }else{
-                        Toast.makeText(getApplicationContext(),"No se encontraron criaderos",Toast.LENGTH_LONG).show();
-                        result.setText("Sin Resultados");
-                        result.setTextColor(Color.RED);
-                    }
-                }else{
-                    Toast.makeText(getApplicationContext(),"Seleccione un Municipio",Toast.LENGTH_LONG).show();
-                }
+                realizarBusquedaCaserios();
 
             }
         });
     }
+
+    private void realizarBusquedaCaserios() {
+        tablaCriaderos.removeAllViews();
+        int idMuni=spMunicipio.getSelectedItemPosition();
+        int idCtn=spCanton.getSelectedItemPosition();
+        int idCas=spCaserio.getSelectedItemPosition();
+        int idMunicipio=0;
+        int idCanton=0;
+        int idCaserio=0;
+
+        if(idCtn!=0 && idCas==0){
+            idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+            idCanton=(int) (long) cantones.get(idCtn-1).getId();
+
+        }else if(idCtn!=0 && idCas!=0){
+            idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+            idCanton=(int) (long) cantones.get(idCtn-1).getId();
+            idCaserio=(int) (long) caserios.get(idCas-1).getId();
+        }else if(idMuni!=0){
+            idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+        }else{
+            Toast.makeText(getApplicationContext(),"Seleccione un Municipio",Toast.LENGTH_LONG).show();
+        }
+
+
+        result.setText("");
+        if(idMuni!=0){
+            llenarTablaCriadero(idMuni,idCtn,idCas);
+            if (criaderos.size()>0){
+                new MiTarea().execute(idMunicipio,idCanton,idCaserio);
+            }else{
+                Toast.makeText(getApplicationContext(),"No se encontraron criaderos",Toast.LENGTH_LONG).show();
+                result.setText("Sin Resultados");
+                result.setTextColor(Color.RED);
+            }
+        }
+    }
+
 
     private class MiTarea extends AsyncTask<Integer, TableRow, Integer>{
         @Override
@@ -224,7 +277,6 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
             final int idMunicipio=idSpiner[0];
             final int idCanton=idSpiner[1];
             final int idCaserio=idSpiner[2];
-
 
             for (int i=0;i<criaderos.size();i++){
                 CtlPlCriadero criadero=new CtlPlCriadero();
@@ -274,6 +326,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                         miBundle.putString("criadero", finalCriadero.getNombre());
                         geolocalizarCriadero.putExtras(miBundle);
                         startActivity(geolocalizarCriadero);
+                        finish();
                         //Toast.makeText(getApplicationContext(),"Asignara Coordenadas id:"+idCriadero,Toast.LENGTH_LONG).show();
                     }
                 });
