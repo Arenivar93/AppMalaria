@@ -19,7 +19,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.GeolocalizarCriaderoActivity;
+import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.GeoreferenciarCriaderoActivity;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
@@ -120,13 +120,17 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
             idMuni2=geolocalizarDatos.getInt("idMuni");
             idCtn2=geolocalizarDatos.getInt("idCtn");
             idCas2=geolocalizarDatos.getInt("idCas");
+            int cancelar=geolocalizarDatos.getInt("cancelar");
 
             for (int i=0;i<municipios.size();i++) {
                 if (municipios.get(i).getId() == idMuni2) {
                     spMunicipio.setSelection(i + 1);
                 }
             }
-            Toast.makeText(this,"EL caserio fue Georeferenciado con exito",Toast.LENGTH_LONG).show();
+            if(cancelar!=1){
+                Toast.makeText(this,"EL caserio fue Georeferenciado con exito",Toast.LENGTH_LONG).show();
+            }
+
         }
 
 
@@ -317,7 +321,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent geolocalizarCriadero=new Intent(BuscarCriaderoSinActivity.this, GeolocalizarCriaderoActivity.class);
+                        Intent geolocalizarCriadero=new Intent(BuscarCriaderoSinActivity.this, GeoreferenciarCriaderoActivity.class);
 
                         Bundle miBundle=new Bundle();
                         miBundle.putInt("idMunicipio",idMunicipio);

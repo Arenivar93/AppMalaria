@@ -20,4 +20,10 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical|fill_vertical|center"
         android:text="Configurar Tablet" />
+
+    <ProgressBar
+        android:id="@+id/pbSetting"
+        style="@style/CustomProgressBarHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="36dp" />
 </LinearLayout>

@@ -91,11 +91,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoCon" />
-        <activity
-            android:name=".CRUD.Criaderos.activityCriadero.GeolocalizarCriaderoActivity"
-            android:label="Geolocalizar Criadero"
-            android:screenOrientation="landscape">
-        </activity>
+        <activity android:name=".CRUD.Criaderos.activityCriadero.GeoreferenciarCriaderoActivity"></activity>
     </application>
 
 </manifest>
