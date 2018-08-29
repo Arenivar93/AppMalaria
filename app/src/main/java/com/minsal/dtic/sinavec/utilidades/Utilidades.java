@@ -76,10 +76,10 @@ public class Utilidades {
 
 
 
-    public List<CtlCanton> loadSpinerCanton(Long idCtn) {
+    public List<CtlCanton> loadSpinerCanton(Long idM) {
         daoCanton=daoSession.getCtlCantonDao();
         cantones=new ArrayList<CtlCanton>();
-        cantones=daoCanton.queryBuilder().where(CtlCantonDao.Properties.IdMunicipio.eq(idCtn))
+        cantones=daoCanton.queryBuilder().where(CtlCantonDao.Properties.IdMunicipio.eq(idM))
                 .orderAsc(CtlCantonDao.Properties.Nombre).list();
         return cantones;
     }
