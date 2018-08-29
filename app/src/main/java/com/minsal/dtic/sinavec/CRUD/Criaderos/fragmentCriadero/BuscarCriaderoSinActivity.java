@@ -46,7 +46,6 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
     CtlCantonDao daoCanton;
     CtlCaserioDao daoCaserio;
     CtlPlCriaderoDao ctlPlCriaderoDao;
-
     ArrayList<String> listaMunicipio=new ArrayList<String>();
     List<CtlMunicipio> municipios;
     ArrayList<String> listaCanton=new ArrayList<String>();

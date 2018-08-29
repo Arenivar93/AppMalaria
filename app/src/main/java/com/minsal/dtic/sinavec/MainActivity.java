@@ -3,6 +3,7 @@ package com.minsal.dtic.sinavec;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -15,11 +16,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
-
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.MenuCriaderoFragment;
+import com.minsal.dtic.sinavec.EntityDAO.CtlDepartamentoDao;
+import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.fragment.ContenedorFragment;
-
 import com.minsal.dtic.sinavec.fragment.CapturaFragment;
 import com.minsal.dtic.sinavec.fragment.FebrilFragment;
 import com.minsal.dtic.sinavec.fragment.LenguajesFragment;
@@ -36,45 +36,40 @@ public class MainActivity extends AppCompatActivity
         MenuCriaderoFragment.OnFragmentInteractionListener {
 
     private SharedPreferences prefs;
-  //  TextView tvUser;
+    public static int depto;
+    private DaoSession daoSession;
+    //  TextView tvUser;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        daoSession = ((MyMalaria) getApplication()).getDaoSession();
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        String elUser = prefs.getString("user", "");
+
+
+        depto = deptoUser(elUser); // este id lo usaremos para conocer el departamento al que pertence el usaurio
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-       // String user= Util.getUserPrefs(prefs);
-
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (Utilidades.fragment==0){
+        if (Utilidades.fragment == 0) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MainFragment()).commit();
-        }else if(Utilidades.fragment==1){
+        } else if (Utilidades.fragment == 1) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MenuCriaderoFragment()).commit();
         }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
-        View headerView = navigationView.getHeaderView(0);
-
-
-        //instancia de la bd. se tendra acceso a los metodos de la bd
-        //OpenHelperBd bdHelper = new OpenHelperBd(this);
-        //OpenHelperBd helper=new OpenHelperBd(this);
-        // SQLiteDatabase db = helper.getWritableDatabase();
-
-        Toast.makeText(this, "Exito", Toast.LENGTH_SHORT).show();
-
-
+      //  View headerView = navigationView.getHeaderView(0);
     }
 
     @Override
@@ -139,13 +134,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    //Elimnara de la preferences los calores guardados para esta sesion
+    //Elimnara de la preferences los valores guardados para esta sesion
     private void removeSharedPreferences() {
         prefs.edit().clear().apply();
 
     }
 
-    //no llevara a la pantalla del login
+    //nos llevara a la pantalla del login
     private void logOut() {
         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -156,6 +151,23 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public int deptoUser(String username) {
+
+        CtlDepartamentoDao departamentoDao = daoSession.getCtlDepartamentoDao();
+        String sqlQUERY = "SELECT d.id FROM ctl_departamento d " +
+                "INNER JOIN ctl_municipio m on (m.id_departamento = d.id)\n" +
+                "INNER JOIN ctl_establecimiento es on(es.id_municipio= m.id)\n" +
+                "INNER JOIN fos_user_user f on (f.id_sibasi= es.id)\n" +
+                "WHERE f.username ='" + username + "'";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sqlQUERY, null);
+
+        int idDepartamento = 0;
+        if (cursor.moveToFirst()) {
+            idDepartamento = cursor.getInt(0);
+        }
+        return idDepartamento;
     }
 
 

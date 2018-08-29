@@ -48,6 +48,10 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlTipoEstablecimientoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
+import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividad;
+import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividadDao;
+import com.minsal.dtic.sinavec.EntityDAO.PlTipoCaptura;
+import com.minsal.dtic.sinavec.EntityDAO.PlTipoCapturaDao;
 import com.minsal.dtic.sinavec.utilidades.MetodosGlobales;
 
 import org.json.JSONArray;
@@ -251,6 +255,20 @@ public class SettingActivity extends AppCompatActivity {
         cria.setIdEstadoCriadero(estado);
         criaDao.insert(cria);
     }
+    public void saveTipoCaptura(Long id,String nombre){
+        PlTipoCapturaDao capturaDao = daoSession.getPlTipoCapturaDao();
+        PlTipoCaptura cap = new PlTipoCaptura();
+        cap.setId(id);
+        cap.setNombre(nombre);
+        capturaDao.insert(cap);
+    }
+    public void saveTipoActivida(Long id,String nombre){
+        PlTipoActividadDao actividadDao = daoSession.getPlTipoActividadDao();
+        PlTipoActividad act = new PlTipoActividad();
+        act.setId(id);
+        act.setNombre(nombre);
+        actividadDao.insert(act);
+    }
 
 
     public void usarVolley() {
@@ -304,7 +322,7 @@ public class SettingActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             Toast.makeText(getApplicationContext(), "Iniciando descarga de datos", Toast.LENGTH_SHORT).show();
-            pbSetting.setMax(15554);
+            pbSetting.setMax(5630);
             pbSetting.setProgress(0);
 
 
@@ -314,20 +332,22 @@ public class SettingActivity extends AppCompatActivity {
         protected Boolean doInBackground(JSONObject... jsonObjects) {
 
             try {
-                JSONObject jsTotal = jsonObjects[0];
-                JSONArray jaPaises = jsTotal.getJSONArray("paises");
-                JSONArray jaProcedencia = jsTotal.getJSONArray("procedencia");
-                JSONArray jaClave = jsTotal.getJSONArray("clave");
+                JSONObject jsTotal       = jsonObjects[0];
+                JSONArray jaPaises       = jsTotal.getJSONArray("paises");
+                JSONArray jaProcedencia  = jsTotal.getJSONArray("procedencia");
+                JSONArray jaClave        = jsTotal.getJSONArray("clave");
                 JSONArray jaDepartamento = jsTotal.getJSONArray("departamento");
-                JSONArray jaMunicipio = jsTotal.getJSONArray("municipio");
-                JSONArray jaCanton = jsTotal.getJSONArray("canton");
-                JSONArray jaCaserio = jsTotal.getJSONArray("caserio");
-                JSONArray jaTablet = jsTotal.getJSONArray("tablet");
-                JSONArray jaInstitucion = jsTotal.getJSONArray("institucion");
-                JSONArray jaTipo = jsTotal.getJSONArray("tipoEstablecimiento");
-                JSONArray jaEst = jsTotal.getJSONArray("establecimiento");
-                JSONArray jaUser = jsTotal.getJSONArray("usuario");
-                JSONArray jaCriadero = jsTotal.getJSONArray("criadero");
+                JSONArray jaMunicipio    = jsTotal.getJSONArray("municipio");
+                JSONArray jaCanton       = jsTotal.getJSONArray("canton");
+                JSONArray jaCaserio      = jsTotal.getJSONArray("caserio");
+                JSONArray jaTablet       = jsTotal.getJSONArray("tablet");
+                JSONArray jaInstitucion  = jsTotal.getJSONArray("institucion");
+                JSONArray jaTipo         = jsTotal.getJSONArray("tipoEstablecimiento");
+                JSONArray jaEst          = jsTotal.getJSONArray("establecimiento");
+                JSONArray jaUser         = jsTotal.getJSONArray("usuario");
+                JSONArray jaCriadero     = jsTotal.getJSONArray("criadero");
+                JSONArray jaTipoCaptura  = jsTotal.getJSONArray("tipoCaptura");
+                JSONArray jaActividad    = jsTotal.getJSONArray("actividad");
 
                 for (int i = 0; i < jaPaises.length(); i++) {
                     JSONObject joPais = jaPaises.getJSONObject(i);
@@ -448,13 +468,19 @@ public class SettingActivity extends AppCompatActivity {
                     publishProgress(num);
 
                 }
+                for (int z = 0; z <jaActividad.length() ; z++) {
+                    JSONObject joCap = jaActividad.getJSONObject(z);
+                    saveTipoActivida(joCap.getLong("id"),joCap.getString("nombre"));
+                }
+                for (int x = 0; x <jaTipoCaptura.length() ; x++) {
+                    JSONObject joTipo = jaTipoCaptura.getJSONObject(x);
+                    saveTipoCaptura(joTipo.getLong("id"),joTipo.getString("nombre"));
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
-
             }
-
             return true;
 
         }

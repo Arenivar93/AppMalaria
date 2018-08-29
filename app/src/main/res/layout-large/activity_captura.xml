@@ -7,25 +7,142 @@
     android:orientation="vertical"
     tools:context="com.minsal.dtic.sinavec.CapturaAnopheles">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:orientation="horizontal"
-    android:layout_marginStart="100dp"
-    android:layout_marginTop="20dp">
-    <Spinner
-        android:layout_width="220dp"
-        android:layout_height="60dp">
-    </Spinner>
-    <Spinner
-        android:layout_width="220dp"
-        android:layout_height="60dp">
-    </Spinner>
-    <Spinner
-        android:layout_width="220dp"
-        android:layout_height="60dp">
-    </Spinner>
+    <LinearLayout
+        android:id="@+id/primero"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="5dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="88dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="5dp"
+                android:text="Municipio:" />
+
+            <Spinner
+                android:id="@+id/idMunicipioCap"
+                android:layout_width="220dp"
+                android:layout_height="40dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cantón:" />
+
+            <Spinner
+                android:id="@+id/idCantonCap"
+                android:layout_width="220dp"
+                android:layout_height="40dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="50dp"
+                android:paddingStart="15dp"
+                android:text="Caserío:" />
+
+            <Spinner
+                android:id="@+id/idCaserioCap"
+                android:layout_width="220dp"
+                android:layout_height="40dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/segundo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:paddingTop="40dp"
+        android:layout_marginStart="5dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="126dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="5dp"
+                android:text="Tipo Actividad:" />
+
+            <Spinner
+                android:id="@+id/spActividad"
+                android:layout_width="220dp"
+                android:layout_height="40dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tipo captura:" />
+
+            <Spinner
+                android:id="@+id/spCaptura"
+                android:layout_width="220dp"
+                android:layout_height="40dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="90dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="50dp"
+                android:paddingStart="15dp"
+                android:text="Fecha Realización:" />
+
+            <EditText
+                android:id="@+id/edtFecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="Fecha realizacion"
+                android:inputType="date" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"></LinearLayout>
+
 
 </LinearLayout>

@@ -10,5 +10,8 @@
         <item name="android:minHeight">10dip</item>
         <item name="android:maxHeight">20dip</item>
     </style>
+    <style name="splashScreen" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
 
 </resources>

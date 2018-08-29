@@ -11,6 +11,10 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividad;
+import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividadDao;
+import com.minsal.dtic.sinavec.EntityDAO.PlTipoCaptura;
+import com.minsal.dtic.sinavec.EntityDAO.PlTipoCapturaDao;
 
 import org.greenrobot.greendao.query.Join;
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -29,6 +33,7 @@ public class Utilidades {
 
     public static final int LIST=1;
     public static final int GRID=2;
+
 
     public static int visualizacion=LIST;
 
@@ -55,7 +60,7 @@ public class Utilidades {
         CtlMunicipio municipio=null;
         daoMunicipio=daoSession.getCtlMunicipioDao();
         List<CtlMunicipio> municipios=new ArrayList<CtlMunicipio>();
-        municipios=daoMunicipio.queryBuilder().where(CtlMunicipioDao.Properties.IdDepartamento.eq(3))
+        municipios=daoMunicipio.queryBuilder().where(CtlMunicipioDao.Properties.IdDepartamento.eq(idDepto))
                 .orderAsc(CtlMunicipioDao.Properties.Nombre).list();
         return municipios;
     }
@@ -151,5 +156,39 @@ public class Utilidades {
 
         return criaderos;
 
+    }
+
+
+    public List<PlTipoActividad> loadspinnerActividad(){
+        //PlTipoActividad actividad=null;
+        PlTipoActividadDao actividadDao=daoSession.getPlTipoActividadDao();
+        List<PlTipoActividad> actividad=new ArrayList<PlTipoActividad>();
+        actividad=actividadDao.loadAll();
+        return actividad;
+    }
+    public ArrayList<String> obtenerListaActividad(List<PlTipoActividad> actividades){
+        ArrayList<String> listaActividad=new ArrayList<String>();
+        listaActividad.add("Seleccione");
+        for (int i=0;i<actividades.size();i++){
+            listaActividad.add(actividades.get(i).getNombre());
+        }
+        return listaActividad;
+    }
+
+
+
+
+    public List<PlTipoCaptura> loadspinnerCaptura(){
+        PlTipoCapturaDao capturaDao=daoSession.getPlTipoCapturaDao();
+        List<PlTipoCaptura> captura=new ArrayList<PlTipoCaptura>();
+        captura=capturaDao.loadAll();
+        return captura;
+    }
+    public ArrayList<String> obtenerListaCaptura(List<PlTipoCaptura> capturas){
+        ArrayList<String> listaCaptura=new ArrayList<String>();
+        listaCaptura.add("Seleccione");
+        for (int i=0;i<capturas.size();i++){
+            listaCaptura.add(capturas.get(i).getNombre());        }
+        return listaCaptura;
     }
 }

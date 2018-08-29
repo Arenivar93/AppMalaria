@@ -74,7 +74,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingActivity" />
-        <activity android:name=".Synchronization" />
         <activity
             android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoSinActivity"
             android:label="Criaderos"

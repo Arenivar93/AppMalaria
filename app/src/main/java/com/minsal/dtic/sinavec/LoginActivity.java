@@ -3,6 +3,7 @@ package com.minsal.dtic.sinavec;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,8 +13,20 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
+import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlCaserioDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlDepartamento;
+import com.minsal.dtic.sinavec.EntityDAO.CtlDepartamentoDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
+import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.utilidades.MetodosGlobales;
+
+import org.greenrobot.greendao.query.Join;
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import Utils.Util;
 
 public class LoginActivity extends AppCompatActivity {
@@ -25,17 +38,19 @@ public class LoginActivity extends AppCompatActivity {
     MetodosGlobales metodoGlobal;
     DaoSession daoSession;
 
+    // final static int idDepartamento=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-        edtUser = (EditText)findViewById(R.id.edtUser);
-        edtPass = (EditText)findViewById(R.id.edtPass);
-        btnLogin = (Button)findViewById(R.id.btnLogin);
-        swRemember = (Switch)findViewById(R.id.swRemeber);
+        edtUser = (EditText) findViewById(R.id.edtUser);
+        edtPass = (EditText) findViewById(R.id.edtPass);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
+        swRemember = (Switch) findViewById(R.id.swRemeber);
         setCredential();
-        daoSession=((MyMalaria)getApplication()).getDaoSession();
+        daoSession = ((MyMalaria) getApplication()).getDaoSession();
 
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -46,20 +61,18 @@ public class LoginActivity extends AppCompatActivity {
 
                 metodoGlobal = new MetodosGlobales(daoSession);
                 boolean check = metodoGlobal.checkDataBase();// si exixte la base de datos
-                if (check){
-                    //boolean existe = daoSession.validateLogin(elUser,elPass);
-                    boolean existe = metodoGlobal.validateLogin(elUser,elPass);
-                    if(existe){
-                        saveOnPreferences(elUser,elPass);
-                        Intent i = new Intent(getApplicationContext(),MainActivity.class);
+                if (check) {
+                    boolean existe = metodoGlobal.validateLogin(elUser, elPass);
+                    if (existe) {
+                        saveOnPreferences(elUser, elPass);
+                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Usuario no encontrado", Toast.LENGTH_LONG).show();
                     }
-                    else {
-                        Toast.makeText(getApplicationContext(),"Usuario no encontrado",Toast.LENGTH_LONG).show();
-                    }
-                }else{
-                    Toast.makeText(getApplicationContext(),"Esta Dispositivo aun no ha sido configurado",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Esta Dispositivo aun no ha sido configurado", Toast.LENGTH_LONG).show();
                 }
 
 
@@ -68,22 +81,23 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void setCredential(){
+    private void setCredential() {
         String user = Util.getUserPrefs(prefs);
         String pass = Util.getPassPrefs(prefs);
-        if(!TextUtils.isEmpty(user) && !TextUtils.isEmpty(pass)){
+        if (!TextUtils.isEmpty(user) && !TextUtils.isEmpty(pass)) {
             edtUser.setText(user);
             edtPass.setText(pass);
         }
     }
 
-    private void saveOnPreferences(String user, String pass){
-        if(swRemember.isChecked()){
+    private void saveOnPreferences(String user, String pass) {
+        if (swRemember.isChecked()) {
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("user",user);
-            editor.putString("pass",pass);
+            editor.putString("user", user);
+            editor.putString("pass", pass);
             editor.apply();
         }
     }
+
 
 }

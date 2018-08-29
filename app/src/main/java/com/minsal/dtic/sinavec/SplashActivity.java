@@ -26,7 +26,6 @@ public class SplashActivity extends AppCompatActivity {
         daoSession = ((MyMalaria) getApplication()).getDaoSession();
         metodosGlobales = new MetodosGlobales(daoSession);
 
-
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         int tabletCOnfiguracion = metodosGlobales.consultaTabelt();
         if (tabletCOnfiguracion == 1) { // si existe un registro en la tabla tablet es porque ya se configuro
