@@ -274,7 +274,7 @@ public class SettingActivity extends AppCompatActivity {
         actividadDao.insert(act);
     }
     public void saveSemana(long id, int anio, String fecf, String feci, int semana) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date fechaFin = dateFormat.parse(fecf);
         Date fechaIni = dateFormat.parse(feci);
 
@@ -285,6 +285,16 @@ public class SettingActivity extends AppCompatActivity {
         sem.setFechaFin(fechaFin);
         sem.setFechaInicio(fechaIni);
         sem.setSemana(semana);
+        semanaDao.insert(sem);
+    }
+    static public int countRegister(JSONArray count) throws JSONException {
+        int total =0;
+        for (int i = 0; i <count.length() ; i++) {
+            JSONObject joTotal = count.getJSONObject(i);
+            total= joTotal.getInt("total");
+        }
+        return  total;
+
     }
 
 
@@ -328,6 +338,7 @@ public class SettingActivity extends AppCompatActivity {
 
         }
 
+
     }
 
 
@@ -339,8 +350,8 @@ public class SettingActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             Toast.makeText(getApplicationContext(), "Iniciando descarga de datos", Toast.LENGTH_SHORT).show();
-            pbSetting.setMax(5630);
             pbSetting.setProgress(0);
+            pbSetting.setMax(5000);
 
 
         }
@@ -366,7 +377,8 @@ public class SettingActivity extends AppCompatActivity {
                 JSONArray jaTipoCaptura  = jsTotal.getJSONArray("tipoCaptura");
                 JSONArray jaActividad    = jsTotal.getJSONArray("actividad");
                 JSONArray jaSemana       = jsTotal.getJSONArray("semana");
-                JSONArray jaTotalCount   = jsTotal.getJSONArray("total");
+               // JSONArray jsTotal22      = jsTotal.getJSONArray("total");
+
 
 
                 for (int i = 0; i < jaPaises.length(); i++) {
@@ -491,15 +503,21 @@ public class SettingActivity extends AppCompatActivity {
                 for (int z = 0; z <jaActividad.length() ; z++) {
                     JSONObject joCap = jaActividad.getJSONObject(z);
                     saveTipoActivida(joCap.getLong("id"),joCap.getString("nombre"));
+                    num++;
+                    publishProgress(num);
                 }
                 for (int x = 0; x <jaTipoCaptura.length() ; x++) {
                     JSONObject joTipo = jaTipoCaptura.getJSONObject(x);
                     saveTipoCaptura(joTipo.getLong("id"),joTipo.getString("nombre"));
+                    num++;
+                    publishProgress(num);
                 }
                 for (int a = 0; a <jaSemana.length() ; a++) {
                     JSONObject joSem = jaSemana.getJSONObject(a);
                     saveSemana(joSem.getLong("id"),joSem.getInt("anio"),
                               joSem.getString("fecf"),joSem.getString("feci"),joSem.getInt("semana"));
+                    num++;
+                    publishProgress(num);
 
                 }
 
@@ -540,6 +558,7 @@ public class SettingActivity extends AppCompatActivity {
 
 
     }
+
 
 
 }
