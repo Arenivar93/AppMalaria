@@ -75,8 +75,6 @@ public class Utilidades {
     }
 
 
-
-
     public List<CtlCanton> loadSpinerCanton(Long idM) {
         daoCanton=daoSession.getCtlCantonDao();
         cantones=new ArrayList<CtlCanton>();
@@ -159,8 +157,6 @@ public class Utilidades {
 
     }
 
-<<<<<<< HEAD
-
     public List<PlTipoActividad> loadspinnerActividad(){
         //PlTipoActividad actividad=null;
         PlTipoActividadDao actividadDao=daoSession.getPlTipoActividadDao();
@@ -193,6 +189,4 @@ public class Utilidades {
             listaCaptura.add(capturas.get(i).getNombre());        }
         return listaCaptura;
     }
-=======
->>>>>>> 209cd263804cd49714f851292ae1139901fa29d8
 }
