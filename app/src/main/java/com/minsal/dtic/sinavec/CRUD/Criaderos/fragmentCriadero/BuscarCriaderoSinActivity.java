@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.GeoreferenciarCriaderoActivity;
+import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.MapaCriaderoActivity;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
@@ -320,7 +321,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent geolocalizarCriadero=new Intent(BuscarCriaderoSinActivity.this, GeoreferenciarCriaderoActivity.class);
+                        Intent geolocalizarCriadero=new Intent(BuscarCriaderoSinActivity.this, MapaCriaderoActivity.class);
 
                         Bundle miBundle=new Bundle();
                         miBundle.putInt("idMunicipio",idMunicipio);

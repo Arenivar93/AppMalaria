@@ -41,6 +41,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlProcedencia;
 import com.minsal.dtic.sinavec.EntityDAO.CtlProcedenciaDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlSemanaEpi;
+import com.minsal.dtic.sinavec.EntityDAO.CtlSemanaEpiDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTablet;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTipoEstablecimiento;
@@ -58,6 +60,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -85,7 +89,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
 
-    private String getIMEINumber() {
+    public  String getIMEINumber() {
         String IMEINumber = "";
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             TelephonyManager telephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -269,6 +273,19 @@ public class SettingActivity extends AppCompatActivity {
         act.setNombre(nombre);
         actividadDao.insert(act);
     }
+    public void saveSemana(long id, int anio, String fecf, String feci, int semana) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy");
+        Date fechaFin = dateFormat.parse(fecf);
+        Date fechaIni = dateFormat.parse(feci);
+
+        CtlSemanaEpiDao semanaDao = daoSession.getCtlSemanaEpiDao();
+        CtlSemanaEpi sem = new CtlSemanaEpi();
+        sem.setId(id);
+        sem.setAnio(anio);
+        sem.setFechaFin(fechaFin);
+        sem.setFechaInicio(fechaIni);
+        sem.setSemana(semana);
+    }
 
 
     public void usarVolley() {
@@ -315,7 +332,7 @@ public class SettingActivity extends AppCompatActivity {
 
 
     private class saveDowloadedCat extends AsyncTask<JSONObject, Integer, Boolean> {
-        JSONObject jsTotal;
+
         int num = 0;
 
         @Override
@@ -348,6 +365,9 @@ public class SettingActivity extends AppCompatActivity {
                 JSONArray jaCriadero     = jsTotal.getJSONArray("criadero");
                 JSONArray jaTipoCaptura  = jsTotal.getJSONArray("tipoCaptura");
                 JSONArray jaActividad    = jsTotal.getJSONArray("actividad");
+                JSONArray jaSemana       = jsTotal.getJSONArray("semana");
+                JSONArray jaTotalCount   = jsTotal.getJSONArray("total");
+
 
                 for (int i = 0; i < jaPaises.length(); i++) {
                     JSONObject joPais = jaPaises.getJSONObject(i);
@@ -475,6 +495,12 @@ public class SettingActivity extends AppCompatActivity {
                 for (int x = 0; x <jaTipoCaptura.length() ; x++) {
                     JSONObject joTipo = jaTipoCaptura.getJSONObject(x);
                     saveTipoCaptura(joTipo.getLong("id"),joTipo.getString("nombre"));
+                }
+                for (int a = 0; a <jaSemana.length() ; a++) {
+                    JSONObject joSem = jaSemana.getJSONObject(a);
+                    saveSemana(joSem.getLong("id"),joSem.getInt("anio"),
+                              joSem.getString("fecf"),joSem.getString("feci"),joSem.getInt("semana"));
+
                 }
 
             } catch (Exception e) {

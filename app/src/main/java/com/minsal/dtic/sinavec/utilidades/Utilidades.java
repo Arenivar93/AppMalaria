@@ -1,5 +1,6 @@
 package com.minsal.dtic.sinavec.utilidades;
 
+import android.provider.Settings;
 import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
@@ -158,6 +159,7 @@ public class Utilidades {
 
     }
 
+<<<<<<< HEAD
 
     public List<PlTipoActividad> loadspinnerActividad(){
         //PlTipoActividad actividad=null;
@@ -191,4 +193,6 @@ public class Utilidades {
             listaCaptura.add(capturas.get(i).getNombre());        }
         return listaCaptura;
     }
+=======
+>>>>>>> 209cd263804cd49714f851292ae1139901fa29d8
 }

@@ -232,7 +232,7 @@ public class EntityGenerator {
         plCapturaAnopheles.addIntProperty("componenteInspeccionado");
         plCapturaAnopheles.addIntProperty("tiempoColecta").notNull();
         plCapturaAnopheles.addDateProperty("fechaHoraMod");
-        plCapturaAnopheles.addDateProperty("fecha").notNull();
+        plCapturaAnopheles.addDateProperty("fecha");
         plCapturaAnopheles.addDateProperty("fechaHoraReg");
         plCapturaAnopheles.addStringProperty("propietario");
         plCapturaAnopheles.addIntProperty("idSemanaEpidemiologica").notNull();
