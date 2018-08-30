@@ -1,5 +1,6 @@
 package com.minsal.dtic.sinavec.utilidades;
 
+import android.provider.Settings;
 import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
@@ -152,4 +153,5 @@ public class Utilidades {
         return criaderos;
 
     }
+
 }
