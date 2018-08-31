@@ -19,7 +19,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.GeoreferenciarCriaderoActivity;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.MapaCriaderoActivity;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
@@ -37,7 +36,7 @@ import com.minsal.dtic.sinavec.utilidades.Utilidades;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BuscarCriaderoSinActivity extends AppCompatActivity {
+public class BuscarCriaderoActivity extends AppCompatActivity {
     Spinner spMunicipio, spCanton,spCaserio;
     ImageView buscar;
     TableLayout tablaCriaderos;
@@ -89,7 +88,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         tablaCriaderos = (TableLayout)findViewById(R.id.tableCriadero);
         result = (TextView)findViewById(R.id.result);
 
-        progressDialog = new ProgressDialog(BuscarCriaderoSinActivity.this);
+        progressDialog = new ProgressDialog(BuscarCriaderoActivity.this);
         progressDialog.setMessage("Cargando");
         daoSession=((MyMalaria)getApplicationContext()).getDaoSession();
         utilidades=new Utilidades(daoSession);
@@ -115,21 +114,28 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
 
         Bundle geolocalizarDatos=this.getIntent().getExtras();
         if(geolocalizarDatos!=null){
-            bandera=1;
-            contador=1;
-            idMuni2=geolocalizarDatos.getInt("idMuni");
-            idCtn2=geolocalizarDatos.getInt("idCtn");
-            idCas2=geolocalizarDatos.getInt("idCas");
-            int cancelar=geolocalizarDatos.getInt("cancelar");
-
-            for (int i=0;i<municipios.size();i++) {
-                if (municipios.get(i).getId() == idMuni2) {
-                    spMunicipio.setSelection(i + 1);
+            int controlError=geolocalizarDatos.getInt("bandera");
+            if(controlError!=3){
+                bandera=1;
+                contador=1;
+                idMuni2=geolocalizarDatos.getInt("idMuni");
+                idCtn2=geolocalizarDatos.getInt("idCtn");
+                idCas2=geolocalizarDatos.getInt("idCas");
+                for (int i=0;i<municipios.size();i++) {
+                    if (municipios.get(i).getId() == idMuni2) {
+                        spMunicipio.setSelection(i + 1);
+                    }
                 }
+                if(controlError==0){
+                    Toast.makeText(this,"EL Criadero fue Georeferenciado con exito",Toast.LENGTH_LONG).show();
+                }
+                if(controlError==1){
+                    Toast.makeText(this,"Operación cancelada",Toast.LENGTH_LONG).show();
+                }
+            }else{
+                Toast.makeText(this,"Error al momento de cargar los datos del caserio seleccionado",Toast.LENGTH_LONG).show();
             }
-            if(cancelar!=1){
-                Toast.makeText(this,"EL caserio fue Georeferenciado con exito",Toast.LENGTH_LONG).show();
-            }
+
 
         }
 
@@ -313,27 +319,54 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                 }
                 // Creation  button
                 final ImageButton button = new ImageButton(getApplicationContext());
-                button.setImageResource(R.drawable.ic_gps9);
+                final CtlPlCriadero finalCriadero = criadero;
                 button.setBackground(null);
                 button.setPadding(60,10,0,10);
                 button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                final CtlPlCriadero finalCriadero = criadero;
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent geolocalizarCriadero=new Intent(BuscarCriaderoSinActivity.this, MapaCriaderoActivity.class);
 
-                        Bundle miBundle=new Bundle();
-                        miBundle.putInt("idMunicipio",idMunicipio);
-                        miBundle.putInt("idCanton",idCanton);
-                        miBundle.putInt("idCaserio",idCaserio);
-                        miBundle.putString("criadero", finalCriadero.getNombre());
-                        geolocalizarCriadero.putExtras(miBundle);
-                        startActivity(geolocalizarCriadero);
-                        finish();
-                        //Toast.makeText(getApplicationContext(),"Asignara Coordenadas id:"+idCriadero,Toast.LENGTH_LONG).show();
-                    }
-                });
+                if(criadero.getLongitud().equals("null") || criadero.equals("null")){
+                    //El criadero no tiene coordenadas
+                    button.setImageResource(R.mipmap.ic_edit_m);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent geolocalizarCriadero=new Intent(BuscarCriaderoActivity.this, MapaCriaderoActivity.class);
+
+                            Bundle miBundle=new Bundle();
+                            miBundle.putInt("idMunicipio",idMunicipio);
+                            miBundle.putInt("idCanton",idCanton);
+                            miBundle.putInt("idCaserio",idCaserio);
+                            miBundle.putString("criadero", finalCriadero.getNombre());
+                            miBundle.putLong("id",finalCriadero.getId());
+                            miBundle.putInt("coordenada",0);
+                            geolocalizarCriadero.putExtras(miBundle);
+                            startActivity(geolocalizarCriadero);
+                            finish();
+                        }
+                    });
+                }else{
+                    button.setImageResource(R.mipmap.ic_ver_map);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent geolocalizarCriadero=new Intent(BuscarCriaderoActivity.this, MapaCriaderoActivity.class);
+
+                            Bundle miBundle=new Bundle();
+                            miBundle.putInt("idMunicipio",idMunicipio);
+                            miBundle.putInt("idCanton",idCanton);
+                            miBundle.putInt("idCaserio",idCaserio);
+                            miBundle.putString("criadero", finalCriadero.getNombre());
+                            miBundle.putLong("id",finalCriadero.getId());
+                            miBundle.putInt("coordenada",1);
+                            miBundle.putDouble("latitud",Double.parseDouble(finalCriadero.getLatitud()));
+                            miBundle.putDouble("longitud",Double.parseDouble(finalCriadero.getLongitud()));
+                            geolocalizarCriadero.putExtras(miBundle);
+                            startActivity(geolocalizarCriadero);
+                            finish();
+                        }
+                    });
+                }
+
                 row.addView(button);
                 publishProgress(row);
             }

@@ -76,7 +76,7 @@
         </activity>
         <activity android:name=".SettingActivity" />
         <activity
-            android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoSinActivity"
+            android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity"
             android:label="Criaderos"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape">
@@ -90,12 +90,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoCon" />
-
-        <activity android:name=".CRUD.Criaderos.activityCriadero.GeoreferenciarCriaderoActivity" />
+        <activity android:name=".CRUD.Criaderos.activityCriadero.MapaCriaderoActivity" />
         <activity
-            android:name=".CRUD.Criaderos.activityCriadero.MapaCriaderoActivity"
-            android:label="Georeferenciar Criadero"></activity>
+            android:name=".CRUD.Colvol.fragmentColvol.BuscarColvolActivity"
+            android:label="@string/title_activity_buscar_colvol"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

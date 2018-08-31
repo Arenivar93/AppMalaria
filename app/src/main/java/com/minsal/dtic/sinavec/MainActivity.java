@@ -16,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol.MenuColvolFragment;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.MenuCriaderoFragment;
 import com.minsal.dtic.sinavec.EntityDAO.CtlDepartamentoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
@@ -122,7 +124,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.criadero) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MenuCriaderoFragment()).commit();
         } else if (id == R.id.colvol) {
-            fragmentManager.beginTransaction().replace(R.id.contenedor, new MapFragment()).commit();
+            fragmentManager.beginTransaction().replace(R.id.contenedor, new MenuColvolFragment()).commit();
         } else if (id == R.id.salir) {
             Intent siguiente = new Intent(MainActivity.this, MapsActivity.class);
             startActivity(siguiente);
