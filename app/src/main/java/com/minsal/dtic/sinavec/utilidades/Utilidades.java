@@ -14,6 +14,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividad;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividadDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoCaptura;
@@ -54,6 +56,7 @@ public class Utilidades {
     ArrayList<String> listaCaserios;
     List<CtlCaserio> caserios;
     List<CtlPlCriadero> criaderos;
+    List<PlColvol> colvols;
 
     public Utilidades(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -112,7 +115,7 @@ public class Utilidades {
         return listaCaserios;
     }
 
-    public List<CtlPlCriadero> obtenerCaseriosByIds(DaoSession daoSession,int idMuni,int idCtn, int idCas){
+    public List<CtlPlCriadero> obtenerCriaderosByIds(DaoSession daoSession, int idMuni, int idCtn, int idCas){
         criaderos=new ArrayList<CtlPlCriadero>();
         if(idMuni!=0){
             if(idCtn!=0 && idCas==0){
@@ -156,6 +159,46 @@ public class Utilidades {
         }
 
         return criaderos;
+
+    }
+    public List<PlColvol> obtenerColvolByIds(DaoSession daoSession, int idMuni, int idCtn, int idCas){
+        colvols=new ArrayList<PlColvol>();
+        if(idMuni!=0){
+            if(idCtn!=0 && idCas==0){
+                PlColvolDao colvolDao=daoSession.getPlColvolDao();
+
+                QueryBuilder<PlColvol> queryBuilder = colvolDao.queryBuilder();
+                Join ctlCaserio =queryBuilder.join(PlColvolDao.Properties.IdCaserio,CtlCaserio.class);
+                Join ctlCanton=queryBuilder.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
+                        CtlCanton.class,CtlCantonDao.Properties.Id);
+                ctlCanton.where(CtlCantonDao.Properties.Id.eq(idCtn));
+                colvols=queryBuilder.orderAsc(PlColvolDao.Properties.Nombre).list();
+
+            }else if(idCtn!=0 && idCas!=0){
+                //Ejecutara busqueda de muni ctn y cass
+                colvols=daoSession.getPlColvolDao()
+                        .queryBuilder()
+                        .where(PlColvolDao.Properties.IdCaserio.eq(idCas))
+                        .orderAsc(PlColvolDao.Properties.Nombre).list();
+
+            }else{
+                //ejecutara busqueda solo de municipio
+                PlColvolDao colvolDao=daoSession.getPlColvolDao();
+
+                QueryBuilder<PlColvol> queryBuilder = colvolDao.queryBuilder();
+                Join ctlCaserio =queryBuilder.join(PlColvolDao.Properties.IdCaserio,CtlCaserio.class);
+                Join ctlCanton=queryBuilder.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
+                        CtlCanton.class,CtlCantonDao.Properties.Id);
+                Join ctlMunicipio=queryBuilder.join(ctlCanton,CtlCantonDao.Properties.IdMunicipio,
+                        CtlMunicipio.class,CtlMunicipioDao.Properties.Id);
+                ctlMunicipio.where(CtlMunicipioDao.Properties.Id.eq(idMuni));
+                colvols=queryBuilder.orderAsc(PlColvolDao.Properties.Nombre).list();
+            }
+        }else {
+
+        }
+
+        return colvols;
 
     }
 

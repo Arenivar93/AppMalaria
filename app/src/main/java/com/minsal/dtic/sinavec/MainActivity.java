@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ContenedorFragment.OnFragmentInteractionListener, PesquisaFragment.OnFragmentInteractionListener,
         LenguajesFragment.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
-        MenuCriaderoFragment.OnFragmentInteractionListener {
+        MenuCriaderoFragment.OnFragmentInteractionListener,
+        MenuColvolFragment.OnFragmentInteractionListener{
 
     private SharedPreferences prefs;
     public static int depto;

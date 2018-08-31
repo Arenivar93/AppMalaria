@@ -17,7 +17,7 @@ import com.minsal.dtic.sinavec.R;
 public class MenuColvolFragment extends Fragment {
     CardView cvAsignar, cvVer;
 
-    private MenuCriaderoFragment.OnFragmentInteractionListener mListener;
+    private MenuColvolFragment.OnFragmentInteractionListener mListener;
 
     public MenuColvolFragment() {
         // Required empty public constructor
@@ -35,7 +35,7 @@ public class MenuColvolFragment extends Fragment {
         cvAsignar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getContext(),BuscarCriaderoActivity.class);
+                Intent i = new Intent(getContext(),BuscarColvolActivity.class);
                 startActivity(i);
 
             }
@@ -62,7 +62,7 @@ public class MenuColvolFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof MenuCriaderoFragment.OnFragmentInteractionListener) {
-            mListener = (MenuCriaderoFragment.OnFragmentInteractionListener) context;
+            mListener = (MenuColvolFragment.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");

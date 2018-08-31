@@ -394,18 +394,18 @@ public class BuscarCriaderoActivity extends AppCompatActivity {
                 //Ejecutara busqueda de municipio y canton
                 idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
                 idCanton=(int) (long) cantones.get(idCtn-1).getId();
-                criaderos=utilidades.obtenerCaseriosByIds(daoSession,idMunicipio,idCanton,idCaserio);
+                criaderos=utilidades.obtenerCriaderosByIds(daoSession,idMunicipio,idCanton,idCaserio);
 
             }else if(idCtn!=0 && idCas!=0){
                 //Ejecutara busqueda de muni ctn y cass
                 idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
                 idCanton=(int) (long) cantones.get(idCtn-1).getId();
                 idCaserio=(int) (long) caserios.get(idCas-1).getId();
-                criaderos=utilidades.obtenerCaseriosByIds(daoSession,idMunicipio,idCanton,idCaserio);
+                criaderos=utilidades.obtenerCriaderosByIds(daoSession,idMunicipio,idCanton,idCaserio);
             }else{
                 //ejecutara busqueda solo de municipio
                 idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
-                criaderos=utilidades.obtenerCaseriosByIds(daoSession,idMunicipio,idCanton,idCaserio);
+                criaderos=utilidades.obtenerCriaderosByIds(daoSession,idMunicipio,idCanton,idCaserio);
             }
     }
 
