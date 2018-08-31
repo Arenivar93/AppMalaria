@@ -1,3 +1,4 @@
+//clase
 package com.minsal.dtic.sinavec.EntityDAO;
 
 import org.greenrobot.greendao.annotation.*;
@@ -17,8 +18,8 @@ public class CtlSemanaEpi {
     private Long id;
     private Integer anio;
     private Integer semana;
-    private java.util.Date fechaInicio;
-    private java.util.Date fechaFin;
+    private String fechaInicio;
+    private String fechaFin;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -32,7 +33,7 @@ public class CtlSemanaEpi {
     }
 
     @Generated
-    public CtlSemanaEpi(Long id, Integer anio, Integer semana, java.util.Date fechaInicio, java.util.Date fechaFin) {
+    public CtlSemanaEpi(Long id, Integer anio, Integer semana, String fechaInicio, String fechaFin) {
         this.id = id;
         this.anio = anio;
         this.semana = semana;
@@ -64,19 +65,19 @@ public class CtlSemanaEpi {
         this.semana = semana;
     }
 
-    public java.util.Date getFechaInicio() {
+    public String getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(java.util.Date fechaInicio) {
+    public void setFechaInicio(String fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
-    public java.util.Date getFechaFin() {
+    public String getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(java.util.Date fechaFin) {
+    public void setFechaFin(String fechaFin) {
         this.fechaFin = fechaFin;
     }
 

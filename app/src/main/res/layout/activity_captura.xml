@@ -4,16 +4,305 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context="com.minsal.dtic.sinavec.CapturaAnopheles">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="12"
-        android:text="Prueba Activity"
-        android:textSize="25sp"
-        tools:layout_editor_absoluteX="257dp"
-        tools:layout_editor_absoluteY="107dp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/primero"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="15dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="88dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="Municipio:" />
+
+                    <Spinner
+                        android:id="@+id/idMunicipioCap"
+                        android:layout_width="220dp"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cantón:" />
+
+                    <Spinner
+                        android:id="@+id/idCantonCap"
+                        android:layout_width="220dp"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="50dp"
+                        android:paddingStart="15dp"
+                        android:text="Caserío:" />
+
+                    <Spinner
+                        android:id="@+id/idCaserioCap"
+                        android:layout_width="220dp"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/segundo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="15dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingTop="40dp">
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="126dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="Tipo Actividad:" />
+
+                    <Spinner
+                        android:id="@+id/spActividad"
+                        android:layout_width="220dp"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tipo captura:" />
+
+                    <Spinner
+                        android:id="@+id/spCaptura"
+                        android:layout_width="220dp"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="90dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="50dp"
+                        android:paddingStart="15dp"
+                        android:text="Fecha Realización:" />
+
+                    <EditText
+                        android:id="@+id/edtFecha"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+                        android:ems="10"
+                        android:focusable="false"
+                        android:hint="Fecha realizacion"
+                        android:inputType="date" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvPropietario"
+                        android:layout_width="96dp"
+                        android:layout_height="59dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="80dp"
+                        android:text="Propietario/Descripcion:"
+                        app:layout_constraintEnd_toStartOf="@+id/edtPropietario"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/edtPropietario"
+                        android:layout_width="259dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="72dp"
+                        android:ems="10"
+                        android:hint="Descripcion de Lugar"
+                        android:inputType="textPersonName"
+                        app:layout_constraintStart_toEndOf="@+id/tvPropietario"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="105dp"
+                        android:layout_height="34dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="80dp"
+                        android:text="Total Zancudos:"
+                        app:layout_constraintEnd_toStartOf="@+id/edtZancudo"
+                        app:layout_constraintStart_toEndOf="@+id/edtPropietario"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/edtZancudo"
+                        android:layout_width="272dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="150dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="72dp"
+                        android:ems="10"
+                        android:hint="Total Zancudos"
+                        android:inputType="textPersonName|number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView10"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="96dp"
+                        android:layout_height="39dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Total Anopheles:"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvPropietario" />
+
+                    <EditText
+                        android:id="@+id/edtAnopheles"
+                        android:layout_width="258dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="36dp"
+                        android:ems="10"
+                        android:hint="Total Anopheles"
+                        android:inputType="textPersonName|number"
+                        app:layout_constraintStart_toEndOf="@+id/textView11"
+                        app:layout_constraintTop_toBottomOf="@+id/edtPropietario" />
+
+                    <EditText
+                        android:id="@+id/edtTiempo"
+                        android:layout_width="269dp"
+                        android:layout_height="43dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="28dp"
+                        android:ems="10"
+                        android:hint="Tiempo Colecta"
+                        android:inputType="textPersonName|number"
+                        app:layout_constraintStart_toEndOf="@+id/textView14"
+                        app:layout_constraintTop_toBottomOf="@+id/edtZancudo" />
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="96dp"
+                        android:layout_height="39dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="36dp"
+                        android:text="Componentes Inspeccionados:"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+                    <EditText
+                        android:id="@+id/edtComponentes"
+                        android:layout_width="260dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="60dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="36dp"
+                        android:ems="10"
+                        android:hint="Componentes Inspeccionados"
+                        android:inputType="textPersonName"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView13"
+                        app:layout_constraintTop_toBottomOf="@+id/edtAnopheles"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                    <ImageView
+                        android:id="@+id/imGuardar"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginStart="492dp"
+                        android:layout_marginTop="24dp"
+                        android:clickable="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/edtTiempo"
+                        app:srcCompat="@drawable/guardar" />
+
+                    <TextView
+                        android:id="@+id/textView14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="44dp"
+                        android:text="Tiempo Colecta"
+                        app:layout_constraintEnd_toStartOf="@+id/edtTiempo"
+                        app:layout_constraintStart_toEndOf="@+id/edtAnopheles"
+                        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+                    <TextView
+                        android:id="@+id/textView16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:text="Min."
+                        app:layout_constraintStart_toEndOf="@+id/edtTiempo"
+                        app:layout_constraintTop_toBottomOf="@+id/edtZancudo" />
+                </android.support.constraint.ConstraintLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
 </LinearLayout>

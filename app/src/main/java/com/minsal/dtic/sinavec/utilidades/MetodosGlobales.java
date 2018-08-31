@@ -36,10 +36,7 @@ public class MetodosGlobales{
         this.eluser = elUser;
         boolean existe = false;
         String sqlQUERY="select username from fos_user_user where username='"+elUser+"'";
-
         Cursor cursor = daoSession.getDatabase().rawQuery(sqlQUERY,null);
-        boolean exixte =false;
-
         if (cursor.moveToFirst())
         {
             existe=true;

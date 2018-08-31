@@ -1,10 +1,13 @@
 package com.minsal.dtic.sinavec;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -46,7 +49,7 @@ import java.util.Date;
 import java.util.List;
 
 public class CapturaAnopheles extends AppCompatActivity {
-    Spinner spMunicipio, spCanton, spCaserio, sptipo, spActividad;
+    Spinner spMunicipio, spCanton, spCaserio, spCaptura, spActividad;
     List<CtlMunicipio> municipios;
     ArrayList<String> listaMunicipio = new ArrayList<String>();
     private DaoSession daoSession;
@@ -69,17 +72,20 @@ public class CapturaAnopheles extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-         super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         daoSession = ((MyMalaria) getApplicationContext()).getDaoSession();
         pref = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         setContentView(R.layout.activity_captura);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        String imei = getIMEINumber();
+
+
         spMunicipio = (Spinner) findViewById(R.id.idMunicipioCap);
         spCanton = (Spinner) findViewById(R.id.idCantonCap);
         spCaserio = (Spinner) findViewById(R.id.idCaserioCap);
         spActividad = (Spinner) findViewById(R.id.spActividad);
-        sptipo = (Spinner) findViewById(R.id.spCaptura);
+        spCaptura = (Spinner) findViewById(R.id.spCaptura);
         edtFecha = (EditText) findViewById(R.id.edtFecha);
         edtAnopheles = (EditText) findViewById(R.id.edtAnopheles);
         edtZancudo = (EditText) findViewById(R.id.edtZancudo);
@@ -88,15 +94,6 @@ public class CapturaAnopheles extends AppCompatActivity {
         edtPropietario = (EditText) findViewById(R.id.edtPropietario);
         imGuardar = (ImageView) findViewById(R.id.imGuardar);
         u = new Utilidades(daoSession);
-        long ids =5;
-        CtlSemanaEpiDao semDao = daoSession.getCtlSemanaEpiDao();
-        CtlSemanaEpi sem = semDao.load(ids);
-
-
-
-
-
-
         loadSpinerMun();
         loadSpinerActividad();
         loadSpinerCaptura();
@@ -198,18 +195,28 @@ public class CapturaAnopheles extends AppCompatActivity {
                         int componentes = Integer.parseInt(edtComponente.getText().toString().trim());
                         int tiempo = Integer.parseInt(edtTiempo.getText().toString().trim());
                         saveCaptura(propietario, total, anopheles, componentes, idUsuario, idTipoActividad, idTipoCaptura,
-                                tiempo,idCaserio,idTablet,idSibasi);
+                                tiempo, idCaserio, idTablet, idSibasi);
+                        cleanField();
+                        Toast.makeText(getApplicationContext(), "Captura ingresada con exito", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                    Toast.makeText(getApplicationContext(), "Hubo un error al ingresar la captura", Toast.LENGTH_SHORT).show();
 
+                }
 
             }
         });
 
 
     }//fin metodo create
+
+    private void cleanField() {
+        edtTiempo.setText("");
+        edtAnopheles.setText("");
+        edtZancudo.setText("");
+        edtPropietario.setText("");
+    }
 
 
     private void loadSpinerMun() {
@@ -237,7 +244,7 @@ public class CapturaAnopheles extends AppCompatActivity {
         listaTipoCaptura = u.obtenerListaCaptura(capturas);
         ArrayAdapter<String> adapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_list_item_1, listaTipoCaptura);
-        sptipo.setAdapter(adapter);
+        spCaptura.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
     }
@@ -277,7 +284,7 @@ public class CapturaAnopheles extends AppCompatActivity {
     }
 
     public long idTipoCaptura() {
-        int listIdCaptura = sptipo.getSelectedItemPosition();
+        int listIdCaptura = spCaptura.getSelectedItemPosition();
         int idTipoCaptura = 0;
         if (listIdCaptura != 0) {
             idTipoCaptura = (int) (long) capturas.get(listIdCaptura - 1).getId();
@@ -286,7 +293,7 @@ public class CapturaAnopheles extends AppCompatActivity {
     }
 
     public long idTipoActividad() {
-        int listIdActividad = sptipo.getSelectedItemPosition();
+        int listIdActividad = spActividad.getSelectedItemPosition();
         int idTipoActividad = 0;
         if (listIdActividad != 0) {
             idTipoActividad = (int) (long) actividades.get(listIdActividad - 1).getId();
@@ -296,11 +303,12 @@ public class CapturaAnopheles extends AppCompatActivity {
 
     public void saveCaptura(String propietario, int total, int anopheles,
                             int componentes, long usuarioReg, long idActividad, long idTipoCaptura,
-                            int tiempo,long idcaserio,long idTablet,long idSibasi) throws ParseException {
+                            int tiempo, long idcaserio, long idTablet, long idSibasi) throws ParseException {
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String fecha = dateFormat.format(currentTime);
         Date fec = dateFormat.parse(fecha);
+        int semanaActual = getSemana();
 
         PlCapturaAnophelesDao capDao = daoSession.getPlCapturaAnophelesDao();
         PlCapturaAnopheles cap = new PlCapturaAnopheles();
@@ -314,7 +322,7 @@ public class CapturaAnopheles extends AppCompatActivity {
         cap.setIdCaserio(idcaserio);
         cap.setIdTablet(idTablet);
         cap.setIdSibasi(idSibasi);
-        cap.setIdSemanaEpidemiologica(2);
+        cap.setIdSemanaEpidemiologica(semanaActual);
         cap.setIdUsuarioReg(usuarioReg);
         cap.setPropietario(propietario);
         cap.setIdEstado(1);
@@ -326,8 +334,8 @@ public class CapturaAnopheles extends AppCompatActivity {
         capDao.insert(cap);
     }
 
-//obteniendo el usuario en sesion
-    public  long getIdUser() {
+    //obteniendo el usuario en sesion
+    public long getIdUser() {
         String username = pref.getString("user", "");
         long id = 0;
         if (!username.equals("")) {
@@ -342,6 +350,7 @@ public class CapturaAnopheles extends AppCompatActivity {
         }
         return id;
     }
+
     //obteniendo el sibasi del usuario
     public long getIdSibasiUser() {
         String username = pref.getString("user", "");
@@ -358,9 +367,10 @@ public class CapturaAnopheles extends AppCompatActivity {
         }
         return idSibasi;
     }
+
     //obteniendo el id de la tablet
     public long getIdTablet() {
-        String imei =getIMEINumber();
+        String imei = getIMEINumber();
         long idtablet = 0;
         if (!imei.equals("")) {
             List<CtlTablet> ids = null;
@@ -374,30 +384,46 @@ public class CapturaAnopheles extends AppCompatActivity {
         }
         return idtablet;
     }
+
     //para el id necesito el imei
-    public  String getIMEINumber() {
-        String IMEINumber = "";
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            TelephonyManager telephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                IMEINumber = telephonyMgr.getImei();
+    public String getIMEINumber() {
+        String myAndroidDeviceId = "";
+        TelephonyManager mTelephony = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            if (mTelephony.getDeviceId() != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    myAndroidDeviceId = mTelephony.getImei();
+                } else {
+                    myAndroidDeviceId = mTelephony.getDeviceId();
+                }
             } else {
-                IMEINumber = telephonyMgr.getDeviceId();
+                myAndroidDeviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
             }
+
         }
-        return IMEINumber;
+        return myAndroidDeviceId;
+
     }
-    public int getSemana(Date date1){
+
+    public int getSemana() {
         int semana = 0;
-        if (date1 !=null){
-            List<CtlSemanaEpi> ids = null;
-            CtlSemanaEpiDao semDao = daoSession.getCtlSemanaEpiDao();
-            QueryBuilder<CtlSemanaEpi> qb = semDao.queryBuilder();
-            qb.where(CtlSemanaEpiDao.Properties.FechaFin.between(CtlSemanaEpiDao.Properties.FechaInicio,CtlSemanaEpiDao.Properties.FechaFin));
-            ids = qb.list();
-            for (CtlSemanaEpi f : ids) {
-                semana = f.getSemana();
+        try {
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+            Date now = new Date();
+            String strDate = sdfDate.format(now);
+            String sqlQUERY = "SELECT semana FROM ctl_semana_epi where '" + strDate + "' BETWEEN fecha_inicio " +
+                    "and fecha_fin";
+            Cursor c = daoSession.getDatabase().rawQuery(sqlQUERY, null);
+            if (c.moveToFirst()) {
+                do {
+                    semana = c.getInt(0);
+
+                } while (c.moveToNext());
             }
+            c.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return semana;
