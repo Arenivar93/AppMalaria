@@ -96,8 +96,7 @@ public class SettingActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 IMEINumber = telephonyMgr.getImei();
             } else {
-                IMEINumber = telephonyMgr.getDeviceId();
-            }
+                IMEINumber = telephonyMgr.getDeviceId();            }
         }
         return IMEINumber;
     }
@@ -274,16 +273,16 @@ public class SettingActivity extends AppCompatActivity {
         actividadDao.insert(act);
     }
     public void saveSemana(long id, int anio, String fecf, String feci, int semana) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date fechaFin = dateFormat.parse(fecf);
-        Date fechaIni = dateFormat.parse(feci);
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        //Date fechaFin = dateFormat.parse(fecf);
+       // Date fechaIni = dateFormat.parse(feci);
 
         CtlSemanaEpiDao semanaDao = daoSession.getCtlSemanaEpiDao();
         CtlSemanaEpi sem = new CtlSemanaEpi();
         sem.setId(id);
         sem.setAnio(anio);
-        sem.setFechaFin(fechaFin);
-        sem.setFechaInicio(fechaIni);
+        sem.setFechaFin(fecf);
+        sem.setFechaInicio(feci);
         sem.setSemana(semana);
         semanaDao.insert(sem);
     }
@@ -378,9 +377,6 @@ public class SettingActivity extends AppCompatActivity {
                 JSONArray jaActividad    = jsTotal.getJSONArray("actividad");
                 JSONArray jaSemana       = jsTotal.getJSONArray("semana");
                // JSONArray jsTotal22      = jsTotal.getJSONArray("total");
-
-
-
                 for (int i = 0; i < jaPaises.length(); i++) {
                     JSONObject joPais = jaPaises.getJSONObject(i);
                     saveCoutry(joPais.getLong("id"), joPais.getString("nombre"), joPais.getInt("activo"));
