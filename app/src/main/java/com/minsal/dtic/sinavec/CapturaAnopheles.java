@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
+import com.minsal.dtic.sinavec.EntityDAO.CtlSemanaEpi;
+import com.minsal.dtic.sinavec.EntityDAO.CtlSemanaEpiDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTablet;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
@@ -67,7 +69,7 @@ public class CapturaAnopheles extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+         super.onCreate(savedInstanceState);
         daoSession = ((MyMalaria) getApplicationContext()).getDaoSession();
         pref = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         setContentView(R.layout.activity_captura);
@@ -86,6 +88,15 @@ public class CapturaAnopheles extends AppCompatActivity {
         edtPropietario = (EditText) findViewById(R.id.edtPropietario);
         imGuardar = (ImageView) findViewById(R.id.imGuardar);
         u = new Utilidades(daoSession);
+        long ids =5;
+        CtlSemanaEpiDao semDao = daoSession.getCtlSemanaEpiDao();
+        CtlSemanaEpi sem = semDao.load(ids);
+
+
+
+
+
+
         loadSpinerMun();
         loadSpinerActividad();
         loadSpinerCaptura();
@@ -287,10 +298,9 @@ public class CapturaAnopheles extends AppCompatActivity {
                             int componentes, long usuarioReg, long idActividad, long idTipoCaptura,
                             int tiempo,long idcaserio,long idTablet,long idSibasi) throws ParseException {
         Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String fecha = dateFormat.format(currentTime);
         Date fec = dateFormat.parse(fecha);
-
 
         PlCapturaAnophelesDao capDao = daoSession.getPlCapturaAnophelesDao();
         PlCapturaAnopheles cap = new PlCapturaAnopheles();
@@ -376,6 +386,21 @@ public class CapturaAnopheles extends AppCompatActivity {
             }
         }
         return IMEINumber;
+    }
+    public int getSemana(Date date1){
+        int semana = 0;
+        if (date1 !=null){
+            List<CtlSemanaEpi> ids = null;
+            CtlSemanaEpiDao semDao = daoSession.getCtlSemanaEpiDao();
+            QueryBuilder<CtlSemanaEpi> qb = semDao.queryBuilder();
+            qb.where(CtlSemanaEpiDao.Properties.FechaFin.between(CtlSemanaEpiDao.Properties.FechaInicio,CtlSemanaEpiDao.Properties.FechaFin));
+            ids = qb.list();
+            for (CtlSemanaEpi f : ids) {
+                semana = f.getSemana();
+            }
+        }
+
+        return semana;
     }
 
 }
