@@ -55,8 +55,8 @@
                 <ToggleButton
                     android:id="@+id/tipoBusqueda"
                     android:layout_width="wrap_content"
-                    android:textOn="GPS"
-                    android:textOff="Manual"
+                    android:textOn="Manual"
+                    android:textOff="GPS"
                     android:layout_height="wrap_content"/>
                     <ImageView
                         android:id="@+id/imgBusqueda"
