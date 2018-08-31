@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -34,7 +35,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.BuscarCriaderoSinActivity;
+import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
+import com.minsal.dtic.sinavec.utilidades.Utilidades;
+
+import java.util.List;
 
 public class MapaCriaderoActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener {
 
@@ -49,9 +55,13 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
     int MY_PERMISSION_LOCATION = 10;
     private Location currentLocation;
     private LocationManager locationManager;
-    private Marker marker;
+    private Marker markerGps;
+    private Marker markerManual;
     private CameraPosition cameraZoom;
     private CameraPosition camera;
+    private SharedPreferences prefs;
+    private DaoSession daoSession;
+    Utilidades utilidades;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +80,9 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
         latitudCriadero=(EditText) findViewById(R.id.criaderoLatitud);
         longitudCriadero=(EditText) findViewById(R.id.criaderoLongitud);
         txtBusqueda.setImageResource(R.drawable.mano44);
+        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        daoSession = ((MyMalaria) getApplication()).getDaoSession();
+        utilidades=new Utilidades(daoSession);
 
 
         Bundle geolocalizarDatos=this.getIntent().getExtras();
@@ -87,12 +100,13 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                habilitarPosicionInicial();
+                moverCamaraDepartamento();
             }
         });
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent geolocalizarCriadero=new Intent(MapaCriaderoActivity.this, BuscarCriaderoSinActivity.class);
                 //geolocalizarCriadero.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 Bundle miBundle=new Bundle();
@@ -127,8 +141,22 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
             public void onClick(View view) {
                 if(tipoBusqueda.isChecked()){
                     txtBusqueda.setImageResource(R.drawable.migps2);
+                    habilitarPosicionInicial();
+                    if(markerManual!=null){
+                        //markerManual.remove();
+                        markerManual.setVisible(false);
+                    }
+                    latitudCriadero.setText(null);
+                    longitudCriadero.setText(null);
                 }else{
                     txtBusqueda.setImageResource(R.drawable.mano44);
+                    if(markerGps!=null){
+                        //markerGps.remove();
+                        markerGps.setVisible(false);
+                    }
+                    latitudCriadero.setText(null);
+                    longitudCriadero.setText(null);
+                    moverCamaraDepartamento();
                 }
             }
         });
@@ -148,32 +176,76 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        moverCamaraDepartamento();
 
+        setUpMap();
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if(tipoBusqueda.isChecked()){
+                    Toast.makeText(getApplicationContext(),"La Busqueda GPS esta activada." +
+                            " No puede agregar el marcador",Toast.LENGTH_LONG).show();
+                }else{
+                    if(markerGps!=null){
+                        //markerGps.remove();
+                        markerGps.setVisible(false);
+                    }
+                    if (markerManual == null) {
+                        markerManual = mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(latLng.latitude, latLng.longitude))
+                                .title("Latitud: "+latLng.latitude+" Longitud: "+latLng.longitude).draggable(true));
+                    } else {
+                        markerManual.setPosition(new LatLng(latLng.latitude,latLng.longitude));
+                        markerManual.setTitle("Latitud: "+latLng.latitude+" Longitud: "+latLng.longitude);
+                        markerManual.setVisible(true);
+                        //zoomToLocationManual(latLng);
+                    }
+                    latitudCriadero.setText(null);
+                    longitudCriadero.setText(null);
+                    latitudCriadero.setText(String.valueOf(latLng.latitude));
+                    longitudCriadero.setText(String.valueOf(latLng.longitude));
+
+                }
+            }
+        });
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                if(tipoBusqueda.isChecked()){
+                    Toast.makeText(getApplicationContext(),"No puede actualizar la coordena GPS",Toast.LENGTH_LONG).show();
+                }else{
+                    latitudCriadero.setText(null);
+                    longitudCriadero.setText(null);
+                    latitudCriadero.setText(String.valueOf(marker.getPosition().latitude));
+                    longitudCriadero.setText(String.valueOf(marker.getPosition().longitude));
+                }
+            }
+        });
+    }
+
+    private void moverCamaraDepartamento() {
+        String elUser = prefs.getString("user", "");
+        int idDepto=utilidades.deptoUser(elUser);
+        List<Double> coordenadasDepto=utilidades.getCoordenadasDepartamento(idDepto);
         cameraZoom=new CameraPosition.Builder()
-                .target(new LatLng(13.713998,-89.724181))
+                .target(new LatLng(coordenadasDepto.get(0),coordenadasDepto.get(1)))
                 .zoom(13)
                 .bearing(0)
                 .tilt(30)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
-
-        setUpMap();
-
-        // Add a marker in Sydney and move the camera
-        /*LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-        /*mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                Toast.makeText(getApplicationContext(),"Click en el mapa",Toast.LENGTH_LONG).show();
-
-                mMap.addMarker(new MarkerOptions().position(latLng).title("Marker nuevo"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            }
-        });*/
     }
+
     private void setUpMap() {
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         if (Build.VERSION.SDK_INT >= 23) {
@@ -273,11 +345,13 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
                 .show();
     }
     private void createOrUpdateMarkerByLocation(Location location) {
-        if (marker == null) {
-            marker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).draggable(true));
+        if (markerGps == null) {
+            markerGps = mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).draggable(true));
         } else {
-            marker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+
+            markerGps.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
             zoomToLocation(location);
+            markerGps.setVisible(true);
         }
     }
     private void zoomToLocation(Location location){
@@ -289,10 +363,33 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
     }
+    private void zoomToLocationManual(LatLng latLng){
+        cameraZoom=new CameraPosition.Builder()
+                .target(new LatLng(latLng.latitude,latLng.longitude))
+                .zoom(15)
+                .bearing(0)
+                .tilt(30)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
+    }
 
     @Override
     public void onLocationChanged(Location location) {
-        createOrUpdateMarkerByLocation(location);
+        //Verifico el tipo de busqueda
+        if(tipoBusqueda.isChecked()){
+            createOrUpdateMarkerByLocation(location);
+            latitudCriadero.setText(null);
+            longitudCriadero.setText(null);
+            latitudCriadero.setText(String.valueOf(location.getLatitude()));
+            longitudCriadero.setText(String.valueOf(location.getLongitude()));
+        }else{
+            if(markerGps!=null){
+                //markerGps.remove();
+                markerGps.setVisible(false);
+
+            }
+        }
+
     }
 
     @Override

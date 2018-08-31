@@ -1,5 +1,6 @@
 package com.minsal.dtic.sinavec.utilidades;
 
+import android.database.Cursor;
 import android.provider.Settings;
 import android.widget.Toast;
 
@@ -7,6 +8,7 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserioDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlDepartamentoDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
@@ -188,5 +190,86 @@ public class Utilidades {
         for (int i=0;i<capturas.size();i++){
             listaCaptura.add(capturas.get(i).getNombre());        }
         return listaCaptura;
+    }
+
+    public int deptoUser(String username) {
+
+        CtlDepartamentoDao departamentoDao = daoSession.getCtlDepartamentoDao();
+        String sqlQUERY = "SELECT d.id FROM ctl_departamento d " +
+                "INNER JOIN ctl_municipio m on (m.id_departamento = d.id)\n" +
+                "INNER JOIN ctl_establecimiento es on(es.id_municipio= m.id)\n" +
+                "INNER JOIN fos_user_user f on (f.id_sibasi= es.id)\n" +
+                "WHERE f.username ='" + username + "'";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sqlQUERY, null);
+
+        int idDepartamento = 0;
+        if (cursor.moveToFirst()) {
+            idDepartamento = cursor.getInt(0);
+        }
+        return idDepartamento;
+    }
+
+    public List<Double> getCoordenadasDepartamento(int idDepto) {
+        List<Double> coordenadas=new ArrayList<Double>();
+        switch (idDepto){
+            case 1:
+                coordenadas.add(13.924417447800225);
+                coordenadas.add(-89.84502099044607);
+            break;
+            case 2:
+                coordenadas.add(13.98944214420671);
+                coordenadas.add(-89.55775603094685);
+                break;
+            case 3:
+                coordenadas.add(13.713998160450721);
+                coordenadas.add(-89.7241812947351);
+                break;
+            case 4:
+                coordenadas.add(14.040246499891111);
+                coordenadas.add(-88.93654739847989);
+                break;
+            case 5:
+                coordenadas.add(13.48790905547123);
+                coordenadas.add(-89.3138970134354);
+                break;
+            case 6:
+                coordenadas.add(13.700522292352314);
+                coordenadas.add(-89.2243065830553);
+                break;
+            case 7:
+                coordenadas.add(13.721760783928321);
+                coordenadas.add(-88.93454747211422);
+                break;
+            case 8:
+                coordenadas.add(13.509297506318713);
+                coordenadas.add(-88.87253379682079);
+                break;
+            case 9:
+                coordenadas.add(13.840857923573395);
+                coordenadas.add(-88.85099106975167);
+                break;
+            case 10:
+                coordenadas.add(13.638495811409328);
+                coordenadas.add(-88.7812149622755);
+                break;
+            case 11:
+                coordenadas.add(13.337202572142669);
+                coordenadas.add(-88.43989024244115);
+                break;
+            case 12:
+                coordenadas.add(13.481664900678894);
+                coordenadas.add(-88.17468692767659);
+                break;
+            case 13:
+                coordenadas.add(13.690076813573697);
+                coordenadas.add(-88.10076110598004);
+                break;
+            case 14:
+                coordenadas.add(13.166424607066649);
+                coordenadas.add(-87.94670660373527);
+                break;
+        }
+
+        return coordenadas;
     }
 }
