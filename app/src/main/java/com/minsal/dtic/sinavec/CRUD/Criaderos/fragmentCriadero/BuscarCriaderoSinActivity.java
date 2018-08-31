@@ -394,4 +394,5 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         }
         tablaCriaderos.addView(rowHeader);
     }
+
 }

@@ -7,7 +7,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
-import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +27,6 @@ import android.widget.Toast;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
-import com.minsal.dtic.sinavec.EntityDAO.CtlSemanaEpi;
-import com.minsal.dtic.sinavec.EntityDAO.CtlSemanaEpiDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTablet;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
@@ -59,8 +58,8 @@ public class CapturaAnopheles extends AppCompatActivity {
     ArrayList<String> listaTipoCaptura;
     ArrayList<String> listaCanton = new ArrayList<String>();
     ArrayList<String> listaCaserios = new ArrayList<String>();
-    List<CtlCanton> cantones;
     List<CtlCaserio> caserios;
+    List<CtlCanton> cantones;
     List<PlTipoCaptura> capturas;
     private Utilidades u;
     ArrayAdapter<String> adapter2;
@@ -69,6 +68,7 @@ public class CapturaAnopheles extends AppCompatActivity {
     ImageView imGuardar;
     final Calendar myCalendar = Calendar.getInstance();
     private SharedPreferences pref;
+    static final int GET_IMEI = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +78,6 @@ public class CapturaAnopheles extends AppCompatActivity {
         setContentView(R.layout.activity_captura);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        String imei = getIMEINumber();
-
-
         spMunicipio = (Spinner) findViewById(R.id.idMunicipioCap);
         spCanton = (Spinner) findViewById(R.id.idCantonCap);
         spCaserio = (Spinner) findViewById(R.id.idCaserioCap);
@@ -93,6 +90,10 @@ public class CapturaAnopheles extends AppCompatActivity {
         edtComponente = (EditText) findViewById(R.id.edtComponentes);
         edtPropietario = (EditText) findViewById(R.id.edtPropietario);
         imGuardar = (ImageView) findViewById(R.id.imGuardar);
+        spMunicipio.setFocusable(true);
+        spMunicipio.setFocusableInTouchMode(true);
+        spMunicipio.requestFocus();
+
         u = new Utilidades(daoSession);
         loadSpinerMun();
         loadSpinerActividad();
@@ -178,6 +179,7 @@ public class CapturaAnopheles extends AppCompatActivity {
 
 
         imGuardar.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 boolean dataValida = validaData();
@@ -206,6 +208,8 @@ public class CapturaAnopheles extends AppCompatActivity {
                 }
 
             }
+
+
         });
 
 
@@ -216,6 +220,7 @@ public class CapturaAnopheles extends AppCompatActivity {
         edtAnopheles.setText("");
         edtZancudo.setText("");
         edtPropietario.setText("");
+        edtComponente.setText("");
     }
 
 
@@ -256,7 +261,24 @@ public class CapturaAnopheles extends AppCompatActivity {
 
     public boolean validaData() {
         boolean validate = false;
-        if (TextUtils.isEmpty(edtPropietario.getText().toString().trim())) {
+        int listIdCaptura = spCaptura.getSelectedItemPosition();
+        int caserio = spCaserio.getSelectedItemPosition();
+        int actividad = spActividad.getSelectedItemPosition();
+        if (caserio == 0) {
+            spCaserio.setFocusableInTouchMode(true);
+            spCaserio.requestFocus();
+            Toast.makeText(getApplicationContext(), "Seleccione un Caserio", Toast.LENGTH_SHORT).show();
+
+        } else if (actividad == 0) {
+            spActividad.setFocusableInTouchMode(true);
+            spActividad.requestFocus();
+            Toast.makeText(getApplicationContext(), "Seleccione el Tipo de Actividad", Toast.LENGTH_SHORT).show();
+
+        } else if (listIdCaptura == 0) {
+            spCaptura.setFocusableInTouchMode(true);
+            spCaptura.requestFocus();
+            Toast.makeText(getApplicationContext(), "Seleccione el tipo de captura", Toast.LENGTH_SHORT).show();
+        } else if (TextUtils.isEmpty(edtPropietario.getText().toString().trim())) {
             edtPropietario.requestFocus();
             edtPropietario.setError("Campo requerido");
         } else if (TextUtils.isEmpty(edtZancudo.getText().toString().trim())) {
@@ -326,7 +348,12 @@ public class CapturaAnopheles extends AppCompatActivity {
         cap.setIdUsuarioReg(usuarioReg);
         cap.setPropietario(propietario);
         cap.setIdEstado(1);
-        cap.setCasaPositiva(0);
+        if (anopheles > 0) {
+            cap.setCasaPositiva(1);
+        } else {
+            cap.setCasaPositiva(0);
+        }
+
         cap.setIdUsuarioMod(usuarioReg);
         if (componentes > 0) {
             cap.setComponenteInspeccionado(componentes);
@@ -351,7 +378,6 @@ public class CapturaAnopheles extends AppCompatActivity {
         return id;
     }
 
-    //obteniendo el sibasi del usuario
     public long getIdSibasiUser() {
         String username = pref.getString("user", "");
         long idSibasi = 0;
@@ -369,6 +395,7 @@ public class CapturaAnopheles extends AppCompatActivity {
     }
 
     //obteniendo el id de la tablet
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public long getIdTablet() {
         String imei = getIMEINumber();
         long idtablet = 0;
@@ -386,23 +413,22 @@ public class CapturaAnopheles extends AppCompatActivity {
     }
 
     //para el id necesito el imei
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public String getIMEINumber() {
         String myAndroidDeviceId = "";
         TelephonyManager mTelephony = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            if (mTelephony.getDeviceId() != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    myAndroidDeviceId = mTelephony.getImei();
-                } else {
-                    myAndroidDeviceId = mTelephony.getDeviceId();
-                }
-            } else {
-                myAndroidDeviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-            }
+        //comprobar version de android usando
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, GET_IMEI);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
+                ;
+            myAndroidDeviceId = mTelephony.getDeviceId();
+            return myAndroidDeviceId;
+        } else {
+            myAndroidDeviceId = mTelephony.getImei();
 
         }
         return myAndroidDeviceId;
-
     }
 
     public int getSemana() {
@@ -429,6 +455,46 @@ public class CapturaAnopheles extends AppCompatActivity {
         return semana;
     }
 
+    private boolean checkPermission(String permission) {
+        int result = this.checkCallingOrSelfPermission(permission);
+        return result == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void olderVersion() {
+        if (checkPermission(Manifest.permission.READ_PHONE_STATE)) {
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Sin permiso para leer IMEI", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case GET_IMEI:
+                String permission = permissions[0];
+                int result = grantResults[0];
+                if (permission.equals(Manifest.permission.READ_PHONE_STATE)) {
+                    //comprobar si el user acepto el permiso}
+                    if (result == PackageManager.PERMISSION_GRANTED) {//acepto
+
+
+                    } else {//no dio el permiso
+                        Toast.makeText(getApplicationContext(), "No acepto el permiso para leer IMEI", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+
+        }
+
+
+    }
 }
 
 

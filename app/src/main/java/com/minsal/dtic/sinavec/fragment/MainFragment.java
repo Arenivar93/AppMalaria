@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.CapturaAnopheles;
+import com.minsal.dtic.sinavec.ListCapturaActivity;
 import com.minsal.dtic.sinavec.R;
 
 
@@ -61,13 +62,13 @@ public class MainFragment extends Fragment{
             public void onClick(View v) {
                 Intent intent=new Intent(getActivity(),CapturaAnopheles.class);
                 startActivity(intent);
-                Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
+
             }
         });
         capturaCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),CapturaAnopheles.class);
+                Intent intent=new Intent(getActivity(),ListCapturaActivity.class);
                 startActivity(intent);
             }
         });

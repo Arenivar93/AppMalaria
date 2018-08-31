@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         edtPass = (EditText) findViewById(R.id.edtPass);
         btnLogin = (Button) findViewById(R.id.btnLogin);
         swRemember = (Switch) findViewById(R.id.swRemeber);
-        setCredential();
+        setCredential(); // si tiene datos los pondre en los editext
         daoSession = ((MyMalaria) getApplication()).getDaoSession();
 
 
@@ -91,11 +91,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveOnPreferences(String user, String pass) {
-        if (swRemember.isChecked()) {
+        if (!swRemember.isChecked()) {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("user", user);
             editor.putString("pass", pass);
             editor.apply();
+
+        }
+        else{
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("userRem", user);
+            editor.putString("passRem", pass);
+            editor.apply();
+
         }
     }
 

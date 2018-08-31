@@ -1,10 +1,13 @@
 package com.minsal.dtic.sinavec;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -69,6 +72,7 @@ public class SettingActivity extends AppCompatActivity {
     Button btnSetting;
     private DaoSession daoSession;
     ProgressBar pbSetting;
+    public static final int GET_IMEI_CODE =100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +84,7 @@ public class SettingActivity extends AppCompatActivity {
 
         //este evento debe ocurrir solo cuando se instala la aplicacioj por primera vez o por si se borra la base
         btnSetting.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 usarVolley();
@@ -88,7 +93,50 @@ public class SettingActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public String getIMEINumber() {
+        String myAndroidDeviceId = "";
+        TelephonyManager mTelephony = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        //comprobar version de android usando
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, GET_IMEI_CODE);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) ;
+            myAndroidDeviceId = mTelephony.getDeviceId();
+            return myAndroidDeviceId;
+        }
+        else {
+            myAndroidDeviceId = mTelephony.getImei();
 
+        }
+        return myAndroidDeviceId;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        switch (requestCode) {
+            case GET_IMEI_CODE:
+                String permission = permissions[0];
+                int result = grantResults[0];
+                if (permission.equals(Manifest.permission.READ_PHONE_STATE)) {
+                    //comprobar si el user acepto el permiso}
+                    if (result == PackageManager.PERMISSION_GRANTED) {//acepto
+
+
+                    } else {//no dio el permiso
+                        Toast.makeText(getApplicationContext(), "No acepto el permiso para leer IMEI", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+    }
+    }
+
+    /*
     public  String getIMEINumber() {
         String IMEINumber = "";
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
@@ -99,7 +147,7 @@ public class SettingActivity extends AppCompatActivity {
                 IMEINumber = telephonyMgr.getDeviceId();            }
         }
         return IMEINumber;
-    }
+    }*/
 
     public void saveFosUserUser(long id, String firstname, String username, String lastname,
                                 String password, String salt, int tipoEmpleado, int idSibasi) {
@@ -297,6 +345,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void usarVolley() {
         boolean red = MetodosGlobales.compruebaConexion(getApplicationContext());
         if (!red) {
