@@ -177,7 +177,6 @@ public class CapturaAnopheles extends AppCompatActivity {
             }
         });
 
-
         imGuardar.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -198,7 +197,7 @@ public class CapturaAnopheles extends AppCompatActivity {
                         int tiempo = Integer.parseInt(edtTiempo.getText().toString().trim());
                         saveCaptura(propietario, total, anopheles, componentes, idUsuario, idTipoActividad, idTipoCaptura,
                                 tiempo, idCaserio, idTablet, idSibasi);
-                        cleanField();
+                        //cleanField();
                         Toast.makeText(getApplicationContext(), "Captura ingresada con exito", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
