@@ -300,8 +300,10 @@ public class SettingActivity extends AppCompatActivity {
         cria.setIdUsuarioMod(usuarioMod);
         cria.setNombre(nombre);
         cria.setDescripcion(descripcion);
-        cria.setLatitud(latitud);
-        cria.setLongitud(longitud);
+        if (!latitud.equals("null") && !longitud.equals("null")){
+            cria.setLatitud(latitud);
+            cria.setLongitud(longitud);
+        }
         cria.setLongitudCriadero(log_cria);
         cria.setAnchoCriadero(ancho);
         cria.setIdSibasi(idSibasi);
@@ -337,12 +339,17 @@ public class SettingActivity extends AppCompatActivity {
         semanaDao.insert(sem);
     }
 
-    public void saveColvol(long id,long idCaserio, String nombre,long idSibasi,String clave, int estado){
+    public void saveColvol(long id,long idCaserio, String nombre,long idSibasi,String clave,
+                           int estado, String latitud, String longitud){
         PlColvolDao colvolDao = daoSession.getPlColvolDao();
         PlColvol colvol = new PlColvol();
         colvol.setId(id);
         colvol.setIdCaserio(idCaserio);
         colvol.setNombre(nombre);
+        if (!latitud.equals("null") && !longitud.equals("null") ){
+            colvol.setLatitud(latitud);
+            colvol.setLongitud(longitud);
+        }
         colvol.setIdSibasi(idSibasi);
         colvol.setClave(clave);
         colvol.setEstado(estado);
@@ -574,7 +581,8 @@ public class SettingActivity extends AppCompatActivity {
                 for (int b = 0; b <jaColvol.length() ; b++) {
                     JSONObject joColvol = jaColvol.getJSONObject(b);
                     saveColvol(joColvol.getLong("id"),joColvol.getLong("id_caserio"),joColvol.getString("nombre"),
-                              joColvol.getLong("id_sibasi"),joColvol.getString("clave"),joColvol.getInt("estado"));
+                              joColvol.getLong("id_sibasi"),joColvol.getString("clave"),joColvol.getInt("estado")
+                              ,joColvol.getString("latitud"),joColvol.getString("longitud"));
 
                 }
 

@@ -61,21 +61,22 @@ public class ListCapturaActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),CapturaAnopheles.class);
                 startActivity(i);
+                finish();
             }
         });
     }
     public ArrayList<String> getCapturas(){
         ArrayList<String> caps = new ArrayList<String>();
 
-        String sqlQUERY = "SELECT cas.nombre,can.nombre, mun.nombre, cap.propietario, cap.total_mosquitos,cap.total_anopheles\n" +
-                            "FROM PL_CAPTURA_ANOPHELES cap\n" +
-                            "INNER JOIN CTL_CASERIO cas on(cas.id=cap.ID_CASERIO)\n" +
-                            "INNER JOIN CTL_CANTON can on(can.id=cas.ID_CANTON)\n" +
-                            "INNER JOIN CTL_MUNICIPIO mun on(mun.id=can.ID_MUNICIPIO)";
+        String sqlQUERY = "SELECT cas.nombre,can.nombre, mun.nombre, cap.propietario, cap.total_mosquitos,cap.total_anopheles,cap.id_semana_epidemiologica\n" +
+                "FROM PL_CAPTURA_ANOPHELES cap\n" +
+                "INNER JOIN CTL_CASERIO cas on(cas.id=cap.ID_CASERIO)\n" +
+                "INNER JOIN CTL_CANTON can on(can.id=cas.ID_CANTON)\n" +
+                "INNER JOIN CTL_MUNICIPIO mun on(mun.id=can.ID_MUNICIPIO) ORDER BY cap.id DESC";
         Cursor c = daoSession.getDatabase().rawQuery(sqlQUERY, null);
         if (c.moveToFirst()) {
             do {
-               caps.add(c.getString(0)+"-"+c.getString(0)+"-"+c.getString(3)+"-");
+                caps.add(c.getString(2)+"-"+c.getString(1)+"-"+c.getString(0)+"-"+c.getString(3)+"-"+c.getString(5)+"-"+c.getString(6));
 
             } while (c.moveToNext());
         }
