@@ -70,6 +70,7 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_criadero);
+        Toast.makeText(this,"Inicia",Toast.LENGTH_LONG).show();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -88,6 +89,7 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
         daoSession = ((MyMalaria) getApplication()).getDaoSession();
         utilidades=new Utilidades(daoSession);
         criaderoDao=daoSession.getCtlPlCriaderoDao();
+
 
         Bundle geolocalizarDatos=this.getIntent().getExtras();
         if(geolocalizarDatos!=null){
@@ -303,8 +305,7 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
 
     private void setUpMap() {
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setMapToolbarEnabled(true);
+       // mMap.getUiSettings().setZoomControlsEnabled(true);
         if (Build.VERSION.SDK_INT >= 23) {
             marshmallowGPSPremissionCheck();
 
