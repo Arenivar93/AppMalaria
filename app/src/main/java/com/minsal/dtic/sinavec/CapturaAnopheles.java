@@ -15,13 +15,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
@@ -58,8 +62,8 @@ public class CapturaAnopheles extends AppCompatActivity {
     ArrayList<String> listaTipoCaptura;
     ArrayList<String> listaCanton = new ArrayList<String>();
     ArrayList<String> listaCaserios = new ArrayList<String>();
-    List<CtlCaserio> caserios;
-    List<CtlCanton> cantones;
+    List<CtlCaserio>  caserios;
+    List<CtlCanton>   cantones;
     List<PlTipoCaptura> capturas;
     private Utilidades u;
     ArrayAdapter<String> adapter2;
@@ -197,8 +201,8 @@ public class CapturaAnopheles extends AppCompatActivity {
                         int tiempo = Integer.parseInt(edtTiempo.getText().toString().trim());
                         saveCaptura(propietario, total, anopheles, componentes, idUsuario, idTipoActividad, idTipoCaptura,
                                 tiempo, idCaserio, idTablet, idSibasi);
-                        //cleanField();
-                        Toast.makeText(getApplicationContext(), "Captura ingresada con exito", Toast.LENGTH_SHORT).show();
+                        cleanField();
+                        customToadSuccess(getApplicationContext(),"Captura Anopheles creada con éxito");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -266,17 +270,17 @@ public class CapturaAnopheles extends AppCompatActivity {
         if (caserio == 0) {
             spCaserio.setFocusableInTouchMode(true);
             spCaserio.requestFocus();
-            Toast.makeText(getApplicationContext(), "Seleccione un Caserio", Toast.LENGTH_SHORT).show();
-
+            customToadError(getApplicationContext()," Seleccione un Caserío");
         } else if (actividad == 0) {
             spActividad.setFocusableInTouchMode(true);
             spActividad.requestFocus();
-            Toast.makeText(getApplicationContext(), "Seleccione el Tipo de Actividad", Toast.LENGTH_SHORT).show();
-
+            customToadError(getApplicationContext()," Seleccione una Actividad");
+            //Toast.makeText(getApplicationContext(), "Seleccione el Tipo de Actividad", Toast.LENGTH_SHORT).show();
         } else if (listIdCaptura == 0) {
             spCaptura.setFocusableInTouchMode(true);
             spCaptura.requestFocus();
-            Toast.makeText(getApplicationContext(), "Seleccione el tipo de captura", Toast.LENGTH_SHORT).show();
+            customToadError(getApplicationContext(),"Seleccione un Tipo de Captura");
+            //Toast.makeText(getApplicationContext(), "Seleccione el tipo de captura", Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(edtPropietario.getText().toString().trim())) {
             edtPropietario.requestFocus();
             edtPropietario.setError("Campo requerido");
@@ -491,9 +495,36 @@ public class CapturaAnopheles extends AppCompatActivity {
                 break;
 
         }
-
-
     }
+
+    public void customToadError(Context context, String message) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toad_error,
+                (ViewGroup) findViewById(R.id.custom_toast_container));
+        TextView text = (TextView) layout.findViewById(R.id.tvToasError);
+        text.setText(message);
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.BOTTOM, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
+
+    public void customToadSuccess(Context context, String message) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toad_exito,
+                (ViewGroup) findViewById(R.id.custom_toast_container_exito));
+        TextView text = (TextView) layout.findViewById(R.id.tvToasExito);
+        text.setText(message);
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.BOTTOM, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
+
+
+
 }
 
 

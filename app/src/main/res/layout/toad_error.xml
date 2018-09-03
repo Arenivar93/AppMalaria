@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_toast_container"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="8dp"
+    android:background="#DAAA"
+    >
+    <ImageView android:src="@drawable/error_t"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginRight="25dp"
+        />
+    <TextView android:id="@+id/tvToasError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22dp"
+        android:textColor="#FFF"
+        />
+
+</LinearLayout>

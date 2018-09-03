@@ -33,7 +33,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CapturaAnopheles"
-            android:label="La otra Actividad"
+            android:label="Captura Anopheles"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape">
             <meta-data
@@ -107,6 +107,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".CRUD.Colvol.activityColvol.MapaColvolActivity"></activity>
+        <activity android:name=".ListCapturaActivity"/>
     </application>
 
 </manifest>
