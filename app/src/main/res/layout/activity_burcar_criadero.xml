@@ -1,182 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="wrap_content"
-    tools:context=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoSinActivity">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Busqueda de Criaderos"
-            android:textSize="19sp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/municipio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="Municipio"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-            <Spinner
-                android:id="@+id/spMun"
-                android:layout_width="220dp"
-                android:layout_height="40dp" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/canton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Canton"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
-            <Spinner
-                android:id="@+id/spCan"
-                android:layout_width="220dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/caserio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Caserio"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
-            <Spinner
-                android:id="@+id/spCas"
-                android:layout_width="220dp"
-                android:layout_height="40dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <ImageView
-                android:id="@+id/buscarCriadero"
-                android:layout_width="53dp"
-                android:layout_height="51dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/buscar"/>
-        </LinearLayout>
-    </LinearLayout>
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:background="@color/headtableLetra"
+    tools:context=".CRUD.Criaderos.activityCriadero.MapaCriaderoActivity" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_weight="2">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:orientation="vertical">
             <TextView
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Municipio:"/>
+            <EditText
+                android:id="@+id/nombreMunicipio"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Criaderos"
-                android:textSize="19sp"
-                android:gravity="center_vertical|center"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|center"
-            android:layout_marginTop="12dp">
-            <TableLayout
+                android:inputType="none"
+                android:focusable="false"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Canton:"/>
+            <EditText
+                android:id="@+id/nombreCanton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Caserio:"/>
+            <EditText
+                android:id="@+id/nombreCaserio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:text="Seleccione tipo de Busqueda:"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/linea"
+                android:orientation="horizontal"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ToggleButton
+                    android:id="@+id/tipoBusqueda"
+                    android:layout_width="wrap_content"
+                    android:textOn="Manual"
+                    android:textOff="GPS"
+                    android:layout_height="wrap_content"/>
+                <ImageView
+                    android:id="@+id/imgBusqueda"
+                    android:layout_marginLeft="60dp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Coordenadas:"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/linea"
+                android:orientation="horizontal"
+                />
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical|center">
-                <TableRow
-                    android:background="@color/colorPrimary">
-                    <TextView android:text="N°"
-                        android:layout_width="40dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="5dp"
-                        android:paddingTop="5dp"
-                        android:textColor="@color/headtableLetra"/>
-                    <TextView android:text="Nombre"
-                        android:layout_width="200dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="5dp"
-                        android:paddingTop="5dp"
-                        android:textColor="@color/headtableLetra"/>
-                    <TextView android:text="Canton"
-                        android:layout_width="200dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="5dp"
-                        android:paddingTop="5dp"
-                        android:textColor="@color/headtableLetra"/>
-                    <TextView android:text="Caserio"
-                        android:layout_width="200dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="5dp"
-                        android:paddingTop="5dp"
-                        android:textColor="@color/headtableLetra"/>
-                    <TextView android:text="Opciones"
-                        android:layout_width="150dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="5dp"
-                        android:paddingTop="5dp"
-                        android:textColor="@color/headtableLetra"/>
-                </TableRow>
-                <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
+                android:text="Latitud:"/>
+
+            <EditText
+                android:id="@+id/criaderoLatitud"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Longitud:"/>
+            <EditText
+                android:id="@+id/criaderoLongitud"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/guardarGeoCaserio"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical|center">
-                    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                        android:id="@+id/tableCriadero"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical|center"
-                        >
-                    </TableLayout>
-                </ScrollView>
-            </TableLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/result"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text=""
-                android:textSize="14sp"
-                android:gravity="center_vertical|center"/>
-        </LinearLayout>
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:src="@mipmap/ic_save"
+                    android:text="Guardar" />
 
+                <ImageView
+                    android:id="@+id/cancelarGeoCaserio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:src="@mipmap/ic_cancel"
+                    android:text="Cancelar" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:map="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabCriadero2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:clickable="true"
+                android:src="@android:drawable/ic_menu_compass"
+                app:backgroundTint="@color/colorAccent"
+                app:borderWidth="0dp"
+                />
+
+        </FrameLayout>
+    </LinearLayout>
+
 </LinearLayout>

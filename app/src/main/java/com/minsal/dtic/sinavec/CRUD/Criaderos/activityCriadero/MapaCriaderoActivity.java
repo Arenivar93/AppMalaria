@@ -1,7 +1,6 @@
 package com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,11 +17,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -34,7 +30,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.BuscarCriaderoSinActivity;
+import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity;
+import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
+import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
@@ -46,10 +44,13 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
 
     private GoogleMap mMap;
     private FloatingActionButton fab;
-    private EditText nomCriadero,nomCaserio,latitudCriadero,longitudCriadero;
+    private EditText nomMunicipio,nomCanton,nomCaserio,latitudCriadero,longitudCriadero;
     int idMunicipio=0,idCanton=0,idCaserio=0;
     private String nombreCriadero;
-    private Button guardar,cancelar;
+    private int coordenada=0;
+    private double latitud;
+    private double longitud;
+    private ImageView guardar,cancelar;
     private ToggleButton tipoBusqueda;
     private ImageView txtBusqueda;
     int MY_PERMISSION_LOCATION = 10;
@@ -62,6 +63,8 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
     private SharedPreferences prefs;
     private DaoSession daoSession;
     Utilidades utilidades;
+    private CtlPlCriadero criadero;
+    private CtlPlCriaderoDao criaderoDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +74,11 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         fab = (FloatingActionButton) findViewById(R.id.fabCriadero2);
-        nomCriadero=(EditText)findViewById(R.id.nombreCriadero);
+        nomMunicipio=(EditText)findViewById(R.id.nombreMunicipio);
+        nomCanton=(EditText)findViewById(R.id.nombreCanton);
         nomCaserio=(EditText)findViewById(R.id.nombreCaserio);
-        guardar=(Button)findViewById(R.id.guardarGeoCaserio);
-        cancelar=(Button)findViewById(R.id.cancelarGeoCaserio);
+        guardar=(ImageView) findViewById(R.id.guardarGeoCaserio);
+        cancelar=(ImageView) findViewById(R.id.cancelarGeoCaserio);
         tipoBusqueda=(ToggleButton)findViewById(R.id.tipoBusqueda);
         txtBusqueda=(ImageView) findViewById(R.id.imgBusqueda);
         latitudCriadero=(EditText) findViewById(R.id.criaderoLatitud);
@@ -83,7 +87,7 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         daoSession = ((MyMalaria) getApplication()).getDaoSession();
         utilidades=new Utilidades(daoSession);
-
+        criaderoDao=daoSession.getCtlPlCriaderoDao();
 
         Bundle geolocalizarDatos=this.getIntent().getExtras();
         if(geolocalizarDatos!=null){
@@ -91,46 +95,82 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
             idCanton=geolocalizarDatos.getInt("idCanton");
             idCaserio=geolocalizarDatos.getInt("idCaserio");
             nombreCriadero=geolocalizarDatos.getString("criadero");
-            nomCriadero.setText(nombreCriadero);
-            nomCaserio.setText("Prueba");
+            coordenada=geolocalizarDatos.getInt("coordenada");
+            criadero=daoSession.getCtlPlCriaderoDao().loadByRowId(geolocalizarDatos.getLong("id"));
+            nomMunicipio.setText(criadero.getCtlCaserio().getCtlCanton().getCtlMunicipio().getNombre());
+            nomCanton.setText(criadero.getCtlCaserio().getCtlCanton().getNombre());
+            nomCaserio.setText(criadero.getCtlCaserio().getNombre());
+            if(coordenada==1){
+                latitud=geolocalizarDatos.getDouble("latitud");
+                longitud=geolocalizarDatos.getDouble("longitud");
+                setTitle("Editar criadero: "+nombreCriadero);
+            }else{
+                setTitle("Georeferenciar criadero: "+nombreCriadero);
+            }
         }else{
-
+            Intent geolocalizarCriadero=new Intent(MapaCriaderoActivity.this, BuscarCriaderoActivity.class);
+            Bundle miBundle=new Bundle();
+            miBundle.putInt("bandera",3);
+            geolocalizarCriadero.putExtras(miBundle);
+            startActivity(geolocalizarCriadero);
+            finish();
         }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                moverCamaraDepartamento();
+                if(coordenada==1){
+                    zoomToLocationCoordenadas(latitud,longitud);
+                }else{
+                    moverCamaraDepartamento();
+                }
             }
         });
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent geolocalizarCriadero=new Intent(MapaCriaderoActivity.this, BuscarCriaderoSinActivity.class);
-                //geolocalizarCriadero.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                Bundle miBundle=new Bundle();
-                miBundle.putString("criadero", nombreCriadero);
-                miBundle.putInt("idMuni",idMunicipio);
-                miBundle.putInt("idCtn",idCanton);
-                miBundle.putInt("idCas",idCaserio);
-                miBundle.putInt("cancelar",0);
-                geolocalizarCriadero.putExtras(miBundle);
-                startActivity(geolocalizarCriadero);
-                finish();
+                if(!latitudCriadero.getText().toString().isEmpty() && !longitudCriadero.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Coordenadas Cargadas: " +
+                            "Latitud: "+latitudCriadero.getText()+" Longitud: " +
+                            " "+longitudCriadero.getText(),Toast.LENGTH_LONG).show();
+
+                    criadero.setLatitud(latitudCriadero.getText().toString());
+                    criadero.setLongitud(longitudCriadero.getText().toString());
+                    criaderoDao.update(criadero);
+                    Intent geolocalizarCriadero=new Intent(MapaCriaderoActivity.this, BuscarCriaderoActivity.class);
+                    Bundle miBundle=new Bundle();
+                    miBundle.putString("criadero", nombreCriadero);
+                    miBundle.putInt("idMuni",idMunicipio);
+                    miBundle.putInt("idCtn",idCanton);
+                    miBundle.putInt("idCas",idCaserio);
+                    miBundle.putInt("bandera",0);
+                    geolocalizarCriadero.putExtras(miBundle);
+                    startActivity(geolocalizarCriadero);
+                    finish();
+
+                }else if(latitudCriadero.getText().toString().isEmpty() && longitudCriadero.getText().toString().isEmpty() && tipoBusqueda.isChecked()) {
+                    if(!isGPSEnabled()){
+                        Toast.makeText(getApplicationContext(),"Active el GPS para obtener las coordenadas",Toast.LENGTH_LONG).show();
+                    }else {
+                        Toast.makeText(getApplicationContext(),"Espere un momento, GPS calcula coordenadas",Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(),"Latitud y Longitud vacios, debe de " +
+                            "geolocalizar el criadero",Toast.LENGTH_LONG).show();
+                }
             }
         });
         cancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent geolocalizarCriadero=new Intent(MapaCriaderoActivity.this, BuscarCriaderoSinActivity.class);
-                //geolocalizarCriadero.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                Intent geolocalizarCriadero=new Intent(MapaCriaderoActivity.this, BuscarCriaderoActivity.class);
                 Bundle miBundle=new Bundle();
                 miBundle.putString("criadero", nombreCriadero);
                 miBundle.putInt("idMuni",idMunicipio);
                 miBundle.putInt("idCtn",idCanton);
                 miBundle.putInt("idCas",idCaserio);
-                miBundle.putInt("cancelar",1);
+                miBundle.putInt("bandera",1);
                 geolocalizarCriadero.putExtras(miBundle);
                 startActivity(geolocalizarCriadero);
                 finish();
@@ -140,7 +180,7 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
             @Override
             public void onClick(View view) {
                 if(tipoBusqueda.isChecked()){
-                    txtBusqueda.setImageResource(R.drawable.migps2);
+                    txtBusqueda.setImageResource(R.drawable.ic_gpsmap);
                     habilitarPosicionInicial();
                     if(markerManual!=null){
                         //markerManual.remove();
@@ -156,7 +196,12 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
                     }
                     latitudCriadero.setText(null);
                     longitudCriadero.setText(null);
-                    moverCamaraDepartamento();
+                    if(coordenada==1){
+                        zoomToLocationCoordenadas(latitud,longitud);
+                    }else{
+                        moverCamaraDepartamento();
+                    }
+
                 }
             }
         });
@@ -176,8 +221,18 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        moverCamaraDepartamento();
-
+        if(coordenada!=1){
+            moverCamaraDepartamento();
+        }else{
+                markerManual = mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(latitud, longitud))
+                        .title("Latitud: "+latitud+" Longitud: "+longitud).draggable(true));
+                zoomToLocationCoordenadas(latitud,longitud);
+                latitudCriadero.setText(null);
+                longitudCriadero.setText(null);
+                latitudCriadero.setText(String.valueOf(latitud));
+                longitudCriadero.setText(String.valueOf(longitud));
+        }
         setUpMap();
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -366,6 +421,15 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
     private void zoomToLocationManual(LatLng latLng){
         cameraZoom=new CameraPosition.Builder()
                 .target(new LatLng(latLng.latitude,latLng.longitude))
+                .zoom(15)
+                .bearing(0)
+                .tilt(30)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
+    }
+    private void zoomToLocationCoordenadas(double latitud,double longitud){
+        cameraZoom=new CameraPosition.Builder()
+                .target(new LatLng(latitud,longitud))
                 .zoom(15)
                 .bearing(0)
                 .tilt(30)

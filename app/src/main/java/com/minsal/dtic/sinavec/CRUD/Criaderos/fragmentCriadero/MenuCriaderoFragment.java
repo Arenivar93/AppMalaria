@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.BuscarCriaderoSinActivity;
 import com.minsal.dtic.sinavec.R;
 
 
@@ -35,7 +34,7 @@ public class MenuCriaderoFragment extends Fragment {
         cvAsignar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getContext(),BuscarCriaderoSinActivity.class);
+                Intent i = new Intent(getContext(),BuscarCriaderoActivity.class);
                 startActivity(i);
 
             }

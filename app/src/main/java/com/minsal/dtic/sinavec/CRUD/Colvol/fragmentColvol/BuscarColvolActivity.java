@@ -1,13 +1,13 @@
-package com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero;
+package com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,7 +19,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.GeoreferenciarCriaderoActivity;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.MapaCriaderoActivity;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
@@ -27,9 +26,9 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
-import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
-import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
@@ -37,16 +36,16 @@ import com.minsal.dtic.sinavec.utilidades.Utilidades;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BuscarCriaderoSinActivity extends AppCompatActivity {
+public class BuscarColvolActivity extends AppCompatActivity {
     Spinner spMunicipio, spCanton,spCaserio;
     ImageView buscar;
-    TableLayout tablaCriaderos;
+    TableLayout tablaColvol;
     TextView result;
     DaoSession daoSession;
     CtlMunicipioDao daoMunicipio;
     CtlCantonDao daoCanton;
     CtlCaserioDao daoCaserio;
-    CtlPlCriaderoDao ctlPlCriaderoDao;
+    PlColvolDao ctlPlCriaderoDao;
     ArrayList<String> listaMunicipio=new ArrayList<String>();
     List<CtlMunicipio> municipios;
     ArrayList<String> listaCanton=new ArrayList<String>();
@@ -57,7 +56,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
     Utilidades utilidades;
-    List<CtlPlCriadero> criaderos;
+    List<PlColvol> criaderos;
     private ProgressDialog progressDialog;
     Integer longitud;
     int bandera;
@@ -70,7 +69,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_burcar_criadero);
+        setContentView(R.layout.activity_buscar_colvol);
 
         bandera=0;
         contador=0;
@@ -86,10 +85,10 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         spCanton = (Spinner)findViewById(R.id.spCan);
         spCaserio = (Spinner)findViewById(R.id.spCas);
         buscar= (ImageView)findViewById(R.id.buscarCriadero);
-        tablaCriaderos = (TableLayout)findViewById(R.id.tableCriadero);
+        tablaColvol = (TableLayout)findViewById(R.id.tableCriadero);
         result = (TextView)findViewById(R.id.result);
 
-        progressDialog = new ProgressDialog(BuscarCriaderoSinActivity.this);
+        progressDialog = new ProgressDialog(BuscarColvolActivity.this);
         progressDialog.setMessage("Cargando");
         daoSession=((MyMalaria)getApplicationContext()).getDaoSession();
         utilidades=new Utilidades(daoSession);
@@ -115,21 +114,28 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
 
         Bundle geolocalizarDatos=this.getIntent().getExtras();
         if(geolocalizarDatos!=null){
-            bandera=1;
-            contador=1;
-            idMuni2=geolocalizarDatos.getInt("idMuni");
-            idCtn2=geolocalizarDatos.getInt("idCtn");
-            idCas2=geolocalizarDatos.getInt("idCas");
-            int cancelar=geolocalizarDatos.getInt("cancelar");
-
-            for (int i=0;i<municipios.size();i++) {
-                if (municipios.get(i).getId() == idMuni2) {
-                    spMunicipio.setSelection(i + 1);
+            int controlError=geolocalizarDatos.getInt("bandera");
+            if(controlError!=3){
+                bandera=1;
+                contador=1;
+                idMuni2=geolocalizarDatos.getInt("idMuni");
+                idCtn2=geolocalizarDatos.getInt("idCtn");
+                idCas2=geolocalizarDatos.getInt("idCas");
+                for (int i=0;i<municipios.size();i++) {
+                    if (municipios.get(i).getId() == idMuni2) {
+                        spMunicipio.setSelection(i + 1);
+                    }
                 }
+                if(controlError==0){
+                    Toast.makeText(this,"EL Colvol fue Georeferenciado con exito",Toast.LENGTH_LONG).show();
+                }
+                if(controlError==1){
+                    Toast.makeText(this,"Operación cancelada",Toast.LENGTH_LONG).show();
+                }
+            }else{
+                Toast.makeText(this,"Error al momento de cargar los datos del criadero seleccionado",Toast.LENGTH_LONG).show();
             }
-            if(cancelar!=1){
-                Toast.makeText(this,"EL caserio fue Georeferenciado con exito",Toast.LENGTH_LONG).show();
-            }
+
 
         }
 
@@ -197,7 +203,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                                     spCaserio.setSelection(i + 1);
                                 }
                             }
-                         }else{
+                        }else{
                             spCaserio.setSelection(0);
                         }
                     }else{
@@ -233,7 +239,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
     }
 
     private void realizarBusquedaCaserios() {
-        tablaCriaderos.removeAllViews();
+        tablaColvol.removeAllViews();
         int idMuni=spMunicipio.getSelectedItemPosition();
         int idCtn=spCanton.getSelectedItemPosition();
         int idCas=spCaserio.getSelectedItemPosition();
@@ -262,7 +268,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
             if (criaderos.size()>0){
                 new MiTarea().execute(idMunicipio,idCanton,idCaserio);
             }else{
-                Toast.makeText(getApplicationContext(),"No se encontraron criaderos",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"No se encontraron colvol",Toast.LENGTH_LONG).show();
                 result.setText("Sin Resultados");
                 result.setTextColor(Color.RED);
             }
@@ -270,7 +276,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
     }
 
 
-    private class MiTarea extends AsyncTask<Integer, TableRow, Integer>{
+    private class MiTarea extends AsyncTask<Integer, TableRow, Integer> {
         @Override
         protected void onPreExecute() {
             progressDialog.show();
@@ -283,14 +289,14 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
             final int idCaserio=idSpiner[2];
 
             for (int i=0;i<criaderos.size();i++){
-                CtlPlCriadero criadero=new CtlPlCriadero();
-                criadero=criaderos.get(i);
-                final int idCriadero=(int)(long) criadero.getId();
+                PlColvol colvol=new PlColvol();
+                colvol=criaderos.get(i);
+                final int idCriadero=(int)(long) colvol.getId();
                 // dara rows
                 TableRow row = new TableRow(getApplicationContext());
                 row.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                         TableLayout.LayoutParams.WRAP_CONTENT));
-                String[] colText={i+1+"",criadero.getNombre(),criadero.getCtlCaserio().getCtlCanton().getNombre(),criadero.getCtlCaserio().getNombre()};
+                String[] colText={i+1+"",colvol.getNombre(),colvol.getCtlCaserio().getCtlCanton().getNombre(),colvol.getCtlCaserio().getNombre()};
                 TextView tv;
                 int j=0;
                 for(String text:colText) {
@@ -313,27 +319,54 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
                 }
                 // Creation  button
                 final ImageButton button = new ImageButton(getApplicationContext());
-                button.setImageResource(R.drawable.ic_gps9);
+                final PlColvol finalColvol = colvol;
                 button.setBackground(null);
                 button.setPadding(60,10,0,10);
                 button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                final CtlPlCriadero finalCriadero = criadero;
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent geolocalizarCriadero=new Intent(BuscarCriaderoSinActivity.this, MapaCriaderoActivity.class);
 
-                        Bundle miBundle=new Bundle();
-                        miBundle.putInt("idMunicipio",idMunicipio);
-                        miBundle.putInt("idCanton",idCanton);
-                        miBundle.putInt("idCaserio",idCaserio);
-                        miBundle.putString("criadero", finalCriadero.getNombre());
-                        geolocalizarCriadero.putExtras(miBundle);
-                        startActivity(geolocalizarCriadero);
-                        finish();
-                        //Toast.makeText(getApplicationContext(),"Asignara Coordenadas id:"+idCriadero,Toast.LENGTH_LONG).show();
-                    }
-                });
+                if(colvol.getLongitud().equals("null") || colvol.equals("null")){
+                    //El colvol no tiene coordenadas
+                    button.setImageResource(R.mipmap.ic_edit_m);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent geolocalizarCriadero=new Intent(BuscarColvolActivity.this, MapaCriaderoActivity.class);
+
+                            Bundle miBundle=new Bundle();
+                            miBundle.putInt("idMunicipio",idMunicipio);
+                            miBundle.putInt("idCanton",idCanton);
+                            miBundle.putInt("idCaserio",idCaserio);
+                            miBundle.putString("colvol", finalColvol.getNombre());
+                            miBundle.putLong("id",finalColvol.getId());
+                            miBundle.putInt("coordenada",0);
+                            geolocalizarCriadero.putExtras(miBundle);
+                            startActivity(geolocalizarCriadero);
+                            finish();
+                        }
+                    });
+                }else{
+                    button.setImageResource(R.mipmap.ic_ver_map);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent geolocalizarCriadero=new Intent(BuscarColvolActivity.this, MapaCriaderoActivity.class);
+
+                            Bundle miBundle=new Bundle();
+                            miBundle.putInt("idMunicipio",idMunicipio);
+                            miBundle.putInt("idCanton",idCanton);
+                            miBundle.putInt("idCaserio",idCaserio);
+                            miBundle.putString("colvol", finalColvol.getNombre());
+                            miBundle.putLong("id",finalColvol.getId());
+                            miBundle.putInt("coordenada",1);
+                            miBundle.putDouble("latitud",Double.parseDouble(finalColvol.getLatitud()));
+                            miBundle.putDouble("longitud",Double.parseDouble(finalColvol.getLongitud()));
+                            geolocalizarCriadero.putExtras(miBundle);
+                            startActivity(geolocalizarCriadero);
+                            finish();
+                        }
+                    });
+                }
+
                 row.addView(button);
                 publishProgress(row);
             }
@@ -342,7 +375,7 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(TableRow... values) {
-            tablaCriaderos.addView(values[0]);
+            tablaColvol.addView(values[0]);
 
         }
 
@@ -356,43 +389,23 @@ public class BuscarCriaderoSinActivity extends AppCompatActivity {
         int idMunicipio=0;
         int idCanton=0;
         int idCaserio=0;
-        criaderos=new ArrayList<CtlPlCriadero>();
-            if(idCtn!=0 && idCas==0){
-                //Ejecutara busqueda de municipio y canton
-                idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
-                idCanton=(int) (long) cantones.get(idCtn-1).getId();
-                criaderos=utilidades.obtenerCaseriosByIds(daoSession,idMunicipio,idCanton,idCaserio);
+        criaderos=new ArrayList<PlColvol>();
+        if(idCtn!=0 && idCas==0){
+            //Ejecutara busqueda de municipio y canton
+            idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+            idCanton=(int) (long) cantones.get(idCtn-1).getId();
+            criaderos=utilidades.obtenerColvolByIds(daoSession,idMunicipio,idCanton,idCaserio);
 
-            }else if(idCtn!=0 && idCas!=0){
-                //Ejecutara busqueda de muni ctn y cass
-                idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
-                idCanton=(int) (long) cantones.get(idCtn-1).getId();
-                idCaserio=(int) (long) caserios.get(idCas-1).getId();
-                criaderos=utilidades.obtenerCaseriosByIds(daoSession,idMunicipio,idCanton,idCaserio);
-            }else{
-                //ejecutara busqueda solo de municipio
-                idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
-                criaderos=utilidades.obtenerCaseriosByIds(daoSession,idMunicipio,idCanton,idCaserio);
-            }
-    }
-
-    private void encabezadoTabla(Context context){
-        TableRow rowHeader = new TableRow(context);
-        rowHeader.setBackgroundColor(Color.parseColor("#c0c0c0"));
-        rowHeader.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
-                TableLayout.LayoutParams.WRAP_CONTENT));
-        String[] headerText={"N°","NOMBRE","CANTON","CASERIO","OPCIONES"};
-        for(String c:headerText) {
-            TextView tv = new TextView(context);
-            tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                    TableRow.LayoutParams.WRAP_CONTENT));
-            //tv.setGravity(Gravity.CENTER);
-            tv.setTextSize(15);
-            tv.setPadding(15, 5, 10, 5);
-            tv.setText(c);
-            rowHeader.addView(tv);
+        }else if(idCtn!=0 && idCas!=0){
+            //Ejecutara busqueda de muni ctn y cass
+            idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+            idCanton=(int) (long) cantones.get(idCtn-1).getId();
+            idCaserio=(int) (long) caserios.get(idCas-1).getId();
+            criaderos=utilidades.obtenerColvolByIds(daoSession,idMunicipio,idCanton,idCaserio);
+        }else{
+            //ejecutara busqueda solo de municipio
+            idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
+            criaderos=utilidades.obtenerColvolByIds(daoSession,idMunicipio,idCanton,idCaserio);
         }
-        tablaCriaderos.addView(rowHeader);
     }
-
 }

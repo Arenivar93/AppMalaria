@@ -90,9 +90,22 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoCon" />
-        <activity android:name=".CRUD.Criaderos.activityCriadero.GeoreferenciarCriaderoActivity" />
+        <activity android:name=".CRUD.Criaderos.activityCriadero.MapaCriaderoActivity" />
         <activity
+            android:name=".CRUD.Colvol.fragmentColvol.BuscarColvolActivity"
+            android:label="Colvol"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.BuscarColvolActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
             android:name=".CRUD.Criaderos.activityCriadero.MapaCriaderoActivity"
             android:label="Georeferenciar Criadero" />
         <activity android:name=".ListCapturaActivity"/>

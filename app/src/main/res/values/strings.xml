@@ -31,4 +31,5 @@
     <string name="menuLogout">Cerrar Sesión</string>
     <string name="title_activity_geolocalizar_criadero">geolocalizarCriaderoActivity</string>
     <string name="title_activity_mapa_criadero">Map</string>
+    <string name="title_activity_buscar_colvol">BuscarColvol</string>
 </resources>
