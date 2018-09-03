@@ -53,6 +53,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlTipoEstablecimientoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividad;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividadDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoCaptura;
@@ -334,14 +336,17 @@ public class SettingActivity extends AppCompatActivity {
         sem.setSemana(semana);
         semanaDao.insert(sem);
     }
-    static public int countRegister(JSONArray count) throws JSONException {
-        int total =0;
-        for (int i = 0; i <count.length() ; i++) {
-            JSONObject joTotal = count.getJSONObject(i);
-            total= joTotal.getInt("total");
-        }
-        return  total;
 
+    public void saveColvol(long id,long idCaserio, String nombre,long idSibasi,String clave, int estado){
+        PlColvolDao colvolDao = daoSession.getPlColvolDao();
+        PlColvol colvol = new PlColvol();
+        colvol.setId(id);
+        colvol.setIdCaserio(idCaserio);
+        colvol.setNombre(nombre);
+        colvol.setIdSibasi(idSibasi);
+        colvol.setClave(clave);
+        colvol.setEstado(estado);
+        colvolDao.insert(colvol);
     }
 
 
@@ -425,6 +430,7 @@ public class SettingActivity extends AppCompatActivity {
                 JSONArray jaTipoCaptura  = jsTotal.getJSONArray("tipoCaptura");
                 JSONArray jaActividad    = jsTotal.getJSONArray("actividad");
                 JSONArray jaSemana       = jsTotal.getJSONArray("semana");
+                JSONArray jaColvol       = jsTotal.getJSONArray("colvol");
                // JSONArray jsTotal22      = jsTotal.getJSONArray("total");
                 for (int i = 0; i < jaPaises.length(); i++) {
                     JSONObject joPais = jaPaises.getJSONObject(i);
@@ -563,6 +569,12 @@ public class SettingActivity extends AppCompatActivity {
                               joSem.getString("fecf"),joSem.getString("feci"),joSem.getInt("semana"));
                     num++;
                     publishProgress(num);
+
+                }
+                for (int b = 0; b <jaColvol.length() ; b++) {
+                    JSONObject joColvol = jaColvol.getJSONObject(b);
+                    saveColvol(joColvol.getLong("id"),joColvol.getLong("id_caserio"),joColvol.getString("nombre"),
+                              joColvol.getLong("id_sibasi"),joColvol.getString("clave"),joColvol.getInt("estado"));
 
                 }
 
