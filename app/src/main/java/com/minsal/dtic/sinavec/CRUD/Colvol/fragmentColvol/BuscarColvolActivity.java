@@ -18,7 +18,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.MapaCriaderoActivity;
+import com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol.MapaColvolActivity;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
@@ -44,7 +44,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
     CtlMunicipioDao daoMunicipio;
     CtlCantonDao daoCanton;
     CtlCaserioDao daoCaserio;
-    PlColvolDao ctlPlCriaderoDao;
+    PlColvolDao plColvolDao;
     ArrayList<String> listaMunicipio=new ArrayList<String>();
     List<CtlMunicipio> municipios;
     ArrayList<String> listaCanton=new ArrayList<String>();
@@ -77,7 +77,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
         //Me permite regresar  a la actividad anterior
         ActionBar actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        Utilidades.fragment=1;
+        Utilidades.fragment=2;//Cargara fragmen menu colvol
 
 
         spMunicipio = (Spinner)findViewById(R.id.spMun);
@@ -295,7 +295,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
                 TableRow row = new TableRow(getApplicationContext());
                 row.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                         TableLayout.LayoutParams.WRAP_CONTENT));
-                String[] colText={i+1+"",colvol.getNombre(),colvol.getCtlCaserio().getCtlCanton().getNombre(),colvol.getCtlCaserio().getNombre()};
+                String[] colText={i+1+"",colvol.getNombre()+" "+"("+colvol.getClave()+")",colvol.getCtlCaserio().getCtlCanton().getNombre(),colvol.getCtlCaserio().getNombre()};
                 TextView tv;
                 int j=0;
                 for(String text:colText) {
@@ -304,8 +304,12 @@ public class BuscarColvolActivity extends AppCompatActivity {
                         tv.setLayoutParams(new TableRow.LayoutParams(85,
                                 TableRow.LayoutParams.WRAP_CONTENT));
                         tv.setPadding(15, 5, 10, 5);
+                    }else if(j==1){
+                        tv.setLayoutParams(new TableRow.LayoutParams(500,
+                                TableRow.LayoutParams.WRAP_CONTENT));
+                        tv.setPadding(15, 5, 10, 5);
                     }else{
-                        tv.setLayoutParams(new TableRow.LayoutParams(400,
+                        tv.setLayoutParams(new TableRow.LayoutParams(350,
                                 TableRow.LayoutParams.WRAP_CONTENT));
                         tv.setPadding(15, 5, 10, 5);
                     }
@@ -323,13 +327,13 @@ public class BuscarColvolActivity extends AppCompatActivity {
                 button.setPadding(60,10,0,10);
                 button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-                if(colvol.getLongitud().equals("null") || colvol.equals("null")){
+               if(colvol.getLongitud()==null || colvol.getLatitud()==null){
                     //El colvol no tiene coordenadas
                     button.setImageResource(R.mipmap.ic_edit_m);
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent geolocalizarCriadero=new Intent(BuscarColvolActivity.this, MapaCriaderoActivity.class);
+                            Intent geolocalizarColvol=new Intent(BuscarColvolActivity.this, MapaColvolActivity.class);
 
                             Bundle miBundle=new Bundle();
                             miBundle.putInt("idMunicipio",idMunicipio);
@@ -338,8 +342,8 @@ public class BuscarColvolActivity extends AppCompatActivity {
                             miBundle.putString("colvol", finalColvol.getNombre());
                             miBundle.putLong("id",finalColvol.getId());
                             miBundle.putInt("coordenada",0);
-                            geolocalizarCriadero.putExtras(miBundle);
-                            startActivity(geolocalizarCriadero);
+                            geolocalizarColvol.putExtras(miBundle);
+                            startActivity(geolocalizarColvol);
                             finish();
                         }
                     });
@@ -348,7 +352,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent geolocalizarCriadero=new Intent(BuscarColvolActivity.this, MapaCriaderoActivity.class);
+                            Intent geolocalizarColvol=new Intent(BuscarColvolActivity.this, MapaColvolActivity.class);
 
                             Bundle miBundle=new Bundle();
                             miBundle.putInt("idMunicipio",idMunicipio);
@@ -359,8 +363,8 @@ public class BuscarColvolActivity extends AppCompatActivity {
                             miBundle.putInt("coordenada",1);
                             miBundle.putDouble("latitud",Double.parseDouble(finalColvol.getLatitud()));
                             miBundle.putDouble("longitud",Double.parseDouble(finalColvol.getLongitud()));
-                            geolocalizarCriadero.putExtras(miBundle);
-                            startActivity(geolocalizarCriadero);
+                            geolocalizarColvol.putExtras(miBundle);
+                            startActivity(geolocalizarColvol);
                             finish();
                         }
                     });
