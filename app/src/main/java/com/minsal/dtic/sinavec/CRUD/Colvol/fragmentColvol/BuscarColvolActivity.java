@@ -1,7 +1,6 @@
 package com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -56,7 +55,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
     Utilidades utilidades;
-    List<PlColvol> criaderos;
+    List<PlColvol> colvols;
     private ProgressDialog progressDialog;
     Integer longitud;
     int bandera;
@@ -64,7 +63,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
     int idMuni2=0;
     int idCtn2=0;
     int idCas2=0;
-    int controladorSaltos=0;
+    int controladorSaltos=0;//maneja las busquedas de la tabla al recargarla
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +84,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
         spCanton = (Spinner)findViewById(R.id.spCan);
         spCaserio = (Spinner)findViewById(R.id.spCas);
         buscar= (ImageView)findViewById(R.id.buscarCriadero);
-        tablaColvol = (TableLayout)findViewById(R.id.tableCriadero);
+        tablaColvol = (TableLayout)findViewById(R.id.tableColvol);
         result = (TextView)findViewById(R.id.result);
 
         progressDialog = new ProgressDialog(BuscarColvolActivity.this);
@@ -133,7 +132,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
                     Toast.makeText(this,"Operación cancelada",Toast.LENGTH_LONG).show();
                 }
             }else{
-                Toast.makeText(this,"Error al momento de cargar los datos del criadero seleccionado",Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Error al momento de cargar los datos del colvol, seleccionado",Toast.LENGTH_LONG).show();
             }
 
 
@@ -264,8 +263,8 @@ public class BuscarColvolActivity extends AppCompatActivity {
 
         result.setText("");
         if(idMuni!=0){
-            llenarTablaCriadero(idMuni,idCtn,idCas);
-            if (criaderos.size()>0){
+            busquedaDeColvol(idMuni,idCtn,idCas);
+            if (colvols.size()>0){
                 new MiTarea().execute(idMunicipio,idCanton,idCaserio);
             }else{
                 Toast.makeText(getApplicationContext(),"No se encontraron colvol",Toast.LENGTH_LONG).show();
@@ -288,9 +287,9 @@ public class BuscarColvolActivity extends AppCompatActivity {
             final int idCanton=idSpiner[1];
             final int idCaserio=idSpiner[2];
 
-            for (int i=0;i<criaderos.size();i++){
+            for (int i = 0; i< colvols.size(); i++){
                 PlColvol colvol=new PlColvol();
-                colvol=criaderos.get(i);
+                colvol= colvols.get(i);
                 final int idCriadero=(int)(long) colvol.getId();
                 // dara rows
                 TableRow row = new TableRow(getApplicationContext());
@@ -385,27 +384,27 @@ public class BuscarColvolActivity extends AppCompatActivity {
         }
     }
 
-    private void llenarTablaCriadero(int idMuni,int idCtn,int idCas){
+    private void busquedaDeColvol(int idMuni, int idCtn, int idCas){
         int idMunicipio=0;
         int idCanton=0;
         int idCaserio=0;
-        criaderos=new ArrayList<PlColvol>();
+        colvols =new ArrayList<PlColvol>();
         if(idCtn!=0 && idCas==0){
-            //Ejecutara busqueda de municipio y canton
+            //Ejecutara busqueda por municipio y canton
             idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
             idCanton=(int) (long) cantones.get(idCtn-1).getId();
-            criaderos=utilidades.obtenerColvolByIds(daoSession,idMunicipio,idCanton,idCaserio);
+            colvols =utilidades.obtenerColvolByIds(daoSession,idMunicipio,idCanton,idCaserio);
 
         }else if(idCtn!=0 && idCas!=0){
             //Ejecutara busqueda de muni ctn y cass
             idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
             idCanton=(int) (long) cantones.get(idCtn-1).getId();
             idCaserio=(int) (long) caserios.get(idCas-1).getId();
-            criaderos=utilidades.obtenerColvolByIds(daoSession,idMunicipio,idCanton,idCaserio);
+            colvols =utilidades.obtenerColvolByIds(daoSession,idMunicipio,idCanton,idCaserio);
         }else{
             //ejecutara busqueda solo de municipio
             idMunicipio=(int)(long) municipios.get(idMuni-1).getId();
-            criaderos=utilidades.obtenerColvolByIds(daoSession,idMunicipio,idCanton,idCaserio);
+            colvols =utilidades.obtenerColvolByIds(daoSession,idMunicipio,idCanton,idCaserio);
         }
     }
 }
