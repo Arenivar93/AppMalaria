@@ -324,7 +324,7 @@ public class BuscarCriaderoActivity extends AppCompatActivity {
                 button.setPadding(60,10,0,10);
                 button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-                if(criadero.getLongitud().equals("null") || criadero.equals("null")){
+                if(criadero.getLongitud().equals("null") || criadero.getLatitud().equals("null")){
                     //El criadero no tiene coordenadas
                     button.setImageResource(R.mipmap.ic_edit_m);
                     button.setOnClickListener(new View.OnClickListener() {

@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MainFragment()).commit();
         } else if (Utilidades.fragment == 1) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MenuCriaderoFragment()).commit();
+        }else if(Utilidades.fragment == 2) {
+            fragmentManager.beginTransaction().replace(R.id.contenedor, new MenuColvolFragment()).commit();
         }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
