@@ -34,15 +34,13 @@
         <activity
             android:name=".CapturaAnopheles"
             android:label="Captura Anopheles"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".ListCapturaActivity"
             android:screenOrientation="landscape">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-
+                android:value=".ListCapturaActivity" />
             <intent-filter>
                 <action android:name="android.intent.action.prueba" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -107,7 +105,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".CRUD.Colvol.activityColvol.MapaColvolActivity"></activity>
-        <activity android:name=".ListCapturaActivity"/>
+        <activity android:name=".ListCapturaActivity"
+            android:label="Listado de Capturas Anopheles"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

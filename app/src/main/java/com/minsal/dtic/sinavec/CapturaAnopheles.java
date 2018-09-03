@@ -69,10 +69,11 @@ public class CapturaAnopheles extends AppCompatActivity {
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
     EditText edtFecha, edtPropietario, edtAnopheles, edtTiempo, edtZancudo, edtComponente;
-    ImageView imGuardar;
+    ImageView imGuardar, imHome;
     final Calendar myCalendar = Calendar.getInstance();
     private SharedPreferences pref;
     static final int GET_IMEI = 100;
+    Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,22 +83,29 @@ public class CapturaAnopheles extends AppCompatActivity {
         setContentView(R.layout.activity_captura);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        spMunicipio = (Spinner) findViewById(R.id.idMunicipioCap);
-        spCanton = (Spinner) findViewById(R.id.idCantonCap);
-        spCaserio = (Spinner) findViewById(R.id.idCaserioCap);
-        spActividad = (Spinner) findViewById(R.id.spActividad);
-        spCaptura = (Spinner) findViewById(R.id.spCaptura);
-        edtFecha = (EditText) findViewById(R.id.edtFecha);
+        spMunicipio  = (Spinner) findViewById(R.id.idMunicipioCap);
+        spCanton     = (Spinner) findViewById(R.id.idCantonCap);
+        spCaserio    = (Spinner) findViewById(R.id.idCaserioCap);
+        spActividad  = (Spinner) findViewById(R.id.spActividad);
+        spCaptura    = (Spinner) findViewById(R.id.spCaptura);
+        edtFecha     = (EditText) findViewById(R.id.edtFecha);
         edtAnopheles = (EditText) findViewById(R.id.edtAnopheles);
-        edtZancudo = (EditText) findViewById(R.id.edtZancudo);
-        edtTiempo = (EditText) findViewById(R.id.edtTiempo);
-        edtComponente = (EditText) findViewById(R.id.edtComponentes);
+        edtZancudo   = (EditText) findViewById(R.id.edtZancudo);
+        edtTiempo    = (EditText) findViewById(R.id.edtTiempo);
+        edtComponente  = (EditText) findViewById(R.id.edtComponentes);
         edtPropietario = (EditText) findViewById(R.id.edtPropietario);
         imGuardar = (ImageView) findViewById(R.id.imGuardar);
+        imHome    = (ImageView)findViewById(R.id.imHome);
         spMunicipio.setFocusable(true);
         spMunicipio.setFocusableInTouchMode(true);
         spMunicipio.requestFocus();
-
+        bundle = getIntent().getExtras();
+        int poaition = bundle.getInt("position");
+                String accion = bundle.getString("accion");
+        if(accion.equals("edit")){
+            imGuardar.setImageResource(R.drawable.actualizar);
+            imHome.setImageResource(R.drawable.borrar);
+        }
         u = new Utilidades(daoSession);
         loadSpinerMun();
         loadSpinerActividad();

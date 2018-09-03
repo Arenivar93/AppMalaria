@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.R;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class AdapterCapturas extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
 
-        TextView tv1, tv2, tv3,tv4,tv5,tv6;
+        TextView tv1, tv2, tv3,tv4,tv5,tv6,tvId;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View v = inflater.inflate(R.layout.list_custom_capturas, viewGroup, false);
@@ -51,6 +52,7 @@ public class AdapterCapturas extends BaseAdapter {
         tv4 = (TextView) v.findViewById(R.id.tvCap4);
         tv5 = (TextView) v.findViewById(R.id.tvCap5);
         tv6 = (TextView) v.findViewById(R.id.tvCap6);
+        tvId= (TextView) v.findViewById(R.id.tvCapId);
         String str = capturas.get(position);
         String[] tvs = str.split("-");
         tv1.setText(tvs[0]);
@@ -59,6 +61,9 @@ public class AdapterCapturas extends BaseAdapter {
         tv4.setText(tvs[3]);
         tv5.setText(tvs[4]);
         tv6.setText(tvs[5]);
+        tvId.setText(tvs[6]);
         return v;
     }
+
+
 }
