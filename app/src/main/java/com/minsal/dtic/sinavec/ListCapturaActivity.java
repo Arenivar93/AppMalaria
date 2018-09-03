@@ -2,6 +2,7 @@ package com.minsal.dtic.sinavec;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,15 +43,13 @@ public class ListCapturaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_captura);
         btnNuevaCaptura = (Button)findViewById(R.id.btnNuevaCaptura);
         lvCaptura = (ListView)findViewById(R.id.lvCaptura);
-
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         daoSession      =((MyMalaria)getApplicationContext()).getDaoSession();
         ArrayList<String> capturasSemana = getCapturas();
 
         AdapterCapturas adapter =new AdapterCapturas(this,capturasSemana);
         lvCaptura.setAdapter(adapter);
-
-
-
         /*AlertDialog.Builder builder = new AlertDialog.Builder(ListCapturaActivity.this);
         builder.setMessage("prueba alert")
                 .setNegativeButton("Retry", null)
