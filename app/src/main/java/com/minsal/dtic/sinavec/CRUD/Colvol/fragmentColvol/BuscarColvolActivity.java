@@ -339,7 +339,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
                             miBundle.putInt("idMunicipio",idMunicipio);
                             miBundle.putInt("idCanton",idCanton);
                             miBundle.putInt("idCaserio",idCaserio);
-                            miBundle.putString("colvol", finalColvol.getNombre());
+                            miBundle.putString("colvol", finalColvol.getNombre()+" ("+finalColvol.getClave()+")");
                             miBundle.putLong("id",finalColvol.getId());
                             miBundle.putInt("coordenada",0);
                             geolocalizarColvol.putExtras(miBundle);
@@ -358,7 +358,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
                             miBundle.putInt("idMunicipio",idMunicipio);
                             miBundle.putInt("idCanton",idCanton);
                             miBundle.putInt("idCaserio",idCaserio);
-                            miBundle.putString("colvol", finalColvol.getNombre());
+                            miBundle.putString("colvol", finalColvol.getNombre()+" ("+finalColvol.getClave()+")");
                             miBundle.putLong("id",finalColvol.getId());
                             miBundle.putInt("coordenada",1);
                             miBundle.putDouble("latitud",Double.parseDouble(finalColvol.getLatitud()));

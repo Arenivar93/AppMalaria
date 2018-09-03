@@ -303,7 +303,7 @@ public class MapaColvolActivity extends AppCompatActivity implements OnMapReadyC
 
     private void setUpMap() {
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        //mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         //mMap.getUiSettings().setMapToolbarEnabled(true);
 
         //mMap.setTrafficEnabled(true);
