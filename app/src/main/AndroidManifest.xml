@@ -106,8 +106,21 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".CRUD.Colvol.activityColvol.MapaColvolActivity"></activity>
-        <activity android:name=".ListCapturaActivity"/>
+        <activity android:name=".CRUD.Colvol.activityColvol.MapaColvolActivity" />
+        <activity android:name=".ListCapturaActivity" />
+        <activity
+            android:name=".CRUD.Criaderos.activityCriadero.AgregarCriaderoActivity"
+            android:label="Agregar Criadero"
+            android:parentActivityName=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity"
+            android:screenOrientation="landscape">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity"/>
+            <intent-filter>
+                <action android:name="android.intent.action.AgregarCriaderoActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

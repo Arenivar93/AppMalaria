@@ -1,5 +1,6 @@
 package com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero;
 
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,6 +22,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.minsal.dtic.sinavec.AddStudentDialogFragment;
+import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.AgregarCriaderoActivity;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.MapaCriaderoActivity;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
@@ -31,12 +36,13 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
+import com.minsal.dtic.sinavec.Student;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BuscarCriaderoActivity extends AppCompatActivity {
+public class BuscarCriaderoActivity extends AppCompatActivity implements AddStudentDialogFragment.NoticeDialogListener{
     Spinner spMunicipio, spCanton,spCaserio;
     ImageView buscar;
     TableLayout tablaCriaderos;
@@ -276,6 +282,8 @@ public class BuscarCriaderoActivity extends AppCompatActivity {
     }
 
 
+
+
     private class MiTarea extends AsyncTask<Integer, TableRow, Integer>{
         @Override
         protected void onPreExecute() {
@@ -426,6 +434,47 @@ public class BuscarCriaderoActivity extends AppCompatActivity {
             rowHeader.addView(tv);
         }
         tablaCriaderos.addView(rowHeader);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.add, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_agregar) {
+            Intent agregarCriadero=new Intent(BuscarCriaderoActivity.this, AgregarCriaderoActivity.class);
+            startActivity(agregarCriadero);
+        }
+        if (id == R.id.action_agregar2) {
+            AddStudentDialogFragment dialog = new AddStudentDialogFragment();
+            dialog.show(this.getFragmentManager(), "dialog");
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Llamado cuando se presinó el botón positivo en el dialogo de añadir estudiante.
+     * @param dialog
+     * @param student
+     */
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, Student student) {
+            Toast.makeText(this,"Si lo creo",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        Toast.makeText(this,"No lo creo",Toast.LENGTH_LONG).show();
     }
 
 }
