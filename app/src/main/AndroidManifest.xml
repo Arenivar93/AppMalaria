@@ -107,7 +107,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".CRUD.Colvol.activityColvol.MapaColvolActivity" />
-        <activity android:name=".ListCapturaActivity" />
+        <activity android:name=".ListCapturaActivity"
+            android:label="Listado de Capturas Anopheles"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".CRUD.Criaderos.activityCriadero.AgregarCriaderoActivity"
             android:label="Agregar Criadero"

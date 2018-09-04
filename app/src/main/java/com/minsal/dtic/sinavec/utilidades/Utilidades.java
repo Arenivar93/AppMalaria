@@ -14,6 +14,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
+import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividad;
@@ -49,12 +51,16 @@ public class Utilidades {
     CtlMunicipioDao daoMunicipio;
     CtlCantonDao daoCanton;
     CtlCaserioDao daoCaserio;
+    PlCapturaAnophelesDao capDao;
 
     ArrayList<String> listaMunicipio;
     ArrayList<String> listaCanton;
     List<CtlCanton> cantones;
     ArrayList<String> listaCaserios;
+    ArrayList<String> listaCapturas;
+
     List<CtlCaserio> caserios;
+    List<PlCapturaAnopheles> capturas;
     List<CtlPlCriadero> criaderos;
     List<PlColvol> colvols;
 
@@ -314,5 +320,19 @@ public class Utilidades {
         }
 
         return coordenadas;
+    }
+    public List<PlCapturaAnopheles> loadListcapturas() {
+        capDao=daoSession.getPlCapturaAnophelesDao();
+        capturas=new ArrayList<PlCapturaAnopheles>();
+        capturas=capDao.loadAll();
+        return capturas;
+    }
+
+    public ArrayList<String> getListaCapturas(List<PlCapturaAnopheles> capturas) {
+        listaCapturas=new ArrayList<String>();
+        for (int i=0;i<capturas.size();i++){
+            listaCapturas.add(String.valueOf(capturas.get(i).getId()));
+        }
+        return listaCapturas;
     }
 }

@@ -273,16 +273,28 @@
                         app:layout_constraintTop_toBottomOf="@+id/edtAnopheles"
                         app:layout_constraintVertical_bias="0.0" />
 
+
                     <ImageView
                         android:id="@+id/imGuardar"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_marginStart="492dp"
                         android:layout_marginTop="24dp"
                         android:clickable="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edtTiempo"
                         app:srcCompat="@drawable/guardar" />
+
+                    <ImageView
+                        android:id="@+id/imHome"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:clickable="true"
+                        app:layout_constraintStart_toEndOf="@+id/imGuardar"
+                        app:layout_constraintTop_toBottomOf="@+id/edtTiempo"
+                        app:srcCompat="@drawable/if_home_173033" />
 
                     <TextView
                         android:id="@+id/textView14"

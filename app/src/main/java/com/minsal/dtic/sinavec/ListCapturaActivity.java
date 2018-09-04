@@ -7,9 +7,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
@@ -59,15 +61,26 @@ public class ListCapturaActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),CapturaAnopheles.class);
+                i.putExtra("accion","Nueva");
                 startActivity(i);
-                finish();
+
+            }
+        });
+
+        lvCaptura.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent nuevo = new Intent(getApplicationContext(), CapturaAnopheles.class);
+                nuevo.putExtra("accion","edit");
+                nuevo.putExtra("position",position);
+                startActivity(nuevo);
             }
         });
     }
     public ArrayList<String> getCapturas(){
         ArrayList<String> caps = new ArrayList<String>();
-
-        String sqlQUERY = "SELECT cas.nombre,can.nombre, mun.nombre, cap.propietario, cap.total_mosquitos,cap.total_anopheles,cap.id_semana_epidemiologica\n" +
+        String sqlQUERY = "SELECT cas.nombre,can.nombre, mun.nombre, cap.propietario, cap.total_mosquitos,cap.total_anopheles," +
+                "cap.id_semana_epidemiologica,cap.id \n" +
                 "FROM PL_CAPTURA_ANOPHELES cap\n" +
                 "INNER JOIN CTL_CASERIO cas on(cas.id=cap.ID_CASERIO)\n" +
                 "INNER JOIN CTL_CANTON can on(can.id=cas.ID_CANTON)\n" +
@@ -75,7 +88,7 @@ public class ListCapturaActivity extends AppCompatActivity {
         Cursor c = daoSession.getDatabase().rawQuery(sqlQUERY, null);
         if (c.moveToFirst()) {
             do {
-                caps.add(c.getString(2)+"-"+c.getString(1)+"-"+c.getString(0)+"-"+c.getString(3)+"-"+c.getString(5)+"-"+c.getString(6));
+                caps.add(c.getString(2)+"-"+c.getString(1)+"-"+c.getString(0)+"-"+c.getString(3)+"-"+c.getString(5)+"-"+c.getString(6)+"-"+c.getString(7));
 
             } while (c.moveToNext());
         }
