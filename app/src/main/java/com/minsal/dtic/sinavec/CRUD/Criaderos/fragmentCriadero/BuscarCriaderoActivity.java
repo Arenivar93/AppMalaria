@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
@@ -64,6 +65,7 @@ public class BuscarCriaderoActivity extends AppCompatActivity implements AddStud
     Utilidades utilidades;
     List<CtlPlCriadero> criaderos;
     private ProgressDialog progressDialog;
+    private SharedPreferences prefs;
     Integer longitud;
     int bandera;
     int contador;
@@ -80,11 +82,16 @@ public class BuscarCriaderoActivity extends AppCompatActivity implements AddStud
         bandera=0;
         contador=0;
         controladorSaltos=0;
+        daoSession=((MyMalaria)getApplicationContext()).getDaoSession();
 
         //Me permite regresar  a la actividad anterior
         ActionBar actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         Utilidades.fragment=1;
+        utilidades=new Utilidades(daoSession);
+        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        String elUser = prefs.getString("user", "");
+        int idDepto=utilidades.deptoUser(elUser);
 
 
         spMunicipio = (Spinner)findViewById(R.id.spMun);
@@ -96,7 +103,7 @@ public class BuscarCriaderoActivity extends AppCompatActivity implements AddStud
 
         progressDialog = new ProgressDialog(BuscarCriaderoActivity.this);
         progressDialog.setMessage("Cargando");
-        daoSession=((MyMalaria)getApplicationContext()).getDaoSession();
+
         utilidades=new Utilidades(daoSession);
 
         listaCanton.add("Seleccione");
@@ -454,10 +461,6 @@ public class BuscarCriaderoActivity extends AppCompatActivity implements AddStud
         if (id == R.id.action_agregar) {
             Intent agregarCriadero=new Intent(BuscarCriaderoActivity.this, AgregarCriaderoActivity.class);
             startActivity(agregarCriadero);
-        }
-        if (id == R.id.action_agregar2) {
-            AddStudentDialogFragment dialog = new AddStudentDialogFragment();
-            dialog.show(this.getFragmentManager(), "dialog");
         }
         return super.onOptionsItemSelected(item);
     }

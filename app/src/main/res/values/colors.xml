@@ -19,5 +19,8 @@
     <color name="divider_color">#a4a2a2</color>
     <color name="linea">#a1a4ae</color>
 
+    <color name="colorButtonSiguiente">#0020b1</color>
+    <color name="colorButtonLetra">#ffffff</color>
+
 
 </resources>

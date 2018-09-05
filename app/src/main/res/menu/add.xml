@@ -5,9 +5,5 @@
         android:title="Agregar"
         android:icon ="@drawable/add_button2"
         app:showAsAction="always"/>
-    <item android:id="@+id/action_agregar2"
-        android:title="Agregar"
-        android:icon ="@drawable/add_button"
-        app:showAsAction="always"/>
 
 </menu>

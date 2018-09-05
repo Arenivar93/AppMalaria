@@ -30,8 +30,8 @@ public class CtlPlCriadero implements Serializable{
     private String descripcion;
     private String latitud;
     private String longitud;
-    private int longitudCriadero;
-    private int anchoCriadero;
+    private float longitudCriadero;
+    private float anchoCriadero;
     private java.util.Date fechaHoraReg;
     private java.util.Date fechaHoraMod;
     private long idUsarioReg;
@@ -77,7 +77,7 @@ public class CtlPlCriadero implements Serializable{
     }
 
     @Generated
-    public CtlPlCriadero(Long id, Integer idTipoCriadero, Integer idEstadoCriadero, String nombre, String descripcion, String latitud, String longitud, int longitudCriadero, int anchoCriadero, java.util.Date fechaHoraReg, java.util.Date fechaHoraMod, long idUsarioReg, long idSibasi, long idCaserio, long idUsuarioMod) {
+    public CtlPlCriadero(Long id, Integer idTipoCriadero, Integer idEstadoCriadero, String nombre, String descripcion, String latitud, String longitud, float longitudCriadero, float anchoCriadero, java.util.Date fechaHoraReg, java.util.Date fechaHoraMod, long idUsarioReg, long idSibasi, long idCaserio, long idUsuarioMod) {
         this.id = id;
         this.idTipoCriadero = idTipoCriadero;
         this.idEstadoCriadero = idEstadoCriadero;
@@ -162,19 +162,19 @@ public class CtlPlCriadero implements Serializable{
         this.longitud = longitud;
     }
 
-    public int getLongitudCriadero() {
+    public float getLongitudCriadero() {
         return longitudCriadero;
     }
 
-    public void setLongitudCriadero(int longitudCriadero) {
+    public void setLongitudCriadero(float longitudCriadero) {
         this.longitudCriadero = longitudCriadero;
     }
 
-    public int getAnchoCriadero() {
+    public float getAnchoCriadero() {
         return anchoCriadero;
     }
 
-    public void setAnchoCriadero(int anchoCriadero) {
+    public void setAnchoCriadero(float anchoCriadero) {
         this.anchoCriadero = anchoCriadero;
     }
 
@@ -236,7 +236,7 @@ public class CtlPlCriadero implements Serializable{
             CtlEstablecimiento ctlEstablecimientoNew = targetDao.load(__key);
             synchronized (this) {
                 ctlEstablecimiento = ctlEstablecimientoNew;
-            	ctlEstablecimiento__resolvedKey = __key;
+                ctlEstablecimiento__resolvedKey = __key;
             }
         }
         return ctlEstablecimiento;
@@ -264,7 +264,7 @@ public class CtlPlCriadero implements Serializable{
             CtlCaserio ctlCaserioNew = targetDao.load(__key);
             synchronized (this) {
                 ctlCaserio = ctlCaserioNew;
-            	ctlCaserio__resolvedKey = __key;
+                ctlCaserio__resolvedKey = __key;
             }
         }
         return ctlCaserio;
@@ -292,7 +292,7 @@ public class CtlPlCriadero implements Serializable{
             FosUserUser fosUserUserNew = targetDao.load(__key);
             synchronized (this) {
                 fosUserUser = fosUserUserNew;
-            	fosUserUser__resolvedKey = __key;
+                fosUserUser__resolvedKey = __key;
             }
         }
         return fosUserUser;
@@ -311,9 +311,9 @@ public class CtlPlCriadero implements Serializable{
     }
 
     /**
-    * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-    * Entity must attached to an entity context.
-    */
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
     @Generated
     public void delete() {
         __throwIfDetached();
@@ -321,9 +321,9 @@ public class CtlPlCriadero implements Serializable{
     }
 
     /**
-    * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-    * Entity must attached to an entity context.
-    */
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
     @Generated
     public void update() {
         __throwIfDetached();
@@ -331,9 +331,9 @@ public class CtlPlCriadero implements Serializable{
     }
 
     /**
-    * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-    * Entity must attached to an entity context.
-    */
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
     @Generated
     public void refresh() {
         __throwIfDetached();

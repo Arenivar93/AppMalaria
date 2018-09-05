@@ -2,11 +2,13 @@ package com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,11 +16,12 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,18 +40,21 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
+import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimiento;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener {
+public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener,nuevoCriaderoDialogFragment.criaderoDialogListener{
     Spinner spMunicipio, spCanton,spCaserio;
     private GoogleMap mMap;
     private FloatingActionButton fab;
@@ -60,7 +66,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
     private double longitud;
     private ImageView guardar,cancelar;
     private ToggleButton tipoBusqueda;
-    private ImageView txtBusqueda;
+    private ImageView imgBusqueda;
     int MY_PERMISSION_LOCATION = 10;
     private Location currentLocation;
     private LocationManager locationManager;
@@ -82,6 +88,8 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
     Utilidades utilidades;
     private CtlPlCriadero criadero;
     private CtlPlCriaderoDao criaderoDao;
+    private AppCompatButton buttonSiguiente;
+    String elUser;
 
 
 
@@ -92,23 +100,33 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
         //Me permite regresar  a la actividad anterior
         ActionBar actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         fab = (FloatingActionButton) findViewById(R.id.fabCriadero2);
-        //guardar=(ImageView) findViewById(R.id.guardarGeoCaserio);
-        //cancelar=(ImageView) findViewById(R.id.cancelarGeoCaserio);
-        //tipoBusqueda=(ToggleButton)findViewById(R.id.tipoBusqueda);
-        //txtBusqueda=(ImageView) findViewById(R.id.imgBusqueda);
-        //latitudCriadero=(EditText) findViewById(R.id.criaderoLatitud);
-       // longitudCriadero=(EditText) findViewById(R.id.criaderoLongitud);
-        //txtBusqueda.setImageResource(R.drawable.mano44);
+        tipoBusqueda=(ToggleButton)findViewById(R.id.tipoBusqueda);
+        imgBusqueda =(ImageView) findViewById(R.id.imgBusqueda);
+        latitudCriadero=(EditText) findViewById(R.id.criaderoLatitud);
+        longitudCriadero=(EditText) findViewById(R.id.criaderoLongitud);
+        imgBusqueda.setImageResource(R.drawable.mano44);
+        buttonSiguiente=(AppCompatButton)findViewById(R.id.idSiguiente);
 
         spMunicipio = (Spinner)findViewById(R.id.spMun);
         spCanton = (Spinner)findViewById(R.id.spCan);
         spCaserio = (Spinner)findViewById(R.id.spCas);
 
-        listaMunicipio.add("Seleccione");
+        daoSession = ((MyMalaria) getApplication()).getDaoSession();
+        criaderoDao=daoSession.getCtlPlCriaderoDao();
+        utilidades=new Utilidades(daoSession);
+
+        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        elUser = prefs.getString("user", "");
+        int idDepto=utilidades.deptoUser(elUser);
+
+
+        municipios=utilidades.loadspinnerMunicipio(idDepto);
+        listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
         listaCanton.add("Seleccione");
         listaCaserios.add("Seleccione");
 
@@ -126,40 +144,6 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
         spCaserio.setAdapter(adapter3);
         adapter3.notifyDataSetChanged();
 
-
-        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-        daoSession = ((MyMalaria) getApplication()).getDaoSession();
-        utilidades=new Utilidades(daoSession);
-        criaderoDao=daoSession.getCtlPlCriaderoDao();
-
-
-        /*Bundle geolocalizarDatos=this.getIntent().getExtras();
-        if(geolocalizarDatos!=null){
-            idMunicipio=geolocalizarDatos.getInt("idMunicipio");
-            idCanton=geolocalizarDatos.getInt("idCanton");
-            idCaserio=geolocalizarDatos.getInt("idCaserio");
-            nombreCriadero=geolocalizarDatos.getString("criadero");
-            coordenada=geolocalizarDatos.getInt("coordenada");
-            criadero=daoSession.getCtlPlCriaderoDao().loadByRowId(geolocalizarDatos.getLong("id"));
-            nomMunicipio.setText(criadero.getCtlCaserio().getCtlCanton().getCtlMunicipio().getNombre());
-            nomCanton.setText(criadero.getCtlCaserio().getCtlCanton().getNombre());
-            nomCaserio.setText(criadero.getCtlCaserio().getNombre());
-            if(coordenada==1){
-                latitud=geolocalizarDatos.getDouble("latitud");
-                longitud=geolocalizarDatos.getDouble("longitud");
-                setTitle("Editar criadero: "+nombreCriadero);
-            }else{
-                setTitle("Georeferenciar criadero: "+nombreCriadero);
-            }
-        }else{
-            Intent geolocalizarCriadero=new Intent(AgregarCriaderoActivity.this, BuscarCriaderoActivity.class);
-            Bundle miBundle=new Bundle();
-            miBundle.putInt("bandera",3);
-            geolocalizarCriadero.putExtras(miBundle);
-            startActivity(geolocalizarCriadero);
-            finish();
-        }*/
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,28 +154,14 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                 }
             }
         });
-        /*guardar.setOnClickListener(new View.OnClickListener() {
+        buttonSiguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!latitudCriadero.getText().toString().isEmpty()
+                        && !longitudCriadero.getText().toString().isEmpty() && spCaserio.getSelectedItemPosition()!=0){
 
-                if(!latitudCriadero.getText().toString().isEmpty() && !longitudCriadero.getText().toString().isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Coordenadas Cargadas: " +
-                            "Latitud: "+latitudCriadero.getText()+" Longitud: " +
-                            " "+longitudCriadero.getText(),Toast.LENGTH_LONG).show();
-
-                    criadero.setLatitud(latitudCriadero.getText().toString());
-                    criadero.setLongitud(longitudCriadero.getText().toString());
-                    criaderoDao.update(criadero);
-                    Intent geolocalizarCriadero=new Intent(AgregarCriaderoActivity.this, BuscarCriaderoActivity.class);
-                    Bundle miBundle=new Bundle();
-                    miBundle.putString("criadero", nombreCriadero);
-                    miBundle.putInt("idMuni",idMunicipio);
-                    miBundle.putInt("idCtn",idCanton);
-                    miBundle.putInt("idCas",idCaserio);
-                    miBundle.putInt("bandera",0);
-                    geolocalizarCriadero.putExtras(miBundle);
-                    startActivity(geolocalizarCriadero);
-                    finish();
+                    nuevoCriaderoDialogFragment dialog = new nuevoCriaderoDialogFragment();
+                    dialog.show(getFragmentManager(), "dialog");
 
                 }else if(latitudCriadero.getText().toString().isEmpty() && longitudCriadero.getText().toString().isEmpty() && tipoBusqueda.isChecked()) {
                     if(!isGPSEnabled()){
@@ -199,32 +169,20 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                     }else {
                         Toast.makeText(getApplicationContext(),"Espere un momento, GPS calcula coordenadas",Toast.LENGTH_LONG).show();
                     }
+                }else if(spCaserio.getSelectedItemPosition()==0){
+                    Toast.makeText(getApplicationContext(),"Seleccione un caserio",Toast.LENGTH_LONG).show();
                 }else{
                     Toast.makeText(getApplicationContext(),"Latitud y Longitud vacios, debe de " +
                             "geolocalizar el criadero",Toast.LENGTH_LONG).show();
                 }
+
             }
-        });*/
-        /*cancelar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent geolocalizarCriadero=new Intent(AgregarCriaderoActivity.this, BuscarCriaderoActivity.class);
-                Bundle miBundle=new Bundle();
-                miBundle.putString("criadero", nombreCriadero);
-                miBundle.putInt("idMuni",idMunicipio);
-                miBundle.putInt("idCtn",idCanton);
-                miBundle.putInt("idCas",idCaserio);
-                miBundle.putInt("bandera",1);
-                geolocalizarCriadero.putExtras(miBundle);
-                startActivity(geolocalizarCriadero);
-                finish();
-            }
-        });*/
-       /* tipoBusqueda.setOnClickListener(new View.OnClickListener() {
+        });
+       tipoBusqueda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(tipoBusqueda.isChecked()){
-                    txtBusqueda.setImageResource(R.drawable.ic_gpsmap);
+                    imgBusqueda.setImageResource(R.drawable.ic_gpsmap);
                     habilitarPosicionInicial();
                     if(markerManual!=null){
                         //markerManual.remove();
@@ -233,7 +191,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                     latitudCriadero.setText(null);
                     longitudCriadero.setText(null);
                 }else{
-                    txtBusqueda.setImageResource(R.drawable.mano44);
+                    imgBusqueda.setImageResource(R.drawable.mano44);
                     if(markerGps!=null){
                         //markerGps.remove();
                         markerGps.setVisible(false);
@@ -248,20 +206,61 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
 
                 }
             }
-        });*/
+        });
+        spMunicipio.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position!=0){
+                    cantones=utilidades.loadSpinerCanton(municipios.get(position-1).getId());
+                    listaCanton.clear();
+                    listaCanton=utilidades.obetenerListaCantones(cantones);
+                    adapter2=new ArrayAdapter
+                            (parent.getContext(),android.R.layout.simple_list_item_1,listaCanton);
+                    spCanton.setAdapter(adapter2);
+                    adapter2.notifyDataSetChanged();
+                }else{
+                    listaCanton.clear();
+                    listaCanton.add("Seleccione");
+                    adapter2.notifyDataSetChanged();
+                    spCanton.setSelection(0);
+                    listaCaserios.clear();
+                    listaCaserios.add("Seleccione");
+                    adapter3.notifyDataSetChanged();
+                    spCaserio.setSelection(0);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        spCanton.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position!=0){
+                    caserios=utilidades.loadSpinerCaserio(cantones.get(position-1).getId());
+                    listaCaserios.clear();
+                    listaCaserios=utilidades.obetenerListaCaserios(caserios);
+                    adapter3=new ArrayAdapter
+                            (parent.getContext(),android.R.layout.simple_list_item_1,listaCaserios);
+                    spCaserio.setAdapter(adapter3);
+                    adapter3.notifyDataSetChanged();
+                }else{
+                    listaCaserios.clear();
+                    listaCaserios.add("Seleccione");
+                    adapter3.notifyDataSetChanged();
+                    spCaserio.setSelection(0);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         mapFragment.getMapAsync(this);
     }
 
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -272,19 +271,19 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                     .position(new LatLng(latitud, longitud))
                     .title("Latitud: "+latitud+" Longitud: "+longitud).draggable(true));
             zoomToLocationCoordenadas(latitud,longitud);
-            /*latitudCriadero.setText(null);
+            latitudCriadero.setText(null);
             longitudCriadero.setText(null);
             latitudCriadero.setText(String.valueOf(latitud));
-            longitudCriadero.setText(String.valueOf(longitud));*/
+            longitudCriadero.setText(String.valueOf(longitud));
         }
         setUpMap();
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-              //  if(tipoBusqueda.isChecked()){
-               //     Toast.makeText(getApplicationContext(),"La Busqueda GPS esta activada." +
-               //             " No puede agregar el marcador",Toast.LENGTH_LONG).show();
-              //  }else{
+                if(tipoBusqueda.isChecked()){
+                    Toast.makeText(getApplicationContext(),"La Busqueda GPS esta activada." +
+                            " No puede agregar el marcador",Toast.LENGTH_LONG).show();
+               }else{
                     if(markerGps!=null){
                         //markerGps.remove();
                         markerGps.setVisible(false);
@@ -299,12 +298,12 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                         markerManual.setVisible(true);
                         //zoomToLocationManual(latLng);
                     }
-                   /* latitudCriadero.setText(null);
+                   latitudCriadero.setText(null);
                     longitudCriadero.setText(null);
                     latitudCriadero.setText(String.valueOf(latLng.latitude));
-                    longitudCriadero.setText(String.valueOf(latLng.longitude));*/
+                    longitudCriadero.setText(String.valueOf(latLng.longitude));
 
-              //  }
+                }
             }
         });
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
@@ -320,14 +319,14 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
 
             @Override
             public void onMarkerDragEnd(Marker marker) {
-              //  if(tipoBusqueda.isChecked()){
-              //      Toast.makeText(getApplicationContext(),"No puede actualizar la coordena GPS",Toast.LENGTH_LONG).show();
-                //}else{
-                    /*latitudCriadero.setText(null);
+                if(tipoBusqueda.isChecked()){
+                    Toast.makeText(getApplicationContext(),"No puede actualizar la coordena GPS",Toast.LENGTH_LONG).show();
+                }else{
+                    latitudCriadero.setText(null);
                     longitudCriadero.setText(null);
                     latitudCriadero.setText(String.valueOf(marker.getPosition().latitude));
-                    longitudCriadero.setText(String.valueOf(marker.getPosition().longitude));*/
-            //    }
+                    longitudCriadero.setText(String.valueOf(marker.getPosition().longitude));
+                }
             }
         });
     }
@@ -399,10 +398,6 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
             if (ActivityCompat.checkSelfPermission(AgregarCriaderoActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(AgregarCriaderoActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            //Teoria****
-            //LocationManager---> These services allow applications to obtain periodic updates of the device's geographical location, or to fire an application-specified Intent when the device enters the proximity of a given geographical location.
-            //Location-->A data class representing a geographic location. A location can consist of a latitude, longitude, timestamp, and other information such as bearing, altitude and velocity.
-            //All locations generated by the LocationManager are guaranteed to have a valid latitude, longitude, and timestamp (both UTC time and elapsed real-time since boot), all other parameters are optional.
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (location == null) {
                 location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -485,19 +480,19 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
     @Override
     public void onLocationChanged(Location location) {
         //Verifico el tipo de busqueda
-       // if(tipoBusqueda.isChecked()){
+        if(tipoBusqueda.isChecked()){
             createOrUpdateMarkerByLocation(location);
-           /* latitudCriadero.setText(null);
+            latitudCriadero.setText(null);
             longitudCriadero.setText(null);
             latitudCriadero.setText(String.valueOf(location.getLatitude()));
-            longitudCriadero.setText(String.valueOf(location.getLongitude()));*/
-       // }else{
-          /*  if(markerGps!=null){
+            longitudCriadero.setText(String.valueOf(location.getLongitude()));
+        }else{
+            if(markerGps!=null){
                 //markerGps.remove();
                 markerGps.setVisible(false);
 
-            }*/
-        //}
+            }
+        }
 
     }
 
@@ -514,5 +509,54 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
     @Override
     public void onProviderDisabled(String s) {
 
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, String nombre, String descripcion, int tipo, float ancho, float largo) {
+
+        try {
+            Date fecha=new Date();
+            String sqlQUERY = "SELECT MAX(id) FROM CTL_PL_CRIADERO";
+            Cursor cursor = daoSession.getDatabase().rawQuery(sqlQUERY, null);
+            int idCriaderoMax = 0;
+            if (cursor.moveToFirst()) {
+                idCriaderoMax = cursor.getInt(0);
+            }
+            long idUser=utilidades.getIdUser(elUser);
+            FosUserUser usuario=daoSession.getFosUserUserDao().loadByRowId(idUser);
+            CtlCaserio caserio=daoSession.getCtlCaserioDao().loadByRowId(caserios.get(spCaserio.getSelectedItemPosition()-1).getId());
+
+            CtlPlCriadero criadero=new CtlPlCriadero();
+            criadero.setId((long)(idCriaderoMax+1));
+            criadero.setIdTipoCriadero(tipo);
+            criadero.setIdEstadoCriadero(1);
+            criadero.setNombre(nombre);
+            criadero.setDescripcion(descripcion);
+            criadero.setLatitud(latitudCriadero.getText().toString());
+            criadero.setLongitud(longitudCriadero.getText().toString());
+            criadero.setLongitudCriadero(largo);
+            criadero.setAnchoCriadero(ancho);
+            criadero.setFechaHoraMod(fecha);
+            criadero.setFechaHoraReg(fecha);
+            criadero.setIdUsarioReg(idUser);
+            criadero.setFosUserUser(usuario);
+            criadero.setCtlEstablecimiento(usuario.getCtlEstablecimiento());
+            criadero.setCtlCaserio(caserio);
+            daoSession.getCtlPlCriaderoDao().insert(criadero);
+
+            Intent listadoCriaderos=new Intent(this, BuscarCriaderoActivity.class);
+            startActivity(listadoCriaderos);
+            Toast.makeText(this,"El criadero fue registrado con exito!!!",Toast.LENGTH_LONG).show();
+            finish();
+
+        }catch (Exception e){
+            Toast.makeText(this,"Error, comuniquese con el administrador" +
+                    "del Sistema. Error:"+e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        Toast.makeText(this,"Cancelo la operación",Toast.LENGTH_LONG).show();
     }
 }

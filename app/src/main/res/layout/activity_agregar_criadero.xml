@@ -4,22 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:context=".CRUD.Criaderos.activityCriadero.AgregarCriaderoActivity" >
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="1">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        android:layout_weight="3">
                 <TextView
                     android:id="@+id/municipio"
                     android:layout_width="wrap_content"
@@ -31,14 +22,9 @@
                     android:id="@+id/spMun"
                     android:layout_width="220dp"
                     android:layout_height="40dp" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
                 <TextView
                     android:id="@+id/canton"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Canton"
                     android:textAppearance="?android:attr/textAppearanceSmall"/>
@@ -47,11 +33,6 @@
                     android:layout_width="220dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
                 <TextView
                     android:id="@+id/caserio"
                     android:layout_width="wrap_content"
@@ -62,127 +43,76 @@
                     android:id="@+id/spCas"
                     android:layout_width="220dp"
                     android:layout_height="40dp"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
                 <TextView
-                    android:id="@+id/tipo"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tipo Criadero:"
-                    android:textAppearance="?android:attr/textAppearanceSmall"/>
-                <Spinner
-                    android:id="@+id/spTipo"
-                    android:layout_width="220dp"
-                    android:layout_height="40dp"/>
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nombre:"/>
-            <EditText
-                android:layout_width="500dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="23dp"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Descripción:"/>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                    android:layout_marginTop="10dp"
+                    android:text="Seleccione tipo de Busqueda"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/linea"
+                    android:orientation="horizontal"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ToggleButton
+                        android:id="@+id/tipoBusqueda"
+                        android:layout_width="wrap_content"
+                        android:textOn="Manual"
+                        android:textOff="GPS"
+                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:id="@+id/imgBusqueda"
+                        android:layout_marginLeft="60dp"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dimenciones"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Coordenadas:"/>
+
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ancho(m)"/>
-                    <EditText
-                        android:layout_width="125dp"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Largo(m)"/>
-                    <EditText
-                        android:layout_width="125dp"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/linea"
+                    android:orientation="horizontal"
+                    />
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Latitud:"/>
+                <EditText
+                    android:id="@+id/criaderoLatitud"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:focusable="false"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Longitud:"/>
+                <EditText
+                    android:id="@+id/criaderoLongitud"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:focusable="false"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/idSiguiente"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Coordenadas"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Latitud:"/>
-                    <EditText
-                        android:id="@+id/criaderoLatitud"
-                        android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:focusable="false"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Longitud:"/>
-                    <EditText
-                        android:id="@+id/criaderoLongitud"
-                        android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:focusable="false"/>
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="35dp"
+                    android:text="Siguiente "
+                    android:textColor="@color/colorButtonLetra"
+                    android:backgroundTint="@color/colorButtonSiguiente"
+                    android:drawableRight="@drawable/next2"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
