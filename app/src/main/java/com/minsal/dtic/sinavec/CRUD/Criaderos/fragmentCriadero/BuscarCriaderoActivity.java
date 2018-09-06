@@ -108,7 +108,7 @@ public class BuscarCriaderoActivity extends AppCompatActivity implements AddStud
 
         listaCanton.add("Seleccione");
         listaCaserios.add("Seleccione");
-        municipios=utilidades.loadspinnerMunicipio(3);
+        municipios=utilidades.loadspinnerMunicipio(idDepto);
         listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
 
         adapter=new ArrayAdapter

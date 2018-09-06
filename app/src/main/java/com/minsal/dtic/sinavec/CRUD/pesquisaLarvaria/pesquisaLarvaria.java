@@ -4,8 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AbsSpinner;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,8 +23,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
@@ -35,7 +44,12 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     private CameraPosition cameraZoom;
     ArrayList<LatLng> locations = new ArrayList();
     ArrayList<String> nombres = new ArrayList();
-
+    private List<CtlMunicipio> municipios;
+    private ArrayList<String> listaMunicipio;
+    private Spinner spMunicipioPesquisa;
+    int depto = MainActivity.depto;
+    TextView tvCountCriadero;
+    Button btnBuscarCriaderoPes;
 
 
     @Override
@@ -44,13 +58,25 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
         setContentView(R.layout.activity_pesquisa_larvaria);
         daoSession      =((MyMalaria)getApplicationContext()).getDaoSession();
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        spMunicipioPesquisa =(Spinner)findViewById(R.id.spMunicipioPesquisa);
+        tvCountCriadero = (TextView)findViewById(R.id.tvCountCriadero);
+        btnBuscarCriaderoPes = (Button)findViewById(R.id.btnBuscarCriaderoPes);
         u=new Utilidades(daoSession);
-
+        loadSpinerMun();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
+        btnBuscarCriaderoPes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long idMunicipio = getIdMunicipioPes();
+                criaderosMap((int)idMunicipio);
+                setupMap();
+
+            }
+        });
     }
 
 
@@ -67,15 +93,13 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         moverCamaraDepartamento();
-
-
-
-        for (CtlPlCriadero c: listaAdapter()){
+        long muni=3;
+        /*for (CtlPlCriadero c: criaderosMap((int)muni)){
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
                     .title(c.getNombre())).setTag(c);
         }
-
+*/
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -90,31 +114,29 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
 
             }
         });
-        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-            @Override
-            public void onMarkerDragStart(Marker marker) {
 
-            }
-
-            @Override
-            public void onMarkerDrag(Marker marker) {
-
-            }
-
-            @Override
-            public void onMarkerDragEnd(Marker marker) {
-
-            }
-        });
 
     }
 
-    public List<CtlPlCriadero> listaAdapter(){
+    public List<CtlPlCriadero> criaderosMap(int municipio){
         Utilidades u = new Utilidades(daoSession);
         List<CtlPlCriadero> criaderos = u.loadCriaderosMap();
-
         return criaderos;
     }
+
+    private void moverCamaraDepartamento() {
+        String elUser = prefs.getString("user", "");
+        int idDepto=u.deptoUser(elUser);
+        List<Double> coordenadasDepto=u.getCoordenadasDepartamento(idDepto);
+        cameraZoom=new CameraPosition.Builder()
+                .target(new LatLng(coordenadasDepto.get(0),coordenadasDepto.get(1)))
+                .zoom(13)
+                .bearing(0)
+                .tilt(30)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
+    }
+
 
     @Override
     public void onLocationChanged(Location location) {
@@ -135,16 +157,32 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     public void onProviderDisabled(String s) {
 
     }
-    private void moverCamaraDepartamento() {
-        String elUser = prefs.getString("user", "");
-        int idDepto=u.deptoUser(elUser);
-        List<Double> coordenadasDepto=u.getCoordenadasDepartamento(idDepto);
-        cameraZoom=new CameraPosition.Builder()
-                .target(new LatLng(coordenadasDepto.get(0),coordenadasDepto.get(1)))
-                .zoom(13)
-                .bearing(0)
-                .tilt(30)
-                .build();
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
+    private void loadSpinerMun() {
+        Utilidades u   = new Utilidades(daoSession);
+        municipios     = u.loadspinnerMunicipio(depto);
+        listaMunicipio = u.obtenerListaMunicipio(municipios);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>
+                (this, android.R.layout.simple_list_item_1, listaMunicipio);
+        spMunicipioPesquisa.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
+    public long getIdMunicipioPes() {
+        int listIdMunicipio = spMunicipioPesquisa.getSelectedItemPosition();
+        int idMunicipio = 0;
+        if (listIdMunicipio != 0) {
+            idMunicipio = (int) (long) municipios.get(listIdMunicipio - 1).getId();
+        }
+        return idMunicipio;
+    }
+    public void setupMap(){
+        long muni=3;
+        for (CtlPlCriadero c: criaderosMap((int)muni)){
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
+                    .title(c.getNombre())).setTag(c);
+        }
+
+
+    }
+
 }
