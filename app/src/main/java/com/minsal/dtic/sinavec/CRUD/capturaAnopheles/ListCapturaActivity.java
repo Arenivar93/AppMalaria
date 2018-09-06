@@ -1,42 +1,27 @@
-package com.minsal.dtic.sinavec;
-
+package com.minsal.dtic.sinavec.CRUD.capturaAnopheles;
 import android.content.Intent;
-import android.database.Cursor;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TableLayout;
-import android.widget.Toast;
-
-import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
-import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
-import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
-import com.minsal.dtic.sinavec.EntityDAO.CtlCaserioDao;
-import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
-import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
+import com.minsal.dtic.sinavec.MyMalaria;
+import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.adapters.AdapterCapturas;
-
-import org.greenrobot.greendao.query.Join;
-import org.greenrobot.greendao.query.QueryBuilder;
-
+import com.minsal.dtic.sinavec.utilidades.Utilidades;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ListCapturaActivity extends AppCompatActivity {
     Button btnNuevaCaptura;
-    TableLayout tbListCaptura;
     ArrayList<PlCapturaAnopheles> capturas;
     ListView lvCaptura;
-    String[] listaArray;
-
+    List<PlCapturaAnopheles> capturasAnopheles;
+    Utilidades u;
     private DaoSession daoSession;
 
     @Override
@@ -48,51 +33,48 @@ public class ListCapturaActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         daoSession      =((MyMalaria)getApplicationContext()).getDaoSession();
-        ArrayList<String> capturasSemana = getCapturas();
-
+        u.fragment = 0;
+        final ArrayList<String> capturasSemana = listaAdapter();
         AdapterCapturas adapter =new AdapterCapturas(this,capturasSemana);
         lvCaptura.setAdapter(adapter);
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(ListCapturaActivity.this);
-        builder.setMessage("prueba alert")
-                .setNegativeButton("Retry", null)
-                .create().show();*/
-
+        adapter.notifyDataSetChanged();
         btnNuevaCaptura.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),CapturaAnopheles.class);
                 i.putExtra("accion","Nueva");
                 startActivity(i);
-
+                finish();
             }
         });
 
         lvCaptura.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                long id =  capturasAnopheles.get(position).getId();
                 Intent nuevo = new Intent(getApplicationContext(), CapturaAnopheles.class);
                 nuevo.putExtra("accion","edit");
-                nuevo.putExtra("position",position);
+                nuevo.putExtra("id",id);
                 startActivity(nuevo);
+                finish();
             }
         });
     }
-    public ArrayList<String> getCapturas(){
-        ArrayList<String> caps = new ArrayList<String>();
-        String sqlQUERY = "SELECT cas.nombre,can.nombre, mun.nombre, cap.propietario, cap.total_mosquitos,cap.total_anopheles," +
-                "cap.id_semana_epidemiologica,cap.id \n" +
-                "FROM PL_CAPTURA_ANOPHELES cap\n" +
-                "INNER JOIN CTL_CASERIO cas on(cas.id=cap.ID_CASERIO)\n" +
-                "INNER JOIN CTL_CANTON can on(can.id=cas.ID_CANTON)\n" +
-                "INNER JOIN CTL_MUNICIPIO mun on(mun.id=can.ID_MUNICIPIO) ORDER BY cap.id DESC";
-        Cursor c = daoSession.getDatabase().rawQuery(sqlQUERY, null);
-        if (c.moveToFirst()) {
-            do {
-                caps.add(c.getString(2)+"-"+c.getString(1)+"-"+c.getString(0)+"-"+c.getString(3)+"-"+c.getString(5)+"-"+c.getString(6)+"-"+c.getString(7));
-
-            } while (c.moveToNext());
+    public ArrayList<String> listaAdapter(){
+        Utilidades u = new Utilidades(daoSession);
+        capturasAnopheles = u.loadListcapturas();
+        ArrayList<String> lista = new ArrayList<String>();
+        List<PlCapturaAnopheles> objList = capturasAnopheles;
+        for (PlCapturaAnopheles p: objList){
+            lista.add(p.getCtlCaserio().getCtlCanton().getCtlMunicipio().getNombre()
+                      +"-"+p.getCtlCaserio().getCtlCanton().getNombre()
+                      +"-"+p.getCtlCaserio().getNombre()
+                      +"-"+p.getPropietario()
+                      +"-"+p.getTotalAnopheles()
+                      +"-"+p.getIdSemanaEpidemiologica()) ;
         }
-        c.close();
-        return caps;
+
+        return lista;
     }
+
 }

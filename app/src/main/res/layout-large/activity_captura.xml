@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.minsal.dtic.sinavec.CapturaAnopheles">
+    tools:context="com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -204,13 +204,11 @@
                         android:id="@+id/edtZancudo"
                         android:layout_width="272dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="150dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="72dp"
                         android:ems="10"
                         android:hint="Total Zancudos"
                         android:inputType="textPersonName|number"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/textView10"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -281,6 +279,7 @@
                         android:layout_marginStart="492dp"
                         android:layout_marginTop="24dp"
                         android:clickable="true"
+                        style="?android:borderlessButtonStyle"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edtTiempo"
                         app:srcCompat="@drawable/guardar" />
@@ -291,6 +290,7 @@
                         android:layout_height="100dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="24dp"
+                        style="?android:borderlessButtonStyle"
                         android:clickable="true"
                         app:layout_constraintStart_toEndOf="@+id/imGuardar"
                         app:layout_constraintTop_toBottomOf="@+id/edtTiempo"

@@ -11,8 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.minsal.dtic.sinavec.CapturaAnopheles;
-import com.minsal.dtic.sinavec.ListCapturaActivity;
+import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles;
+import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.ListCapturaActivity;
+import com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria.ListPesquisaActivity;
 import com.minsal.dtic.sinavec.R;
 
 
@@ -60,7 +61,7 @@ public class MainFragment extends Fragment{
         pesquisaCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),CapturaAnopheles.class);
+                Intent intent=new Intent(getActivity(),ListPesquisaActivity.class);
                 startActivity(intent);
 
             }

@@ -7,16 +7,22 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
+import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
 import com.minsal.dtic.sinavec.R;
 
 import java.util.ArrayList;
 import java.util.List;
 public class AdapterCapturas extends BaseAdapter {
     Context context;
+   // ArrayList<String> capturas;
+    DaoSession daoSession;
+    ArrayList<String> listaCapturas;
     ArrayList<String> capturas;
+    PlCapturaAnophelesDao capDao;
 
-    public AdapterCapturas(Context context, ArrayList<String> capturas) {
+    public AdapterCapturas(Context context,  ArrayList<String> capturas) {
         this.context = context;
         this.capturas = capturas;
 
@@ -40,6 +46,7 @@ public class AdapterCapturas extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
+        String pa ="";
 
         TextView tv1, tv2, tv3,tv4,tv5,tv6,tvId;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -60,10 +67,10 @@ public class AdapterCapturas extends BaseAdapter {
         tv3.setText(tvs[2]);
         tv4.setText(tvs[3]);
         tv5.setText(tvs[4]);
-        tv6.setText(tvs[5]);
-        tvId.setText(tvs[6]);
+       tv6.setText(tvs[5]);
         return v;
     }
+
 
 
 }

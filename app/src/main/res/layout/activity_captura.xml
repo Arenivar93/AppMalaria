@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.minsal.dtic.sinavec.CapturaAnopheles">
+    tools:context="com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="300dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -38,12 +38,14 @@
 
                     <Spinner
                         android:id="@+id/idMunicipioCap"
-                        android:layout_width="220dp"
-                        android:layout_height="40dp" />
+                        android:layout_width="150dp"
+                        android:layout_height="40dp"
+                        android:focusableInTouchMode="true"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="300dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -54,12 +56,13 @@
 
                     <Spinner
                         android:id="@+id/idCantonCap"
-                        android:layout_width="220dp"
-                        android:layout_height="40dp" />
+                        android:layout_width="150dp"
+                        android:layout_height="40dp"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="300dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -72,7 +75,7 @@
 
                     <Spinner
                         android:id="@+id/idCaserioCap"
-                        android:layout_width="220dp"
+                        android:layout_width="150dp"
                         android:layout_height="40dp" />
                 </LinearLayout>
 
@@ -89,7 +92,7 @@
                 android:paddingTop="40dp">
 
                 <LinearLayout
-                    android:layout_width="300dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -106,7 +109,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="300dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -122,7 +125,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="300dp"
+                    android:layout_width="150dp"
                     android:layout_height="90dp"
                     android:orientation="vertical">
 
@@ -131,7 +134,8 @@
                         android:layout_height="wrap_content"
                         android:paddingRight="50dp"
                         android:paddingStart="15dp"
-                        android:text="Fecha Realización:" />
+                        android:text="Fecha Realización:"
+                        android:visibility="invisible" />
 
                     <EditText
                         android:id="@+id/edtFecha"
@@ -142,7 +146,8 @@
                         android:ems="10"
                         android:focusable="false"
                         android:hint="Fecha realizacion"
-                        android:inputType="date" />
+                        android:inputType="date"
+                        android:visibility="invisible" />
                 </LinearLayout>
 
 
@@ -159,7 +164,7 @@
 
                     <TextView
                         android:id="@+id/tvPropietario"
-                        android:layout_width="96dp"
+                        android:layout_width="70dp"
                         android:layout_height="59dp"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
@@ -173,7 +178,7 @@
 
                     <EditText
                         android:id="@+id/edtPropietario"
-                        android:layout_width="259dp"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="72dp"
@@ -197,15 +202,13 @@
 
                     <EditText
                         android:id="@+id/edtZancudo"
-                        android:layout_width="272dp"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="150dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="72dp"
                         android:ems="10"
                         android:hint="Total Zancudos"
                         android:inputType="textPersonName|number"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/textView10"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -221,7 +224,7 @@
 
                     <EditText
                         android:id="@+id/edtAnopheles"
-                        android:layout_width="258dp"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="36dp"
@@ -233,7 +236,7 @@
 
                     <EditText
                         android:id="@+id/edtTiempo"
-                        android:layout_width="269dp"
+                        android:layout_width="150dp"
                         android:layout_height="43dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="28dp"
@@ -255,29 +258,41 @@
 
                     <EditText
                         android:id="@+id/edtComponentes"
-                        android:layout_width="260dp"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="60dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="36dp"
                         android:ems="10"
                         android:hint="Componentes Inspeccionados"
-                        android:inputType="textPersonName"
+                        android:inputType="number"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/textView13"
                         app:layout_constraintTop_toBottomOf="@+id/edtAnopheles"
                         app:layout_constraintVertical_bias="0.0" />
 
+
                     <ImageView
                         android:id="@+id/imGuardar"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:layout_marginStart="492dp"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginStart="392dp"
                         android:layout_marginTop="24dp"
                         android:clickable="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edtTiempo"
                         app:srcCompat="@drawable/guardar" />
+
+                    <ImageView
+                        android:id="@+id/imHome"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:clickable="true"
+                        app:layout_constraintStart_toEndOf="@+id/imGuardar"
+                        app:layout_constraintTop_toBottomOf="@+id/edtTiempo"
+                        app:srcCompat="@drawable/if_home_173033" />
 
                     <TextView
                         android:id="@+id/textView14"
@@ -303,6 +318,5 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 
 </LinearLayout>

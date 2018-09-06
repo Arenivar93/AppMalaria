@@ -35,16 +35,16 @@ import java.util.List;
 
 public class Utilidades {
 
-    public static int rotacion=0;
-    public static boolean valida=true;
+    public static int rotacion = 0;
+    public static boolean valida = true;
 
-    public static final int LIST=1;
-    public static final int GRID=2;
+    public static final int LIST = 1;
+    public static final int GRID = 2;
 
 
-    public static int visualizacion=LIST;
+    public static int visualizacion = LIST;
 
-    public static int fragment=0;
+    public static int fragment = 0;
 
 
     DaoSession daoSession;
@@ -52,6 +52,7 @@ public class Utilidades {
     CtlCantonDao daoCanton;
     CtlCaserioDao daoCaserio;
     PlCapturaAnophelesDao capDao;
+    CtlPlCriaderoDao criaderoDao;
 
     ArrayList<String> listaMunicipio;
     ArrayList<String> listaCanton;
@@ -61,6 +62,7 @@ public class Utilidades {
 
     List<CtlCaserio> caserios;
     List<PlCapturaAnopheles> capturas;
+    List<CtlPlCriadero> criaderosMap;
     List<CtlPlCriadero> criaderos;
     List<PlColvol> colvols;
 
@@ -68,18 +70,19 @@ public class Utilidades {
         this.daoSession = daoSession;
     }
 
-    public List<CtlMunicipio> loadspinnerMunicipio(int idDepto){
-        CtlMunicipio municipio=null;
-        daoMunicipio=daoSession.getCtlMunicipioDao();
-        List<CtlMunicipio> municipios=new ArrayList<CtlMunicipio>();
-        municipios=daoMunicipio.queryBuilder().where(CtlMunicipioDao.Properties.IdDepartamento.eq(idDepto))
+    public List<CtlMunicipio> loadspinnerMunicipio(int idDepto) {
+        CtlMunicipio municipio = null;
+        daoMunicipio = daoSession.getCtlMunicipioDao();
+        List<CtlMunicipio> municipios = new ArrayList<CtlMunicipio>();
+        municipios = daoMunicipio.queryBuilder().where(CtlMunicipioDao.Properties.IdDepartamento.eq(idDepto))
                 .orderAsc(CtlMunicipioDao.Properties.Nombre).list();
         return municipios;
     }
-    public ArrayList<String> obtenerListaMunicipio(List<CtlMunicipio> municipios){
-        listaMunicipio=new ArrayList<String>();
+
+    public ArrayList<String> obtenerListaMunicipio(List<CtlMunicipio> municipios) {
+        listaMunicipio = new ArrayList<String>();
         listaMunicipio.add("Seleccione");
-        for (int i=0;i<municipios.size();i++){
+        for (int i = 0; i < municipios.size(); i++) {
             listaMunicipio.add(municipios.get(i).getNombre());
         }
         return listaMunicipio;
@@ -87,17 +90,17 @@ public class Utilidades {
 
 
     public List<CtlCanton> loadSpinerCanton(Long idM) {
-        daoCanton=daoSession.getCtlCantonDao();
-        cantones=new ArrayList<CtlCanton>();
-        cantones=daoCanton.queryBuilder().where(CtlCantonDao.Properties.IdMunicipio.eq(idM))
+        daoCanton = daoSession.getCtlCantonDao();
+        cantones = new ArrayList<CtlCanton>();
+        cantones = daoCanton.queryBuilder().where(CtlCantonDao.Properties.IdMunicipio.eq(idM))
                 .orderAsc(CtlCantonDao.Properties.Nombre).list();
         return cantones;
     }
 
     public ArrayList<String> obetenerListaCantones(List<CtlCanton> cantones) {
-        listaCanton=new ArrayList<String>();
+        listaCanton = new ArrayList<String>();
         listaCanton.add("Seleccione");
-        for (int i=0;i<cantones.size();i++){
+        for (int i = 0; i < cantones.size(); i++) {
             listaCanton.add(cantones.get(i).getNombre());
         }
         return listaCanton;
@@ -105,102 +108,103 @@ public class Utilidades {
 
 
     public List<CtlCaserio> loadSpinerCaserio(Long idCtn) {
-        daoCaserio=daoSession.getCtlCaserioDao();
-        caserios=new ArrayList<CtlCaserio>();
-        caserios=daoCaserio.queryBuilder().where(CtlCaserioDao.Properties.IdCanton.eq(idCtn))
+        daoCaserio = daoSession.getCtlCaserioDao();
+        caserios = new ArrayList<CtlCaserio>();
+        caserios = daoCaserio.queryBuilder().where(CtlCaserioDao.Properties.IdCanton.eq(idCtn))
                 .orderAsc(CtlCaserioDao.Properties.Nombre).list();
         return caserios;
     }
 
     public ArrayList<String> obetenerListaCaserios(List<CtlCaserio> caserios) {
-        listaCaserios=new ArrayList<String>();
+        listaCaserios = new ArrayList<String>();
         listaCaserios.add("Seleccione");
-        for (int i=0;i<caserios.size();i++){
+        for (int i = 0; i < caserios.size(); i++) {
             listaCaserios.add(caserios.get(i).getNombre());
         }
         return listaCaserios;
     }
 
-    public List<CtlPlCriadero> obtenerCriaderosByIds(DaoSession daoSession, int idMuni, int idCtn, int idCas){
-        criaderos=new ArrayList<CtlPlCriadero>();
-        if(idMuni!=0){
-            if(idCtn!=0 && idCas==0){
+    public List<CtlPlCriadero> obtenerCriaderosByIds(DaoSession daoSession, int idMuni, int idCtn, int idCas) {
+        criaderos = new ArrayList<CtlPlCriadero>();
+        if (idMuni != 0) {
+            if (idCtn != 0 && idCas == 0) {
                 //Ejecutara busqueda de municipio y canton
                  /* QueryBuilder<User> queryBuilder = userDao.queryBuilder();
                 queryBuilder.join(Address.class, AddressDao.Properties.userId)
                         .where(AddressDao.Properties.Street.eq("Sesame Street"));
                 List<User> users = queryBuilder.list();*/
 
-                CtlPlCriaderoDao criaderoDao=daoSession.getCtlPlCriaderoDao();
+                CtlPlCriaderoDao criaderoDao = daoSession.getCtlPlCriaderoDao();
 
                 QueryBuilder<CtlPlCriadero> queryBuilder = criaderoDao.queryBuilder();
-                Join ctlCaserio =queryBuilder.join(CtlPlCriaderoDao.Properties.IdCaserio,CtlCaserio.class);
-                Join ctlCanton=queryBuilder.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
-                        CtlCanton.class,CtlCantonDao.Properties.Id);
+                Join ctlCaserio = queryBuilder.join(CtlPlCriaderoDao.Properties.IdCaserio, CtlCaserio.class);
+                Join ctlCanton = queryBuilder.join(ctlCaserio, CtlCaserioDao.Properties.IdCanton,
+                        CtlCanton.class, CtlCantonDao.Properties.Id);
                 ctlCanton.where(CtlCantonDao.Properties.Id.eq(idCtn));
-                criaderos=queryBuilder.orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
+                criaderos = queryBuilder.orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
 
-            }else if(idCtn!=0 && idCas!=0){
+            } else if (idCtn != 0 && idCas != 0) {
                 //Ejecutara busqueda de muni ctn y cass
-                criaderos=daoSession.getCtlPlCriaderoDao()
+                criaderos = daoSession.getCtlPlCriaderoDao()
                         .queryBuilder()
                         .where(CtlPlCriaderoDao.Properties.IdCaserio.eq(idCas))
                         .orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
 
-            }else{
+            } else {
                 //ejecutara busqueda solo de municipio
-                CtlPlCriaderoDao criaderoDao=daoSession.getCtlPlCriaderoDao();
+                CtlPlCriaderoDao criaderoDao = daoSession.getCtlPlCriaderoDao();
 
                 QueryBuilder<CtlPlCriadero> queryBuilder = criaderoDao.queryBuilder();
-                Join ctlCaserio =queryBuilder.join(CtlPlCriaderoDao.Properties.IdCaserio,CtlCaserio.class);
-                Join ctlCanton=queryBuilder.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
-                        CtlCanton.class,CtlCantonDao.Properties.Id);
-                Join ctlMunicipio=queryBuilder.join(ctlCanton,CtlCantonDao.Properties.IdMunicipio,
-                        CtlMunicipio.class,CtlMunicipioDao.Properties.Id);
+                Join ctlCaserio = queryBuilder.join(CtlPlCriaderoDao.Properties.IdCaserio, CtlCaserio.class);
+                Join ctlCanton = queryBuilder.join(ctlCaserio, CtlCaserioDao.Properties.IdCanton,
+                        CtlCanton.class, CtlCantonDao.Properties.Id);
+                Join ctlMunicipio = queryBuilder.join(ctlCanton, CtlCantonDao.Properties.IdMunicipio,
+                        CtlMunicipio.class, CtlMunicipioDao.Properties.Id);
                 ctlMunicipio.where(CtlMunicipioDao.Properties.Id.eq(idMuni));
-                criaderos=queryBuilder.orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
+                criaderos = queryBuilder.orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
             }
-            }else {
+        } else {
 
         }
 
         return criaderos;
 
     }
-    public List<PlColvol> obtenerColvolByIds(DaoSession daoSession, int idMuni, int idCtn, int idCas){
-        colvols=new ArrayList<PlColvol>();
-        if(idMuni!=0){
-            if(idCtn!=0 && idCas==0){
-                PlColvolDao colvolDao=daoSession.getPlColvolDao();
+
+    public List<PlColvol> obtenerColvolByIds(DaoSession daoSession, int idMuni, int idCtn, int idCas) {
+        colvols = new ArrayList<PlColvol>();
+        if (idMuni != 0) {
+            if (idCtn != 0 && idCas == 0) {
+                PlColvolDao colvolDao = daoSession.getPlColvolDao();
 
                 QueryBuilder<PlColvol> queryBuilder = colvolDao.queryBuilder();
-                Join ctlCaserio =queryBuilder.join(PlColvolDao.Properties.IdCaserio,CtlCaserio.class);
-                Join ctlCanton=queryBuilder.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
-                        CtlCanton.class,CtlCantonDao.Properties.Id);
+                Join ctlCaserio = queryBuilder.join(PlColvolDao.Properties.IdCaserio, CtlCaserio.class);
+                Join ctlCanton = queryBuilder.join(ctlCaserio, CtlCaserioDao.Properties.IdCanton,
+                        CtlCanton.class, CtlCantonDao.Properties.Id);
                 ctlCanton.where(CtlCantonDao.Properties.Id.eq(idCtn));
-                colvols=queryBuilder.orderAsc(PlColvolDao.Properties.Nombre).list();
+                colvols = queryBuilder.orderAsc(PlColvolDao.Properties.Nombre).list();
 
-            }else if(idCtn!=0 && idCas!=0){
+            } else if (idCtn != 0 && idCas != 0) {
                 //Ejecutara busqueda de muni ctn y cass
-                colvols=daoSession.getPlColvolDao()
+                colvols = daoSession.getPlColvolDao()
                         .queryBuilder()
                         .where(PlColvolDao.Properties.IdCaserio.eq(idCas))
                         .orderAsc(PlColvolDao.Properties.Nombre).list();
 
-            }else{
+            } else {
                 //ejecutara busqueda solo de municipio
-                PlColvolDao colvolDao=daoSession.getPlColvolDao();
+                PlColvolDao colvolDao = daoSession.getPlColvolDao();
 
                 QueryBuilder<PlColvol> queryBuilder = colvolDao.queryBuilder();
-                Join ctlCaserio =queryBuilder.join(PlColvolDao.Properties.IdCaserio,CtlCaserio.class);
-                Join ctlCanton=queryBuilder.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
-                        CtlCanton.class,CtlCantonDao.Properties.Id);
-                Join ctlMunicipio=queryBuilder.join(ctlCanton,CtlCantonDao.Properties.IdMunicipio,
-                        CtlMunicipio.class,CtlMunicipioDao.Properties.Id);
+                Join ctlCaserio = queryBuilder.join(PlColvolDao.Properties.IdCaserio, CtlCaserio.class);
+                Join ctlCanton = queryBuilder.join(ctlCaserio, CtlCaserioDao.Properties.IdCanton,
+                        CtlCanton.class, CtlCantonDao.Properties.Id);
+                Join ctlMunicipio = queryBuilder.join(ctlCanton, CtlCantonDao.Properties.IdMunicipio,
+                        CtlMunicipio.class, CtlMunicipioDao.Properties.Id);
                 ctlMunicipio.where(CtlMunicipioDao.Properties.Id.eq(idMuni));
-                colvols=queryBuilder.orderAsc(PlColvolDao.Properties.Nombre).list();
+                colvols = queryBuilder.orderAsc(PlColvolDao.Properties.Nombre).list();
             }
-        }else {
+        } else {
 
         }
 
@@ -208,36 +212,37 @@ public class Utilidades {
 
     }
 
-    public List<PlTipoActividad> loadspinnerActividad(){
+    public List<PlTipoActividad> loadspinnerActividad() {
         //PlTipoActividad actividad=null;
-        PlTipoActividadDao actividadDao=daoSession.getPlTipoActividadDao();
-        List<PlTipoActividad> actividad=new ArrayList<PlTipoActividad>();
-        actividad=actividadDao.loadAll();
+        PlTipoActividadDao actividadDao = daoSession.getPlTipoActividadDao();
+        List<PlTipoActividad> actividad = new ArrayList<PlTipoActividad>();
+        actividad = actividadDao.loadAll();
         return actividad;
     }
-    public ArrayList<String> obtenerListaActividad(List<PlTipoActividad> actividades){
-        ArrayList<String> listaActividad=new ArrayList<String>();
+
+    public ArrayList<String> obtenerListaActividad(List<PlTipoActividad> actividades) {
+        ArrayList<String> listaActividad = new ArrayList<String>();
         listaActividad.add("Seleccione");
-        for (int i=0;i<actividades.size();i++){
+        for (int i = 0; i < actividades.size(); i++) {
             listaActividad.add(actividades.get(i).getNombre());
         }
         return listaActividad;
     }
 
 
-
-
-    public List<PlTipoCaptura> loadspinnerCaptura(){
-        PlTipoCapturaDao capturaDao=daoSession.getPlTipoCapturaDao();
-        List<PlTipoCaptura> captura=new ArrayList<PlTipoCaptura>();
-        captura=capturaDao.loadAll();
+    public List<PlTipoCaptura> loadspinnerCaptura() {
+        PlTipoCapturaDao capturaDao = daoSession.getPlTipoCapturaDao();
+        List<PlTipoCaptura> captura = new ArrayList<PlTipoCaptura>();
+        captura = capturaDao.loadAll();
         return captura;
     }
-    public ArrayList<String> obtenerListaCaptura(List<PlTipoCaptura> capturas){
-        ArrayList<String> listaCaptura=new ArrayList<String>();
+
+    public ArrayList<String> obtenerListaCaptura(List<PlTipoCaptura> capturas) {
+        ArrayList<String> listaCaptura = new ArrayList<String>();
         listaCaptura.add("Seleccione");
-        for (int i=0;i<capturas.size();i++){
-            listaCaptura.add(capturas.get(i).getNombre());        }
+        for (int i = 0; i < capturas.size(); i++) {
+            listaCaptura.add(capturas.get(i).getNombre());
+        }
         return listaCaptura;
     }
 
@@ -259,12 +264,12 @@ public class Utilidades {
     }
 
     public List<Double> getCoordenadasDepartamento(int idDepto) {
-        List<Double> coordenadas=new ArrayList<Double>();
-        switch (idDepto){
+        List<Double> coordenadas = new ArrayList<Double>();
+        switch (idDepto) {
             case 1:
                 coordenadas.add(13.924417447800225);
                 coordenadas.add(-89.84502099044607);
-            break;
+                break;
             case 2:
                 coordenadas.add(13.98944214420671);
                 coordenadas.add(-89.55775603094685);
@@ -321,18 +326,32 @@ public class Utilidades {
 
         return coordenadas;
     }
+
     public List<PlCapturaAnopheles> loadListcapturas() {
-        capDao=daoSession.getPlCapturaAnophelesDao();
-        capturas=new ArrayList<PlCapturaAnopheles>();
-        capturas=capDao.loadAll();
+        capDao = daoSession.getPlCapturaAnophelesDao();
+        capturas = new ArrayList<PlCapturaAnopheles>();
+        capturas = capDao.loadAll();
         return capturas;
     }
 
     public ArrayList<String> getListaCapturas(List<PlCapturaAnopheles> capturas) {
-        listaCapturas=new ArrayList<String>();
-        for (int i=0;i<capturas.size();i++){
-            listaCapturas.add(String.valueOf(capturas.get(i).getId()));
+        listaCapturas = new ArrayList<String>();
+        for (int i = 0; i < capturas.size(); i++) {
+            listaCapturas.add(capturas.get(i).getCtlCaserio().getCtlCanton().getCtlMunicipio().getNombre()
+                    + "-" + capturas.get(i).getCtlCaserio().getCtlCanton().getNombre()
+                    + "-" + capturas.get(i).getCtlCaserio().getNombre()
+                    + "-" + capturas.get(i).getPropietario()
+                    + "-" + capturas.get(i).getTotalAnopheles()
+                    + "-" + capturas.get(i).getIdSemanaEpidemiologica());
         }
         return listaCapturas;
+    }
+
+    public List<CtlPlCriadero> loadCriaderosMap() {
+        criaderoDao = daoSession.getCtlPlCriaderoDao();
+        criaderosMap = new ArrayList<CtlPlCriadero>();
+        criaderosMap = criaderoDao.queryBuilder()
+                .where(CtlPlCriaderoDao.Properties.Latitud.isNotNull()).list();
+        return criaderosMap;
     }
 }

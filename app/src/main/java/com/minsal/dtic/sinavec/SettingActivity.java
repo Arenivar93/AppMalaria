@@ -412,6 +412,7 @@ public class SettingActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Iniciando descarga de datos", Toast.LENGTH_SHORT).show();
             pbSetting.setProgress(0);
             pbSetting.setMax(5000);
+            btnSetting.setEnabled(false);
 
 
         }
