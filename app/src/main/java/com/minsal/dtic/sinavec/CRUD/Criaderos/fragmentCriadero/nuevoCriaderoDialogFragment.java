@@ -1,4 +1,4 @@
-package com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero;
+package com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,17 +11,13 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.R;
-import com.minsal.dtic.sinavec.Student;
 
 import java.util.ArrayList;
 
@@ -135,38 +131,6 @@ public class nuevoCriaderoDialogFragment extends DialogFragment {
                 });
             }
         });
-
-       /* builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-
-                if(((EditText)v.findViewById(R.id.nombreCriadero)).getText().toString().isEmpty()){
-                    Toast.makeText(getActivity(),"Nombre vacio",Toast.LENGTH_LONG).show();
-                }else if(((EditText)v.findViewById(R.id.descripcionCriadero)).getText().toString().isEmpty()){
-                    Toast.makeText(getActivity(),"Descripción vacia",Toast.LENGTH_LONG).show();
-                }else if(spTipoCriadero.getSelectedItemPosition()==0){
-                    Toast.makeText(getActivity(),"Seleccione el Tipo de Criadero",Toast.LENGTH_LONG).show();
-                }else if(((EditText)v.findViewById(R.id.anchoCriadero)).getText().toString().isEmpty()){
-                    Toast.makeText(getActivity(),"Ancho vacio",Toast.LENGTH_LONG).show();
-                }else if(((EditText)v.findViewById(R.id.largoCriadero)).getText().toString().isEmpty()){
-                    Toast.makeText(getActivity(),"Largo vacio",Toast.LENGTH_LONG).show();
-                }else{
-                    String nombre = ((EditText) v.findViewById(R.id.nombreCriadero)).getText().toString();
-                    String descripcion = ((EditText) v.findViewById(R.id.descripcionCriadero)).getText().toString();
-                    tipoCriaderoVal = spTipoCriadero.getSelectedItemPosition();
-                    float ancho=Float.parseFloat(((EditText)v.findViewById(R.id.anchoCriadero)).getText().toString());
-                    float largo=Float.parseFloat(((EditText)v.findViewById(R.id.largoCriadero)).getText().toString());
-                    mListener.onDialogPositiveClick(nuevoCriaderoDialogFragment.this,nombre,descripcion,tipoCriaderoVal,ancho,largo);
-                }
-            }
-        });
-
-        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Toast.makeText(getActivity().getApplicationContext(),"Operación cancelada",Toast.LENGTH_LONG).show();
-                    }
-                });*/
-        // Create the AlertDialog object and return it
-       // return builder.create();
         return ventana;
     }
 

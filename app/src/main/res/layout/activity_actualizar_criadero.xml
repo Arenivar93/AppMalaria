@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    tools:context=".CRUD.Criaderos.activityCriadero.ActualizarCriaderoActivity" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="2">
+        <TextView
+            android:id="@+id/municipio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="Municipio"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+        <Spinner
+            android:id="@+id/spMun"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+        <TextView
+            android:id="@+id/canton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Canton"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
+        <Spinner
+            android:id="@+id/spCan"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/caserio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Caserio"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
+        <Spinner
+            android:id="@+id/spCas"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Seleccione tipo de Busqueda"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/linea"
+            android:orientation="horizontal"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ToggleButton
+                android:id="@+id/tipoBusqueda"
+                android:layout_width="wrap_content"
+                android:textOn="Manual"
+                android:textOff="GPS"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/imgBusqueda"
+                android:layout_marginLeft="60dp"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Coordenadas:"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/linea"
+            android:orientation="horizontal"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Latitud:"/>
+        <EditText
+            android:id="@+id/criaderoLatitud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:focusable="false"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Longitud:"/>
+        <EditText
+            android:id="@+id/criaderoLongitud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:focusable="false"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/idSiguiente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Siguiente "
+                android:textColor="@color/colorButtonLetra"
+                android:backgroundTint="@color/colorButtonSiguiente"
+                android:drawableRight="@drawable/next2"/>
+            <ImageView
+                android:id="@+id/deleteCaserio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@mipmap/ic_delete"
+                android:text="Delete" />
+
+            <ImageView
+                android:id="@+id/cancelarEditCaserio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@mipmap/ic_cancel"
+                android:text="Cancelar" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:map="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/mapEditCriadero"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabCriadero2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|left"
+                android:layout_margin="16dp"
+                android:clickable="true"
+                android:src="@android:drawable/ic_menu_compass"
+                app:backgroundTint="@color/colorAccent"
+                app:borderWidth="0dp"
+                />
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>

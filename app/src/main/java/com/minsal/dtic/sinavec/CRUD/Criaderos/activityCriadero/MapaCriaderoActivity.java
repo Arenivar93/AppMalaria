@@ -2,6 +2,7 @@ package com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,7 +31,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity;
+import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.nuevoCriaderoDialogFragment;
+import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.verCriaderoDialogFragment;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
@@ -40,7 +42,7 @@ import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 import java.util.List;
 
-public class MapaCriaderoActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener {
+public class MapaCriaderoActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener, verCriaderoDialogFragment.criaderoDialogListener {
 
     private GoogleMap mMap;
     private FloatingActionButton fab;
@@ -50,7 +52,7 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
     private int coordenada=0;
     private double latitud;
     private double longitud;
-    private ImageView guardar,cancelar;
+    private ImageView guardar,cancelar,verEdit;
     private ToggleButton tipoBusqueda;
     private ImageView txtBusqueda;
     int MY_PERMISSION_LOCATION = 10;
@@ -72,13 +74,14 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
         setContentView(R.layout.activity_mapa_criadero);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.mapCoordenadaCriadero);
         fab = (FloatingActionButton) findViewById(R.id.fabCriadero2);
         nomMunicipio=(EditText)findViewById(R.id.nombreMunicipio);
         nomCanton=(EditText)findViewById(R.id.nombreCanton);
         nomCaserio=(EditText)findViewById(R.id.nombreCaserio);
         guardar=(ImageView) findViewById(R.id.guardarGeoCaserio);
         cancelar=(ImageView) findViewById(R.id.cancelarGeoCaserio);
+        verEdit=(ImageView) findViewById(R.id.verGeoCaserio);
         tipoBusqueda=(ToggleButton)findViewById(R.id.tipoBusqueda);
         txtBusqueda=(ImageView) findViewById(R.id.imgBusqueda);
         latitudCriadero=(EditText) findViewById(R.id.criaderoLatitud);
@@ -101,10 +104,14 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
             nomMunicipio.setText(criadero.getCtlCaserio().getCtlCanton().getCtlMunicipio().getNombre());
             nomCanton.setText(criadero.getCtlCaserio().getCtlCanton().getNombre());
             nomCaserio.setText(criadero.getCtlCaserio().getNombre());
+
+            if(criadero.getEstado_sync()==0 || criadero.getEstado_sync()==2){
+                verEdit.setImageResource(R.mipmap.ic_ver);
+            }
             if(coordenada==1){
                 latitud=geolocalizarDatos.getDouble("latitud");
                 longitud=geolocalizarDatos.getDouble("longitud");
-                setTitle("Editar criadero: "+nombreCriadero);
+                setTitle("Editar Coordenada Criadero: "+nombreCriadero);
             }else{
                 setTitle("Georeferenciar criadero: "+nombreCriadero);
             }
@@ -132,12 +139,13 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
             public void onClick(View view) {
 
                 if(!latitudCriadero.getText().toString().isEmpty() && !longitudCriadero.getText().toString().isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Coordenadas Cargadas: " +
-                            "Latitud: "+latitudCriadero.getText()+" Longitud: " +
-                            " "+longitudCriadero.getText(),Toast.LENGTH_LONG).show();
 
                     criadero.setLatitud(latitudCriadero.getText().toString());
                     criadero.setLongitud(longitudCriadero.getText().toString());
+                    int estado_sync=criadero.getEstado_sync();
+                    if(estado_sync==0 || estado_sync==2){
+                        criadero.setEstado_sync(2);
+                    }
                     criaderoDao.update(criadero);
                     Intent geolocalizarCriadero=new Intent(MapaCriaderoActivity.this, BuscarCriaderoActivity.class);
                     Bundle miBundle=new Bundle();
@@ -177,6 +185,7 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
                 finish();
             }
         });
+
         tipoBusqueda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -203,6 +212,26 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
                         moverCamaraDepartamento();
                     }
 
+                }
+            }
+        });
+
+        verEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(criadero.getEstado_sync()==1){
+                    Intent update=new Intent(MapaCriaderoActivity.this,ActualizarCriaderoActivity.class);
+                    Bundle miBundle=new Bundle();
+                    miBundle.putLong("id",criadero.getId());
+                    update.putExtras(miBundle);
+                    startActivity(update);
+                    finish();
+                }else{
+                    verCriaderoDialogFragment dialog = new verCriaderoDialogFragment();
+                    Bundle datos=new Bundle();
+                    datos.putLong("id",criadero.getId());
+                    dialog.setArguments(datos);
+                    dialog.show(getFragmentManager(), "dialog");
                 }
             }
         });
@@ -470,6 +499,16 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
 
     @Override
     public void onProviderDisabled(String s) {
+
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, String nombre, String descripcion, int tipo, float ancho, float largo) {
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
 
     }
 }
