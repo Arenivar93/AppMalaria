@@ -39,12 +39,13 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
         public final static Property Propietario = new Property(11, String.class, "propietario", false, "PROPIETARIO");
         public final static Property IdSemanaEpidemiologica = new Property(12, int.class, "idSemanaEpidemiologica", false, "ID_SEMANA_EPIDEMIOLOGICA");
         public final static Property IdUsuarioMod = new Property(13, long.class, "idUsuarioMod", false, "ID_USUARIO_MOD");
-        public final static Property IdSibasi = new Property(14, long.class, "idSibasi", false, "ID_SIBASI");
-        public final static Property IdTablet = new Property(15, long.class, "idTablet", false, "ID_TABLET");
-        public final static Property IdCaserio = new Property(16, long.class, "idCaserio", false, "ID_CASERIO");
-        public final static Property IdUsuarioReg = new Property(17, long.class, "idUsuarioReg", false, "ID_USUARIO_REG");
-        public final static Property IdTipoCaptura = new Property(18, long.class, "idTipoCaptura", false, "ID_TIPO_CAPTURA");
-        public final static Property IdTipoActividad = new Property(19, long.class, "idTipoActividad", false, "ID_TIPO_ACTIVIDAD");
+        public final static Property Estado_sync = new Property(14, int.class, "estado_sync", false, "ESTADO_SYNC");
+        public final static Property IdSibasi = new Property(15, long.class, "idSibasi", false, "ID_SIBASI");
+        public final static Property IdTablet = new Property(16, long.class, "idTablet", false, "ID_TABLET");
+        public final static Property IdCaserio = new Property(17, long.class, "idCaserio", false, "ID_CASERIO");
+        public final static Property IdUsuarioReg = new Property(18, long.class, "idUsuarioReg", false, "ID_USUARIO_REG");
+        public final static Property IdTipoCaptura = new Property(19, long.class, "idTipoCaptura", false, "ID_TIPO_CAPTURA");
+        public final static Property IdTipoActividad = new Property(20, long.class, "idTipoActividad", false, "ID_TIPO_ACTIVIDAD");
     }
 
     private DaoSession daoSession;
@@ -72,16 +73,17 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
                 "\"COMPONENTE_INSPECCIONADO\" INTEGER," + // 6: componenteInspeccionado
                 "\"TIEMPO_COLECTA\" INTEGER NOT NULL ," + // 7: tiempoColecta
                 "\"FECHA_HORA_MOD\" INTEGER," + // 8: fechaHoraMod
-                "\"FECHA\" INTEGER NOT NULL ," + // 9: fecha
+                "\"FECHA\" INTEGER," + // 9: fecha
                 "\"FECHA_HORA_REG\" INTEGER," + // 10: fechaHoraReg
                 "\"PROPIETARIO\" TEXT," + // 11: propietario
                 "\"ID_SEMANA_EPIDEMIOLOGICA\" INTEGER NOT NULL ," + // 12: idSemanaEpidemiologica
                 "\"ID_USUARIO_MOD\" INTEGER NOT NULL ," + // 13: idUsuarioMod
-                "\"ID_SIBASI\" INTEGER NOT NULL ," + // 14: idSibasi
-                "\"ID_TABLET\" INTEGER NOT NULL ," + // 15: idTablet
-                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 16: idCaserio
-                "\"ID_USUARIO_REG\" INTEGER NOT NULL ," + // 17: idUsuarioReg
-                "\"ID_TIPO_CAPTURA\" INTEGER NOT NULL ," + // 18: idTipoCaptura
+                "\"ESTADO_SYNC\" INTEGER NOT NULL ," + // 14: estado_sync
+                "\"ID_SIBASI\" INTEGER NOT NULL ," + // 15: idSibasi
+                "\"ID_TABLET\" INTEGER NOT NULL ," + // 16: idTablet
+                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 17: idCaserio
+                "\"ID_USUARIO_REG\" INTEGER NOT NULL ," + // 18: idUsuarioReg
+                "\"ID_TIPO_CAPTURA\" INTEGER NOT NULL ," + // 19: idTipoCaptura
                 "\"ID_TIPO_ACTIVIDAD\" INTEGER NOT NULL ,"+"FOREIGN KEY(\"ID_SIBASI\")" +
                 " REFERENCES CTL_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_CASERIO\")" +
                 " REFERENCES CTL_CASERIO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_TABLET\")" +
@@ -125,7 +127,11 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
         if (fechaHoraMod != null) {
             stmt.bindLong(9, fechaHoraMod.getTime());
         }
-        stmt.bindLong(10, entity.getFecha().getTime());
+ 
+        java.util.Date fecha = entity.getFecha();
+        if (fecha != null) {
+            stmt.bindLong(10, fecha.getTime());
+        }
  
         java.util.Date fechaHoraReg = entity.getFechaHoraReg();
         if (fechaHoraReg != null) {
@@ -138,12 +144,13 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
         }
         stmt.bindLong(13, entity.getIdSemanaEpidemiologica());
         stmt.bindLong(14, entity.getIdUsuarioMod());
-        stmt.bindLong(15, entity.getIdSibasi());
-        stmt.bindLong(16, entity.getIdTablet());
-        stmt.bindLong(17, entity.getIdCaserio());
-        stmt.bindLong(18, entity.getIdUsuarioReg());
-        stmt.bindLong(19, entity.getIdTipoCaptura());
-        stmt.bindLong(20, entity.getIdTipoActividad());
+        stmt.bindLong(15, entity.getEstado_sync());
+        stmt.bindLong(16, entity.getIdSibasi());
+        stmt.bindLong(17, entity.getIdTablet());
+        stmt.bindLong(18, entity.getIdCaserio());
+        stmt.bindLong(19, entity.getIdUsuarioReg());
+        stmt.bindLong(20, entity.getIdTipoCaptura());
+        stmt.bindLong(21, entity.getIdTipoActividad());
     }
 
     @Override
@@ -174,7 +181,11 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
         if (fechaHoraMod != null) {
             stmt.bindLong(9, fechaHoraMod.getTime());
         }
-        stmt.bindLong(10, entity.getFecha().getTime());
+ 
+        java.util.Date fecha = entity.getFecha();
+        if (fecha != null) {
+            stmt.bindLong(10, fecha.getTime());
+        }
  
         java.util.Date fechaHoraReg = entity.getFechaHoraReg();
         if (fechaHoraReg != null) {
@@ -187,12 +198,13 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
         }
         stmt.bindLong(13, entity.getIdSemanaEpidemiologica());
         stmt.bindLong(14, entity.getIdUsuarioMod());
-        stmt.bindLong(15, entity.getIdSibasi());
-        stmt.bindLong(16, entity.getIdTablet());
-        stmt.bindLong(17, entity.getIdCaserio());
-        stmt.bindLong(18, entity.getIdUsuarioReg());
-        stmt.bindLong(19, entity.getIdTipoCaptura());
-        stmt.bindLong(20, entity.getIdTipoActividad());
+        stmt.bindLong(15, entity.getEstado_sync());
+        stmt.bindLong(16, entity.getIdSibasi());
+        stmt.bindLong(17, entity.getIdTablet());
+        stmt.bindLong(18, entity.getIdCaserio());
+        stmt.bindLong(19, entity.getIdUsuarioReg());
+        stmt.bindLong(20, entity.getIdTipoCaptura());
+        stmt.bindLong(21, entity.getIdTipoActividad());
     }
 
     @Override
@@ -218,17 +230,18 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
             cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // componenteInspeccionado
             cursor.getInt(offset + 7), // tiempoColecta
             cursor.isNull(offset + 8) ? null : new java.util.Date(cursor.getLong(offset + 8)), // fechaHoraMod
-            new java.util.Date(cursor.getLong(offset + 9)), // fecha
+            cursor.isNull(offset + 9) ? null : new java.util.Date(cursor.getLong(offset + 9)), // fecha
             cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)), // fechaHoraReg
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // propietario
             cursor.getInt(offset + 12), // idSemanaEpidemiologica
             cursor.getLong(offset + 13), // idUsuarioMod
-            cursor.getLong(offset + 14), // idSibasi
-            cursor.getLong(offset + 15), // idTablet
-            cursor.getLong(offset + 16), // idCaserio
-            cursor.getLong(offset + 17), // idUsuarioReg
-            cursor.getLong(offset + 18), // idTipoCaptura
-            cursor.getLong(offset + 19) // idTipoActividad
+            cursor.getInt(offset + 14), // estado_sync
+            cursor.getLong(offset + 15), // idSibasi
+            cursor.getLong(offset + 16), // idTablet
+            cursor.getLong(offset + 17), // idCaserio
+            cursor.getLong(offset + 18), // idUsuarioReg
+            cursor.getLong(offset + 19), // idTipoCaptura
+            cursor.getLong(offset + 20) // idTipoActividad
         );
         return entity;
     }
@@ -244,17 +257,18 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
         entity.setComponenteInspeccionado(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
         entity.setTiempoColecta(cursor.getInt(offset + 7));
         entity.setFechaHoraMod(cursor.isNull(offset + 8) ? null : new java.util.Date(cursor.getLong(offset + 8)));
-        entity.setFecha(new java.util.Date(cursor.getLong(offset + 9)));
+        entity.setFecha(cursor.isNull(offset + 9) ? null : new java.util.Date(cursor.getLong(offset + 9)));
         entity.setFechaHoraReg(cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)));
         entity.setPropietario(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setIdSemanaEpidemiologica(cursor.getInt(offset + 12));
         entity.setIdUsuarioMod(cursor.getLong(offset + 13));
-        entity.setIdSibasi(cursor.getLong(offset + 14));
-        entity.setIdTablet(cursor.getLong(offset + 15));
-        entity.setIdCaserio(cursor.getLong(offset + 16));
-        entity.setIdUsuarioReg(cursor.getLong(offset + 17));
-        entity.setIdTipoCaptura(cursor.getLong(offset + 18));
-        entity.setIdTipoActividad(cursor.getLong(offset + 19));
+        entity.setEstado_sync(cursor.getInt(offset + 14));
+        entity.setIdSibasi(cursor.getLong(offset + 15));
+        entity.setIdTablet(cursor.getLong(offset + 16));
+        entity.setIdCaserio(cursor.getLong(offset + 17));
+        entity.setIdUsuarioReg(cursor.getLong(offset + 18));
+        entity.setIdTipoCaptura(cursor.getLong(offset + 19));
+        entity.setIdTipoActividad(cursor.getLong(offset + 20));
      }
     
     @Override

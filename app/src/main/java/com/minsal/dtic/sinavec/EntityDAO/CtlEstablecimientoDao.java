@@ -29,9 +29,10 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
         public final static Property Nombre = new Property(1, String.class, "nombre", false, "NOMBRE");
         public final static Property Latitud = new Property(2, String.class, "latitud", false, "LATITUD");
         public final static Property Longitud = new Property(3, String.class, "longitud", false, "LONGITUD");
-        public final static Property IdMunicipio = new Property(4, long.class, "idMunicipio", false, "ID_MUNICIPIO");
-        public final static Property IdTipoEstablecimiento = new Property(5, long.class, "idTipoEstablecimiento", false, "ID_TIPO_ESTABLECIMIENTO");
-        public final static Property IdEstablecimientoPadre = new Property(6, long.class, "idEstablecimientoPadre", false, "ID_ESTABLECIMIENTO_PADRE");
+        public final static Property Estado_sync = new Property(4, Integer.class, "estado_sync", false, "ESTADO_SYNC");
+        public final static Property IdMunicipio = new Property(5, long.class, "idMunicipio", false, "ID_MUNICIPIO");
+        public final static Property IdTipoEstablecimiento = new Property(6, long.class, "idTipoEstablecimiento", false, "ID_TIPO_ESTABLECIMIENTO");
+        public final static Property IdEstablecimientoPadre = new Property(7, long.class, "idEstablecimientoPadre", false, "ID_ESTABLECIMIENTO_PADRE");
     }
 
     private DaoSession daoSession;
@@ -54,8 +55,9 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
                 "\"NOMBRE\" TEXT," + // 1: nombre
                 "\"LATITUD\" TEXT," + // 2: latitud
                 "\"LONGITUD\" TEXT," + // 3: longitud
-                "\"ID_MUNICIPIO\" INTEGER NOT NULL ," + // 4: idMunicipio
-                "\"ID_TIPO_ESTABLECIMIENTO\" INTEGER NOT NULL ," + // 5: idTipoEstablecimiento
+                "\"ESTADO_SYNC\" INTEGER," + // 4: estado_sync
+                "\"ID_MUNICIPIO\" INTEGER NOT NULL ," + // 5: idMunicipio
+                "\"ID_TIPO_ESTABLECIMIENTO\" INTEGER NOT NULL ," + // 6: idTipoEstablecimiento
                 "\"ID_ESTABLECIMIENTO_PADRE\" INTEGER,"+"FOREIGN KEY(\"ID_MUNICIPIO\")" +
                 " REFERENCES CTL_MUNICIPIO(\"ID\") ON DELETE CASCADE );"); // 6: idEstablecimientoPadre
     }
@@ -89,9 +91,14 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
         if (longitud != null) {
             stmt.bindString(4, longitud);
         }
-        stmt.bindLong(5, entity.getIdMunicipio());
-        stmt.bindLong(6, entity.getIdTipoEstablecimiento());
-        stmt.bindLong(7, entity.getIdEstablecimientoPadre());
+ 
+        Integer estado_sync = entity.getEstado_sync();
+        if (estado_sync != null) {
+            stmt.bindLong(5, estado_sync);
+        }
+        stmt.bindLong(6, entity.getIdMunicipio());
+        stmt.bindLong(7, entity.getIdTipoEstablecimiento());
+        stmt.bindLong(8, entity.getIdEstablecimientoPadre());
     }
 
     @Override
@@ -117,9 +124,14 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
         if (longitud != null) {
             stmt.bindString(4, longitud);
         }
-        stmt.bindLong(5, entity.getIdMunicipio());
-        stmt.bindLong(6, entity.getIdTipoEstablecimiento());
-        stmt.bindLong(7, entity.getIdEstablecimientoPadre());
+ 
+        Integer estado_sync = entity.getEstado_sync();
+        if (estado_sync != null) {
+            stmt.bindLong(5, estado_sync);
+        }
+        stmt.bindLong(6, entity.getIdMunicipio());
+        stmt.bindLong(7, entity.getIdTipoEstablecimiento());
+        stmt.bindLong(8, entity.getIdEstablecimientoPadre());
     }
 
     @Override
@@ -140,9 +152,10 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // nombre
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // latitud
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // longitud
-            cursor.getLong(offset + 4), // idMunicipio
-            cursor.getLong(offset + 5), // idTipoEstablecimiento
-            cursor.getInt(offset + 6) // idEstablecimientoPadre
+            cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // estado_sync
+            cursor.getLong(offset + 5), // idMunicipio
+            cursor.getLong(offset + 6), // idTipoEstablecimiento
+            cursor.getLong(offset + 7) // idEstablecimientoPadre
         );
         return entity;
     }
@@ -153,9 +166,10 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
         entity.setNombre(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setLatitud(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setLongitud(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setIdMunicipio(cursor.getLong(offset + 4));
-        entity.setIdTipoEstablecimiento(cursor.getLong(offset + 5));
-        entity.setIdEstablecimientoPadre(cursor.getInt(offset + 6));
+        entity.setEstado_sync(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
+        entity.setIdMunicipio(cursor.getLong(offset + 5));
+        entity.setIdTipoEstablecimiento(cursor.getLong(offset + 6));
+        entity.setIdEstablecimientoPadre(cursor.getLong(offset + 7));
      }
     
     @Override
@@ -190,15 +204,12 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
             StringBuilder builder = new StringBuilder("SELECT ");
             SqlUtils.appendColumns(builder, "T", getAllColumns());
             builder.append(',');
-            SqlUtils.appendColumns(builder, "T0", daoSession.getCtlEstablecimientoDao().getAllColumns());
+            SqlUtils.appendColumns(builder, "T0", daoSession.getCtlMunicipioDao().getAllColumns());
             builder.append(',');
-            SqlUtils.appendColumns(builder, "T1", daoSession.getCtlMunicipioDao().getAllColumns());
-            builder.append(',');
-            SqlUtils.appendColumns(builder, "T2", daoSession.getCtlTipoEstablecimientoDao().getAllColumns());
+            SqlUtils.appendColumns(builder, "T1", daoSession.getCtlTipoEstablecimientoDao().getAllColumns());
             builder.append(" FROM CTL_ESTABLECIMIENTO T");
-            builder.append(" LEFT JOIN CTL_ESTABLECIMIENTO T0 ON T.\"ID_ESTABLECIMIENTO_PADRE\"=T0.\"ID\"");
-            builder.append(" LEFT JOIN CTL_MUNICIPIO T1 ON T.\"ID_MUNICIPIO\"=T1.\"ID\"");
-            builder.append(" LEFT JOIN CTL_TIPO_ESTABLECIMIENTO T2 ON T.\"ID_TIPO_ESTABLECIMIENTO\"=T2.\"ID\"");
+            builder.append(" LEFT JOIN CTL_MUNICIPIO T0 ON T.\"ID_MUNICIPIO\"=T0.\"ID\"");
+            builder.append(" LEFT JOIN CTL_TIPO_ESTABLECIMIENTO T1 ON T.\"ID_TIPO_ESTABLECIMIENTO\"=T1.\"ID\"");
             builder.append(' ');
             selectDeep = builder.toString();
         }
@@ -208,7 +219,6 @@ public class CtlEstablecimientoDao extends AbstractDao<CtlEstablecimiento, Long>
     protected CtlEstablecimiento loadCurrentDeep(Cursor cursor, boolean lock) {
         CtlEstablecimiento entity = loadCurrent(cursor, 0, lock);
         int offset = getAllColumns().length;
-
 
         CtlMunicipio ctlMunicipio = loadCurrentOther(daoSession.getCtlMunicipioDao(), cursor, offset);
          if(ctlMunicipio != null) {

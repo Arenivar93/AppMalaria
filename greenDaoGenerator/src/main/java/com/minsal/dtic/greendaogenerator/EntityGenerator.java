@@ -95,6 +95,7 @@ public class EntityGenerator {
         ctlEstablecimiento.addStringProperty("nombre");
         ctlEstablecimiento.addStringProperty("latitud");
         ctlEstablecimiento.addStringProperty("longitud");
+        ctlEstablecimiento.addIntProperty("estado_sync");
         Property idMunicipioEst=ctlEstablecimiento.addLongProperty("idMunicipio").notNull().getProperty();
         Property idTipoEstablecimiento=ctlEstablecimiento.addLongProperty("idTipoEstablecimiento").notNull().getProperty();
         ctlEstablecimiento.addLongProperty("idEstablecimientoPadre").notNull().getProperty();
@@ -122,6 +123,7 @@ public class EntityGenerator {
         plColvol.addStringProperty("nombre");
         plColvol.addIntProperty("estado");
         plColvol.addStringProperty("clave");
+        plColvol.addIntProperty("estado_sync").notNull();
         Property idCaserioPlColvol=plColvol.addLongProperty("idCaserio").notNull().getProperty();
         Property idSibasiPlColvol=plColvol.addLongProperty("idSibasi").notNull().getProperty();
         plColvol.addToOne(ctlCaserio,idCaserioPlColvol);
@@ -156,8 +158,8 @@ public class EntityGenerator {
         ctlSemanaEpi.addLongProperty("id").primaryKey();
         ctlSemanaEpi.addIntProperty("anio");
         ctlSemanaEpi.addIntProperty("semana");
-        ctlSemanaEpi.addDateProperty("fechaInicio");
-        ctlSemanaEpi.addDateProperty("fechaFin");
+        ctlSemanaEpi.addStringProperty("fechaInicio");
+        ctlSemanaEpi.addStringProperty("fechaFin");
 
         //20 Tabla CtlTablet
         Entity ctlTablet=schema.addEntity("CtlTablet");
@@ -186,11 +188,12 @@ public class EntityGenerator {
         ctlPlCriadero.addStringProperty("descripcion").notNull();
         ctlPlCriadero.addStringProperty("latitud");
         ctlPlCriadero.addStringProperty("longitud");
-        ctlPlCriadero.addIntProperty("longitudCriadero").notNull();
-        ctlPlCriadero.addIntProperty("anchoCriadero").notNull();
+        ctlPlCriadero.addFloatProperty("longitudCriadero").notNull();
+        ctlPlCriadero.addFloatProperty("anchoCriadero").notNull();
         ctlPlCriadero.addDateProperty("fechaHoraReg");
         ctlPlCriadero.addDateProperty("fechaHoraMod");
         ctlPlCriadero.addLongProperty("idUsarioReg").notNull();
+        ctlPlCriadero.addIntProperty("estado_sync").notNull();
         Property idSibasiCtlPlCriadero=ctlPlCriadero.addLongProperty("idSibasi").notNull().getProperty();
         Property idCaserioCtlPlCriadero=ctlPlCriadero.addLongProperty("idCaserio").notNull().getProperty();
         Property idUsuarioMod=ctlPlCriadero.addLongProperty("idUsuarioMod").notNull().getProperty();
@@ -199,7 +202,7 @@ public class EntityGenerator {
         ctlPlCriadero.addToOne(fosUserUser,idUsuarioMod);
 
         //22 Tabla CtlPlCriaderoTmp
-        Entity ctlPlCriaderoTmp=schema.addEntity("CtlPlCriaderoTmp");
+        /*Entity ctlPlCriaderoTmp=schema.addEntity("CtlPlCriaderoTmp");
         ctlPlCriaderoTmp.addLongProperty("id").primaryKey();
         ctlPlCriaderoTmp.addIntProperty("idTipoCriadero");
         ctlPlCriaderoTmp.addIntProperty("idEstadoCriadero");
@@ -219,7 +222,7 @@ public class EntityGenerator {
         ctlPlCriaderoTmp.addToOne(ctlEstablecimiento,idSibasiCtlPlCriaderoTmp);
         ctlPlCriaderoTmp.addToOne(ctlCaserio,idCaserioCtlPlCriaderoTmp);
         ctlPlCriaderoTmp.addToOne(fosUserUser,idUsuarioModTmp);
-        ctlPlCriaderoTmp.addToOne(bitacora,idBitacoraCaserioTmp);
+        ctlPlCriaderoTmp.addToOne(bitacora,idBitacoraCaserioTmp);*/
 
         //23 Tabla PlCapturaAnopheles
         Entity plCapturaAnopheles=schema.addEntity("PlCapturaAnopheles");
@@ -237,6 +240,7 @@ public class EntityGenerator {
         plCapturaAnopheles.addStringProperty("propietario");
         plCapturaAnopheles.addIntProperty("idSemanaEpidemiologica").notNull();
         plCapturaAnopheles.addLongProperty("idUsuarioMod").notNull();
+        plCapturaAnopheles.addIntProperty("estado_sync").notNull();
         Property idSibasiCaptura=plCapturaAnopheles.addLongProperty("idSibasi").notNull().getProperty();
         Property idTabletCaptura=plCapturaAnopheles.addLongProperty("idTablet").notNull().getProperty();
         Property idCaserioCaptura=plCapturaAnopheles.addLongProperty("idCaserio").notNull().getProperty();
@@ -265,6 +269,7 @@ public class EntityGenerator {
         plSeguimientoBotiquin.addDateProperty("fechaRegistro").notNull();
         plSeguimientoBotiquin.addIntProperty("numeroMuestra").notNull();
         plSeguimientoBotiquin.addIntProperty("idUsuarioMod").notNull();
+        plSeguimientoBotiquin.addIntProperty("estado_sync").notNull();
         Property idClaveSeguimiento=plSeguimientoBotiquin.addLongProperty("idClave").notNull().getProperty();
         Property idTabletSeguimiento=plSeguimientoBotiquin.addLongProperty("idTablet").notNull().getProperty();
         Property idUsuarioSeguimiento=plSeguimientoBotiquin.addLongProperty("idUsuarioReg").notNull().getProperty();
@@ -292,6 +297,7 @@ public class EntityGenerator {
         plPesquisaLarvaria.addFloatProperty("ancho").notNull();
         plPesquisaLarvaria.addFloatProperty("largo").notNull();
         plPesquisaLarvaria.addDateProperty("fecha").notNull();
+        plPesquisaLarvaria.addIntProperty("estado_sync").notNull();
         Property idTabletPesquisa=plPesquisaLarvaria.addLongProperty("idTablet").notNull().getProperty();
         Property idSibasiPesquisa=plPesquisaLarvaria.addLongProperty("idSibasi").notNull().getProperty();
         Property idCriaderoPesquisa=plPesquisaLarvaria.addLongProperty("idCriadero").notNull().getProperty();

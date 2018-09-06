@@ -41,11 +41,12 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
         public final static Property Ancho = new Property(13, float.class, "ancho", false, "ANCHO");
         public final static Property Largo = new Property(14, float.class, "largo", false, "LARGO");
         public final static Property Fecha = new Property(15, java.util.Date.class, "fecha", false, "FECHA");
-        public final static Property IdTablet = new Property(16, long.class, "idTablet", false, "ID_TABLET");
-        public final static Property IdSibasi = new Property(17, long.class, "idSibasi", false, "ID_SIBASI");
-        public final static Property IdCriadero = new Property(18, long.class, "idCriadero", false, "ID_CRIADERO");
-        public final static Property IdCaserio = new Property(19, long.class, "idCaserio", false, "ID_CASERIO");
-        public final static Property IdUsuarioReg = new Property(20, long.class, "idUsuarioReg", false, "ID_USUARIO_REG");
+        public final static Property Estado_sync = new Property(16, int.class, "estado_sync", false, "ESTADO_SYNC");
+        public final static Property IdTablet = new Property(17, long.class, "idTablet", false, "ID_TABLET");
+        public final static Property IdSibasi = new Property(18, long.class, "idSibasi", false, "ID_SIBASI");
+        public final static Property IdCriadero = new Property(19, long.class, "idCriadero", false, "ID_CRIADERO");
+        public final static Property IdCaserio = new Property(20, long.class, "idCaserio", false, "ID_CASERIO");
+        public final static Property IdUsuarioReg = new Property(21, long.class, "idUsuarioReg", false, "ID_USUARIO_REG");
     }
 
     private DaoSession daoSession;
@@ -80,10 +81,11 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
                 "\"ANCHO\" REAL NOT NULL ," + // 13: ancho
                 "\"LARGO\" REAL NOT NULL ," + // 14: largo
                 "\"FECHA\" INTEGER NOT NULL ," + // 15: fecha
-                "\"ID_TABLET\" INTEGER NOT NULL ," + // 16: idTablet
-                "\"ID_SIBASI\" INTEGER NOT NULL ," + // 17: idSibasi
-                "\"ID_CRIADERO\" INTEGER NOT NULL ," + // 18: idCriadero
-                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 19: idCaserio
+                "\"ESTADO_SYNC\" INTEGER NOT NULL ," + // 16: estado_sync
+                "\"ID_TABLET\" INTEGER NOT NULL ," + // 17: idTablet
+                "\"ID_SIBASI\" INTEGER NOT NULL ," + // 18: idSibasi
+                "\"ID_CRIADERO\" INTEGER NOT NULL ," + // 19: idCriadero
+                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 20: idCaserio
                 "\"ID_USUARIO_REG\" INTEGER NOT NULL ,"+"FOREIGN KEY(\"ID_TABLET\")" +
                 " REFERENCES CTL_TABLET(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_SIBASI\")" +
                 " REFERENCES CTL_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_CRIADERO\")" +
@@ -121,11 +123,12 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
         stmt.bindDouble(14, entity.getAncho());
         stmt.bindDouble(15, entity.getLargo());
         stmt.bindLong(16, entity.getFecha().getTime());
-        stmt.bindLong(17, entity.getIdTablet());
-        stmt.bindLong(18, entity.getIdSibasi());
-        stmt.bindLong(19, entity.getIdCriadero());
-        stmt.bindLong(20, entity.getIdCaserio());
-        stmt.bindLong(21, entity.getIdUsuarioReg());
+        stmt.bindLong(17, entity.getEstado_sync());
+        stmt.bindLong(18, entity.getIdTablet());
+        stmt.bindLong(19, entity.getIdSibasi());
+        stmt.bindLong(20, entity.getIdCriadero());
+        stmt.bindLong(21, entity.getIdCaserio());
+        stmt.bindLong(22, entity.getIdUsuarioReg());
     }
 
     @Override
@@ -151,11 +154,12 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
         stmt.bindDouble(14, entity.getAncho());
         stmt.bindDouble(15, entity.getLargo());
         stmt.bindLong(16, entity.getFecha().getTime());
-        stmt.bindLong(17, entity.getIdTablet());
-        stmt.bindLong(18, entity.getIdSibasi());
-        stmt.bindLong(19, entity.getIdCriadero());
-        stmt.bindLong(20, entity.getIdCaserio());
-        stmt.bindLong(21, entity.getIdUsuarioReg());
+        stmt.bindLong(17, entity.getEstado_sync());
+        stmt.bindLong(18, entity.getIdTablet());
+        stmt.bindLong(19, entity.getIdSibasi());
+        stmt.bindLong(20, entity.getIdCriadero());
+        stmt.bindLong(21, entity.getIdCaserio());
+        stmt.bindLong(22, entity.getIdUsuarioReg());
     }
 
     @Override
@@ -188,11 +192,12 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
             cursor.getFloat(offset + 13), // ancho
             cursor.getFloat(offset + 14), // largo
             new java.util.Date(cursor.getLong(offset + 15)), // fecha
-            cursor.getLong(offset + 16), // idTablet
-            cursor.getLong(offset + 17), // idSibasi
-            cursor.getLong(offset + 18), // idCriadero
-            cursor.getLong(offset + 19), // idCaserio
-            cursor.getLong(offset + 20) // idUsuarioReg
+            cursor.getInt(offset + 16), // estado_sync
+            cursor.getLong(offset + 17), // idTablet
+            cursor.getLong(offset + 18), // idSibasi
+            cursor.getLong(offset + 19), // idCriadero
+            cursor.getLong(offset + 20), // idCaserio
+            cursor.getLong(offset + 21) // idUsuarioReg
         );
         return entity;
     }
@@ -215,11 +220,12 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
         entity.setAncho(cursor.getFloat(offset + 13));
         entity.setLargo(cursor.getFloat(offset + 14));
         entity.setFecha(new java.util.Date(cursor.getLong(offset + 15)));
-        entity.setIdTablet(cursor.getLong(offset + 16));
-        entity.setIdSibasi(cursor.getLong(offset + 17));
-        entity.setIdCriadero(cursor.getLong(offset + 18));
-        entity.setIdCaserio(cursor.getLong(offset + 19));
-        entity.setIdUsuarioReg(cursor.getLong(offset + 20));
+        entity.setEstado_sync(cursor.getInt(offset + 16));
+        entity.setIdTablet(cursor.getLong(offset + 17));
+        entity.setIdSibasi(cursor.getLong(offset + 18));
+        entity.setIdCriadero(cursor.getLong(offset + 19));
+        entity.setIdCaserio(cursor.getLong(offset + 20));
+        entity.setIdUsuarioReg(cursor.getLong(offset + 21));
      }
     
     @Override

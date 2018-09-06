@@ -29,7 +29,6 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlSemanaEpi;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTablet;
 import com.minsal.dtic.sinavec.EntityDAO.Bitacora;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
-import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoTmp;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquin;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
@@ -55,7 +54,6 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlSemanaEpiDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.BitacoraDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
-import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoTmpDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquinDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
@@ -90,7 +88,6 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig ctlTabletDaoConfig;
     private final DaoConfig bitacoraDaoConfig;
     private final DaoConfig ctlPlCriaderoDaoConfig;
-    private final DaoConfig ctlPlCriaderoTmpDaoConfig;
     private final DaoConfig plCapturaAnophelesDaoConfig;
     private final DaoConfig plSeguimientoBotiquinDaoConfig;
     private final DaoConfig plPesquisaLarvariaDaoConfig;
@@ -116,7 +113,6 @@ public class DaoSession extends AbstractDaoSession {
     private final CtlTabletDao ctlTabletDao;
     private final BitacoraDao bitacoraDao;
     private final CtlPlCriaderoDao ctlPlCriaderoDao;
-    private final CtlPlCriaderoTmpDao ctlPlCriaderoTmpDao;
     private final PlCapturaAnophelesDao plCapturaAnophelesDao;
     private final PlSeguimientoBotiquinDao plSeguimientoBotiquinDao;
     private final PlPesquisaLarvariaDao plPesquisaLarvariaDao;
@@ -188,9 +184,6 @@ public class DaoSession extends AbstractDaoSession {
         ctlPlCriaderoDaoConfig = daoConfigMap.get(CtlPlCriaderoDao.class).clone();
         ctlPlCriaderoDaoConfig.initIdentityScope(type);
 
-        ctlPlCriaderoTmpDaoConfig = daoConfigMap.get(CtlPlCriaderoTmpDao.class).clone();
-        ctlPlCriaderoTmpDaoConfig.initIdentityScope(type);
-
         plCapturaAnophelesDaoConfig = daoConfigMap.get(PlCapturaAnophelesDao.class).clone();
         plCapturaAnophelesDaoConfig.initIdentityScope(type);
 
@@ -221,7 +214,6 @@ public class DaoSession extends AbstractDaoSession {
         ctlTabletDao = new CtlTabletDao(ctlTabletDaoConfig, this);
         bitacoraDao = new BitacoraDao(bitacoraDaoConfig, this);
         ctlPlCriaderoDao = new CtlPlCriaderoDao(ctlPlCriaderoDaoConfig, this);
-        ctlPlCriaderoTmpDao = new CtlPlCriaderoTmpDao(ctlPlCriaderoTmpDaoConfig, this);
         plCapturaAnophelesDao = new PlCapturaAnophelesDao(plCapturaAnophelesDaoConfig, this);
         plSeguimientoBotiquinDao = new PlSeguimientoBotiquinDao(plSeguimientoBotiquinDaoConfig, this);
         plPesquisaLarvariaDao = new PlPesquisaLarvariaDao(plPesquisaLarvariaDaoConfig, this);
@@ -247,7 +239,6 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(CtlTablet.class, ctlTabletDao);
         registerDao(Bitacora.class, bitacoraDao);
         registerDao(CtlPlCriadero.class, ctlPlCriaderoDao);
-        registerDao(CtlPlCriaderoTmp.class, ctlPlCriaderoTmpDao);
         registerDao(PlCapturaAnopheles.class, plCapturaAnophelesDao);
         registerDao(PlSeguimientoBotiquin.class, plSeguimientoBotiquinDao);
         registerDao(PlPesquisaLarvaria.class, plPesquisaLarvariaDao);
@@ -275,7 +266,6 @@ public class DaoSession extends AbstractDaoSession {
         ctlTabletDaoConfig.clearIdentityScope();
         bitacoraDaoConfig.clearIdentityScope();
         ctlPlCriaderoDaoConfig.clearIdentityScope();
-        ctlPlCriaderoTmpDaoConfig.clearIdentityScope();
         plCapturaAnophelesDaoConfig.clearIdentityScope();
         plSeguimientoBotiquinDaoConfig.clearIdentityScope();
         plPesquisaLarvariaDaoConfig.clearIdentityScope();
@@ -363,10 +353,6 @@ public class DaoSession extends AbstractDaoSession {
 
     public CtlPlCriaderoDao getCtlPlCriaderoDao() {
         return ctlPlCriaderoDao;
-    }
-
-    public CtlPlCriaderoTmpDao getCtlPlCriaderoTmpDao() {
-        return ctlPlCriaderoTmpDao;
     }
 
     public PlCapturaAnophelesDao getPlCapturaAnophelesDao() {
