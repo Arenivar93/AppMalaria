@@ -1,15 +1,20 @@
 package com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
@@ -26,13 +31,20 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     private DaoSession daoSession;
     private List<CtlPlCriadero> criaderosMap;
     Utilidades u;
+    private SharedPreferences prefs;
+    private CameraPosition cameraZoom;
+    ArrayList<LatLng> locations = new ArrayList();
+    ArrayList<String> nombres = new ArrayList();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pesquisa_larvaria);
         daoSession      =((MyMalaria)getApplicationContext()).getDaoSession();
-        //u=new Utilidades(daoSession);
+        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        u=new Utilidades(daoSession);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -54,20 +66,46 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        moverCamaraDepartamento();
 
-        // Add a marker in Sydney and move the camera
+
 
         for (CtlPlCriadero c: listaAdapter()){
-            LatLng sydney = new LatLng(13.637981, -89.375867);
-
-
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
+                    .title(c.getNombre())).setTag(c);
         }
-        LatLng sydney = new LatLng(13.637981, -89.375867);
-        LatLng sydney2 = new LatLng(13.637744, -89.376168);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.addMarker(new MarkerOptions().position(sydney2).title("Marker in sydney2"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney2));
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                CtlPlCriadero cria = (CtlPlCriadero) marker.getTag();
+                Toast.makeText(getApplicationContext(),"id:"+cria.getId(),Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+
+            }
+        });
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+
+            }
+        });
 
     }
 
@@ -96,5 +134,17 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onProviderDisabled(String s) {
 
+    }
+    private void moverCamaraDepartamento() {
+        String elUser = prefs.getString("user", "");
+        int idDepto=u.deptoUser(elUser);
+        List<Double> coordenadasDepto=u.getCoordenadasDepartamento(idDepto);
+        cameraZoom=new CameraPosition.Builder()
+                .target(new LatLng(coordenadasDepto.get(0),coordenadasDepto.get(1)))
+                .zoom(13)
+                .bearing(0)
+                .tilt(30)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
     }
 }
