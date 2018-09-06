@@ -54,7 +54,7 @@
         </activity>
         <activity android:name=".SettingActivity" />
         <activity
-            android:name=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity"
+            android:name=".CRUD.Criaderos.activityCriadero.BuscarCriaderoActivity"
             android:label="Criaderos"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape">
@@ -85,29 +85,33 @@
             </intent-filter>
         </activity>
         <activity android:name=".CRUD.Colvol.activityColvol.MapaColvolActivity" />
-        <activity
-            android:name=".CRUD.capturaAnopheles.ListCapturaActivity"/>
-
+        <activity android:name=".CRUD.capturaAnopheles.ListCapturaActivity" />
         <activity android:name=".CRUD.pesquisaLarvaria.ListPesquisaActivity" />
         <activity
             android:name=".CRUD.pesquisaLarvaria.pesquisaLarvaria"
-            android:label="@string/title_activity_pesquisa_larvaria"></activity>
-            android:screenOrientation="landscape"/>
+            android:label="@string/title_activity_pesquisa_larvaria" />
+        android:screenOrientation="landscape"/>
         <activity
             android:name=".CRUD.Criaderos.activityCriadero.AgregarCriaderoActivity"
             android:label="Agregar Criadero"
-            android:parentActivityName=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity"
+            android:parentActivityName=".CRUD.Criaderos.activityCriadero.BuscarCriaderoActivity"
             android:screenOrientation="landscape">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity"/>
+                android:value=".CRUD.Criaderos.activityCriadero.BuscarCriaderoActivity" />
+
             <intent-filter>
-                <action android:name="android.intent.action.AgregarCriaderoActivity"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.AgregarCriaderoActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".CRUD.capturaAnopheles.CapturaAnopheles" />
+        <activity
+            android:name=".CRUD.Criaderos.activityCriadero.ActualizarCriaderoActivity"
+            android:label="Actualizar Criadero">
 
+        </activity>
     </application>
 
 </manifest>

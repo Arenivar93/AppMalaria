@@ -1,6 +1,5 @@
-package com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero;
+package com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero;
 
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -23,9 +22,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.minsal.dtic.sinavec.AddStudentDialogFragment;
-import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.AgregarCriaderoActivity;
-import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.MapaCriaderoActivity;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
@@ -37,13 +33,12 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
-import com.minsal.dtic.sinavec.Student;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BuscarCriaderoActivity extends AppCompatActivity implements AddStudentDialogFragment.NoticeDialogListener{
+public class BuscarCriaderoActivity extends AppCompatActivity{
     Spinner spMunicipio, spCanton,spCaserio;
     ImageView buscar;
     TableLayout tablaCriaderos;
@@ -144,6 +139,9 @@ public class BuscarCriaderoActivity extends AppCompatActivity implements AddStud
                 }
                 if(controlError==1){
                     Toast.makeText(this,"Operación cancelada",Toast.LENGTH_LONG).show();
+                }
+                if(controlError==4){
+                    Toast.makeText(this,"Criadero Eliminado",Toast.LENGTH_LONG).show();
                 }
             }else{
                 Toast.makeText(this,"Error al momento de cargar los datos del caserio seleccionado",Toast.LENGTH_LONG).show();
@@ -465,19 +463,5 @@ public class BuscarCriaderoActivity extends AppCompatActivity implements AddStud
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Llamado cuando se presinó el botón positivo en el dialogo de añadir estudiante.
-     * @param dialog
-     * @param student
-     */
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog, Student student) {
-            Toast.makeText(this,"Si lo creo",Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-        Toast.makeText(this,"No lo creo",Toast.LENGTH_LONG).show();
-    }
 
 }

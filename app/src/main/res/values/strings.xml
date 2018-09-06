@@ -34,5 +34,6 @@
     <string name="title_activity_buscar_colvol">BuscarColvol</string>
     <string name="title_activity_agregar_criadero">Map</string>
     <string name="title_activity_pesquisa_larvaria">Map</string>
+    <string name="title_activity_actualizar_criadero">Map</string>
 
 </resources>

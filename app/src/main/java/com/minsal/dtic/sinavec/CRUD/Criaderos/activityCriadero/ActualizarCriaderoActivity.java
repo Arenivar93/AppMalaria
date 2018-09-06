@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -16,13 +17,16 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.text.Html;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -53,7 +57,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener,nuevoCriaderoDialogFragment.criaderoDialogListener{
+public class ActualizarCriaderoActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener,nuevoCriaderoDialogFragment.criaderoDialogListener{
+
     Spinner spMunicipio, spCanton,spCaserio;
     private GoogleMap mMap;
     private FloatingActionButton fab;
@@ -63,7 +68,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
     private int coordenada=0;
     private double latitud;
     private double longitud;
-    private ImageView guardar,cancelar;
+    private ImageView cancelar,eliminar;
     private ToggleButton tipoBusqueda;
     private ImageView imgBusqueda;
     int MY_PERMISSION_LOCATION = 10;
@@ -89,20 +94,25 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
     private CtlPlCriaderoDao criaderoDao;
     private AppCompatButton buttonSiguiente;
     String elUser;
+    int bandera;
+    int contador;
+    int idMuni2=0;
+    int idCtn2=0;
+    int idCas2=0;
+    int controladorSaltos=0;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agregar_criadero);
-        //Me permite regresar  a la actividad anterior
-        ActionBar actionBar=getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
+        setContentView(R.layout.activity_actualizar_criadero);
+        bandera=0;
+        contador=0;
+        controladorSaltos=0;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.mapAgregarCriadero);
+                .findFragmentById(R.id.mapEditCriadero);
         fab = (FloatingActionButton) findViewById(R.id.fabCriadero2);
         tipoBusqueda=(ToggleButton)findViewById(R.id.tipoBusqueda);
         imgBusqueda =(ImageView) findViewById(R.id.imgBusqueda);
@@ -110,6 +120,8 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
         longitudCriadero=(EditText) findViewById(R.id.criaderoLongitud);
         imgBusqueda.setImageResource(R.drawable.mano44);
         buttonSiguiente=(AppCompatButton)findViewById(R.id.idSiguiente);
+        cancelar=(ImageView)findViewById(R.id.cancelarEditCaserio);
+        eliminar=(ImageView)findViewById(R.id.deleteCaserio);
 
         spMunicipio = (Spinner)findViewById(R.id.spMun);
         spCanton = (Spinner)findViewById(R.id.spCan);
@@ -118,16 +130,14 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
         daoSession = ((MyMalaria) getApplication()).getDaoSession();
         criaderoDao=daoSession.getCtlPlCriaderoDao();
         utilidades=new Utilidades(daoSession);
-
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-        elUser = prefs.getString("user", "");
+        String elUser = prefs.getString("user", "");
         int idDepto=utilidades.deptoUser(elUser);
 
-
-        municipios=utilidades.loadspinnerMunicipio(idDepto);
-        listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
         listaCanton.add("Seleccione");
         listaCaserios.add("Seleccione");
+        municipios=utilidades.loadspinnerMunicipio(idDepto);
+        listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
 
         adapter=new ArrayAdapter
                 (this,android.R.layout.simple_list_item_1,listaMunicipio);
@@ -142,6 +152,34 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                 (this,android.R.layout.simple_list_item_1,listaCaserios);
         spCaserio.setAdapter(adapter3);
         adapter3.notifyDataSetChanged();
+
+        //Verifico el bundle que me mandan
+        Bundle geolocalizarDatos=this.getIntent().getExtras();
+        if(geolocalizarDatos!=null){
+            coordenada=1;
+            criadero=daoSession.getCtlPlCriaderoDao().loadByRowId(geolocalizarDatos.getLong("id"));
+            latitud=Double.parseDouble(criadero.getLatitud());
+            longitud=Double.parseDouble(criadero.getLongitud());
+            setTitle("Editar Criadero: "+criadero.getNombre());
+            bandera=1;
+            contador=1;
+            idMuni2=(int) (long)criadero.getCtlCaserio().getCtlCanton().getCtlMunicipio().getId();
+            idCtn2=(int) (long)criadero.getCtlCaserio().getCtlCanton().getId();
+            idCas2=(int) (long)criadero.getCtlCaserio().getId();
+            for (int i=0;i<municipios.size();i++) {
+                if (municipios.get(i).getId() == idMuni2) {
+                    spMunicipio.setSelection(i + 1);
+                }
+            }
+        }else{
+            Intent geolocalizarDatos2=new Intent(ActualizarCriaderoActivity.this, BuscarCriaderoActivity.class);
+            Bundle miBundle=new Bundle();
+            miBundle.putInt("bandera",3);
+            geolocalizarDatos2.putExtras(miBundle);
+            startActivity(geolocalizarDatos2);
+            finish();
+        }
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,7 +215,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
 
             }
         });
-       tipoBusqueda.setOnClickListener(new View.OnClickListener() {
+        tipoBusqueda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(tipoBusqueda.isChecked()){
@@ -217,6 +255,19 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                             (parent.getContext(),android.R.layout.simple_list_item_1,listaCanton);
                     spCanton.setAdapter(adapter2);
                     adapter2.notifyDataSetChanged();
+                    if(bandera==1 && contador==1){
+                        if(idCtn2!=0){
+                            for (int i=0;i<cantones.size();i++) {
+                                if (cantones.get(i).getId() == idCtn2) {
+                                    spCanton.setSelection(i + 1);
+                                }
+                            }
+                        }else{
+                            spCanton.setSelection(0);
+                        }
+                    }else{
+                        spCanton.setSelection(0);
+                    }
                 }else{
                     listaCanton.clear();
                     listaCanton.add("Seleccione");
@@ -243,6 +294,19 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                             (parent.getContext(),android.R.layout.simple_list_item_1,listaCaserios);
                     spCaserio.setAdapter(adapter3);
                     adapter3.notifyDataSetChanged();
+                    if(bandera==1 && contador==1){
+                        if(idCas2!=0){
+                            for (int i=0;i<caserios.size();i++) {
+                                if (caserios.get(i).getId() == idCas2) {
+                                    spCaserio.setSelection(i + 1);
+                                }
+                            }
+                        }else{
+                            spCaserio.setSelection(0);
+                        }
+                    }else{
+                        spCaserio.setSelection(0);
+                    }
                 }else{
                     listaCaserios.clear();
                     listaCaserios.add("Seleccione");
@@ -253,10 +317,70 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+            }
+        });
+        cancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent geolocalizarCriadero=new Intent(ActualizarCriaderoActivity.this, MapaCriaderoActivity.class);
+                Bundle miBundle=new Bundle();
+                miBundle.putInt("idMunicipio",idMuni2);
+                miBundle.putInt("idCanton",idCtn2);
+                miBundle.putInt("idCaserio",idCas2);
+                miBundle.putString("criadero", criadero.getNombre());
+                miBundle.putLong("id",criadero.getId());
+                miBundle.putInt("coordenada",1);
+                miBundle.putDouble("latitud",Double.parseDouble(criadero.getLatitud()));
+                miBundle.putDouble("longitud",Double.parseDouble(criadero.getLongitud()));
+                geolocalizarCriadero.putExtras(miBundle);
+                startActivity(geolocalizarCriadero);
+                finish();
+            }
+        });
+        eliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    confirmEliminarCriadero();
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(),"Ocurrio un error al " +
+                            "eliminar el criadero. Comuniquese con el Administrador del" +
+                            " Sistema",Toast.LENGTH_LONG).show();
+                }
             }
         });
         mapFragment.getMapAsync(this);
+    }
+
+    public void confirmEliminarCriadero() {
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ActualizarCriaderoActivity.this);
+        builder.setMessage(Html.fromHtml("<font color='#FF0000'><b>¿Seguro que desea eliminar el criadero: "+criadero.getNombre()+"?</b></font>"))
+                .setNegativeButton(Html.fromHtml("Cancelar"), null)
+                .setPositiveButton(Html.fromHtml("Sí, Eliminar"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent geolocalizarCriadero=new Intent(ActualizarCriaderoActivity.this, BuscarCriaderoActivity.class);
+                        Bundle miBundle=new Bundle();
+                        miBundle.putString("criadero", criadero.getNombre());
+                        miBundle.putInt("idMuni",idMuni2);
+                        miBundle.putInt("idCtn",idCtn2);
+                        miBundle.putInt("idCas",idCas2);
+                        miBundle.putInt("bandera",4);
+                        geolocalizarCriadero.putExtras(miBundle);
+                        criaderoDao.delete(criadero);
+                        startActivity(geolocalizarCriadero);
+                        finish();
+                    }
+                })
+                .setCancelable(false);
+        //.create().show();
+        android.support.v7.app.AlertDialog a = builder.create();
+        a.show();
+        Button btnPositivo = a.getButton(DialogInterface.BUTTON_POSITIVE);
+        btnPositivo.setTextColor(Color.RED);
+        Button btnNegativo = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        btnNegativo.setTextColor(Color.GREEN);
+
     }
 
 
@@ -282,7 +406,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                 if(tipoBusqueda.isChecked()){
                     Toast.makeText(getApplicationContext(),"La Busqueda GPS esta activada." +
                             " No puede agregar el marcador",Toast.LENGTH_LONG).show();
-               }else{
+                }else{
                     if(markerGps!=null){
                         //markerGps.remove();
                         markerGps.setVisible(false);
@@ -297,7 +421,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                         markerManual.setVisible(true);
                         //zoomToLocationManual(latLng);
                     }
-                   latitudCriadero.setText(null);
+                    latitudCriadero.setText(null);
                     longitudCriadero.setText(null);
                     latitudCriadero.setText(String.valueOf(latLng.latitude));
                     longitudCriadero.setText(String.valueOf(latLng.longitude));
@@ -356,10 +480,10 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
     }
 
     private void enableMyLocation() {
-        if (ActivityCompat.checkSelfPermission(AgregarCriaderoActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(AgregarCriaderoActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(ActualizarCriaderoActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActualizarCriaderoActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager = (LocationManager) AgregarCriaderoActivity.this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) ActualizarCriaderoActivity.this.getSystemService(Context.LOCATION_SERVICE);
         mMap.setMyLocationEnabled(true);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, this);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
@@ -367,7 +491,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
 
     private void marshmallowGPSPremissionCheck() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && ActivityCompat.checkSelfPermission(AgregarCriaderoActivity.this,
+                && ActivityCompat.checkSelfPermission(ActualizarCriaderoActivity.this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             requestPermissions(
@@ -394,7 +518,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
         if (!this.isGPSEnabled()) {
             showInfoAlert();
         } else {
-            if (ActivityCompat.checkSelfPermission(AgregarCriaderoActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(AgregarCriaderoActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(ActualizarCriaderoActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ActualizarCriaderoActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -425,7 +549,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
         }
     }
     private void showInfoAlert() {
-        new AlertDialog.Builder(AgregarCriaderoActivity.this)
+        new AlertDialog.Builder(ActualizarCriaderoActivity.this)
                 .setTitle("Gps Signal")
                 .setMessage("Desea activar el gps?")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
