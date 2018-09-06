@@ -308,6 +308,7 @@ public class SettingActivity extends AppCompatActivity {
         cria.setAnchoCriadero(ancho);
         cria.setIdSibasi(idSibasi);
         cria.setIdEstadoCriadero(estado);
+        cria.setEstado_sync(0);
         criaDao.insert(cria);
     }
     public void saveTipoCaptura(Long id,String nombre){
@@ -353,6 +354,7 @@ public class SettingActivity extends AppCompatActivity {
         colvol.setIdSibasi(idSibasi);
         colvol.setClave(clave);
         colvol.setEstado(estado);
+        colvol.setEstado_sync(0);
         colvolDao.insert(colvol);
     }
 
