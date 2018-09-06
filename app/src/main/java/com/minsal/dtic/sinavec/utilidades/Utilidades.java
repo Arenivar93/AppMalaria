@@ -2,6 +2,7 @@ package com.minsal.dtic.sinavec.utilidades;
 
 import android.database.Cursor;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
@@ -14,6 +15,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
@@ -247,7 +250,7 @@ public class Utilidades {
     }
 
     public int deptoUser(String username) {
-
+        Log.d("Error1",username);
         CtlDepartamentoDao departamentoDao = daoSession.getCtlDepartamentoDao();
         String sqlQUERY = "SELECT d.id FROM ctl_departamento d " +
                 "INNER JOIN ctl_municipio m on (m.id_departamento = d.id)\n" +
@@ -347,11 +350,45 @@ public class Utilidades {
         return listaCapturas;
     }
 
+
     public List<CtlPlCriadero> loadCriaderosMap() {
         criaderoDao = daoSession.getCtlPlCriaderoDao();
         criaderosMap = new ArrayList<CtlPlCriadero>();
         criaderosMap = criaderoDao.queryBuilder()
                 .where(CtlPlCriaderoDao.Properties.Latitud.isNotNull()).list();
         return criaderosMap;
+    }
+
+        //obteniendo el usuario en sesion
+        public long getIdUser (String username){
+            long id = 0;
+            if (!username.equals("")) {
+                List<FosUserUser> ids = null;
+                FosUserUserDao userDao = daoSession.getFosUserUserDao();
+                QueryBuilder<FosUserUser> qb = userDao.queryBuilder();
+                qb.where(FosUserUserDao.Properties.Username.eq(username));
+                ids = qb.list();
+                for (FosUserUser f : ids) {
+                    id = f.getId();
+                }
+            }
+            return id;
+        }
+
+
+    public long getIdSibasiUser(String username) {
+        long idSibasi = 0;
+        if (!username.equals("")) {
+            List<FosUserUser> ids = null;
+            FosUserUserDao userDao = daoSession.getFosUserUserDao();
+            QueryBuilder<FosUserUser> qb = userDao.queryBuilder();
+            qb.where(FosUserUserDao.Properties.Username.eq(username));
+            ids = qb.list();
+            for (FosUserUser f : ids) {
+                idSibasi = f.getIdSibasi();
+            }
+        }
+        return idSibasi;
+
     }
 }

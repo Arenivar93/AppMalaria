@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         String elUser = prefs.getString("user", "");
 
-
         depto = deptoUser(elUser); // este id lo usaremos para conocer el departamento al que pertence el usaurio
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

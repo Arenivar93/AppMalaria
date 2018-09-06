@@ -38,10 +38,11 @@ public class PlSeguimientoBotiquinDao extends AbstractDao<PlSeguimientoBotiquin,
         public final static Property FechaRegistro = new Property(10, java.util.Date.class, "fechaRegistro", false, "FECHA_REGISTRO");
         public final static Property NumeroMuestra = new Property(11, int.class, "numeroMuestra", false, "NUMERO_MUESTRA");
         public final static Property IdUsuarioMod = new Property(12, int.class, "idUsuarioMod", false, "ID_USUARIO_MOD");
-        public final static Property IdClave = new Property(13, long.class, "idClave", false, "ID_CLAVE");
-        public final static Property IdTablet = new Property(14, long.class, "idTablet", false, "ID_TABLET");
-        public final static Property IdUsuarioReg = new Property(15, long.class, "idUsuarioReg", false, "ID_USUARIO_REG");
-        public final static Property IdSibasi = new Property(16, long.class, "idSibasi", false, "ID_SIBASI");
+        public final static Property Estado_sync = new Property(13, int.class, "estado_sync", false, "ESTADO_SYNC");
+        public final static Property IdClave = new Property(14, long.class, "idClave", false, "ID_CLAVE");
+        public final static Property IdTablet = new Property(15, long.class, "idTablet", false, "ID_TABLET");
+        public final static Property IdUsuarioReg = new Property(16, long.class, "idUsuarioReg", false, "ID_USUARIO_REG");
+        public final static Property IdSibasi = new Property(17, long.class, "idSibasi", false, "ID_SIBASI");
     }
 
     private DaoSession daoSession;
@@ -73,9 +74,10 @@ public class PlSeguimientoBotiquinDao extends AbstractDao<PlSeguimientoBotiquin,
                 "\"FECHA_REGISTRO\" INTEGER NOT NULL ," + // 10: fechaRegistro
                 "\"NUMERO_MUESTRA\" INTEGER NOT NULL ," + // 11: numeroMuestra
                 "\"ID_USUARIO_MOD\" INTEGER NOT NULL ," + // 12: idUsuarioMod
-                "\"ID_CLAVE\" INTEGER NOT NULL ," + // 13: idClave
-                "\"ID_TABLET\" INTEGER NOT NULL ," + // 14: idTablet
-                "\"ID_USUARIO_REG\" INTEGER NOT NULL ," + // 15: idUsuarioReg
+                "\"ESTADO_SYNC\" INTEGER NOT NULL ," + // 13: estado_sync
+                "\"ID_CLAVE\" INTEGER NOT NULL ," + // 14: idClave
+                "\"ID_TABLET\" INTEGER NOT NULL ," + // 15: idTablet
+                "\"ID_USUARIO_REG\" INTEGER NOT NULL ," + // 16: idUsuarioReg
                 "\"ID_SIBASI\" INTEGER NOT NULL ,"+"FOREIGN KEY(\"ID_CLAVE\")" +
                 " REFERENCES CLAVE(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_TABLET\")" +
                 " REFERENCES CTL_TABLET(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_USUARIO_REG\")" +
@@ -117,10 +119,11 @@ public class PlSeguimientoBotiquinDao extends AbstractDao<PlSeguimientoBotiquin,
         stmt.bindLong(11, entity.getFechaRegistro().getTime());
         stmt.bindLong(12, entity.getNumeroMuestra());
         stmt.bindLong(13, entity.getIdUsuarioMod());
-        stmt.bindLong(14, entity.getIdClave());
-        stmt.bindLong(15, entity.getIdTablet());
-        stmt.bindLong(16, entity.getIdUsuarioReg());
-        stmt.bindLong(17, entity.getIdSibasi());
+        stmt.bindLong(14, entity.getEstado_sync());
+        stmt.bindLong(15, entity.getIdClave());
+        stmt.bindLong(16, entity.getIdTablet());
+        stmt.bindLong(17, entity.getIdUsuarioReg());
+        stmt.bindLong(18, entity.getIdSibasi());
     }
 
     @Override
@@ -151,10 +154,11 @@ public class PlSeguimientoBotiquinDao extends AbstractDao<PlSeguimientoBotiquin,
         stmt.bindLong(11, entity.getFechaRegistro().getTime());
         stmt.bindLong(12, entity.getNumeroMuestra());
         stmt.bindLong(13, entity.getIdUsuarioMod());
-        stmt.bindLong(14, entity.getIdClave());
-        stmt.bindLong(15, entity.getIdTablet());
-        stmt.bindLong(16, entity.getIdUsuarioReg());
-        stmt.bindLong(17, entity.getIdSibasi());
+        stmt.bindLong(14, entity.getEstado_sync());
+        stmt.bindLong(15, entity.getIdClave());
+        stmt.bindLong(16, entity.getIdTablet());
+        stmt.bindLong(17, entity.getIdUsuarioReg());
+        stmt.bindLong(18, entity.getIdSibasi());
     }
 
     @Override
@@ -184,10 +188,11 @@ public class PlSeguimientoBotiquinDao extends AbstractDao<PlSeguimientoBotiquin,
             new java.util.Date(cursor.getLong(offset + 10)), // fechaRegistro
             cursor.getInt(offset + 11), // numeroMuestra
             cursor.getInt(offset + 12), // idUsuarioMod
-            cursor.getLong(offset + 13), // idClave
-            cursor.getLong(offset + 14), // idTablet
-            cursor.getLong(offset + 15), // idUsuarioReg
-            cursor.getLong(offset + 16) // idSibasi
+            cursor.getInt(offset + 13), // estado_sync
+            cursor.getLong(offset + 14), // idClave
+            cursor.getLong(offset + 15), // idTablet
+            cursor.getLong(offset + 16), // idUsuarioReg
+            cursor.getLong(offset + 17) // idSibasi
         );
         return entity;
     }
@@ -207,10 +212,11 @@ public class PlSeguimientoBotiquinDao extends AbstractDao<PlSeguimientoBotiquin,
         entity.setFechaRegistro(new java.util.Date(cursor.getLong(offset + 10)));
         entity.setNumeroMuestra(cursor.getInt(offset + 11));
         entity.setIdUsuarioMod(cursor.getInt(offset + 12));
-        entity.setIdClave(cursor.getLong(offset + 13));
-        entity.setIdTablet(cursor.getLong(offset + 14));
-        entity.setIdUsuarioReg(cursor.getLong(offset + 15));
-        entity.setIdSibasi(cursor.getLong(offset + 16));
+        entity.setEstado_sync(cursor.getInt(offset + 13));
+        entity.setIdClave(cursor.getLong(offset + 14));
+        entity.setIdTablet(cursor.getLong(offset + 15));
+        entity.setIdUsuarioReg(cursor.getLong(offset + 16));
+        entity.setIdSibasi(cursor.getLong(offset + 17));
      }
     
     @Override

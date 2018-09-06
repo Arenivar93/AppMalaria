@@ -31,22 +31,7 @@
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".CRUD.capturaAnopheles.CapturaAnopheles"
-            android:label="Captura Anopheles"
-            android:parentActivityName=".CRUD.capturaAnopheles.ListCapturaActivity"
-            android:screenOrientation="landscape">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".CRUD.capturaAnopheles.ListCapturaActivity" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.prueba" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
              Note that the API key is linked to the encryption key used to sign the APK.
@@ -108,14 +93,26 @@
         </activity>
         <activity android:name=".CRUD.Colvol.activityColvol.MapaColvolActivity" />
         <activity
-            android:name=".CRUD.capturaAnopheles.ListCapturaActivity"
-            android:label="Listado de Capturas Anopheles"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="landscape" />
+            android:name=".CRUD.capturaAnopheles.ListCapturaActivity"/>
+
         <activity android:name=".CRUD.pesquisaLarvaria.ListPesquisaActivity" />
         <activity
             android:name=".CRUD.pesquisaLarvaria.pesquisaLarvaria"
             android:label="@string/title_activity_pesquisa_larvaria"></activity>
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".CRUD.Criaderos.activityCriadero.AgregarCriaderoActivity"
+            android:label="Agregar Criadero"
+            android:parentActivityName=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity"
+            android:screenOrientation="landscape">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CRUD.Criaderos.fragmentCriadero.BuscarCriaderoActivity"/>
+            <intent-filter>
+                <action android:name="android.intent.action.AgregarCriaderoActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

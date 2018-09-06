@@ -32,14 +32,15 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
         public final static Property Descripcion = new Property(4, String.class, "descripcion", false, "DESCRIPCION");
         public final static Property Latitud = new Property(5, String.class, "latitud", false, "LATITUD");
         public final static Property Longitud = new Property(6, String.class, "longitud", false, "LONGITUD");
-        public final static Property LongitudCriadero = new Property(7, int.class, "longitudCriadero", false, "LONGITUD_CRIADERO");
-        public final static Property AnchoCriadero = new Property(8, int.class, "anchoCriadero", false, "ANCHO_CRIADERO");
+        public final static Property LongitudCriadero = new Property(7, float.class, "longitudCriadero", false, "LONGITUD_CRIADERO");
+        public final static Property AnchoCriadero = new Property(8, float.class, "anchoCriadero", false, "ANCHO_CRIADERO");
         public final static Property FechaHoraReg = new Property(9, java.util.Date.class, "fechaHoraReg", false, "FECHA_HORA_REG");
         public final static Property FechaHoraMod = new Property(10, java.util.Date.class, "fechaHoraMod", false, "FECHA_HORA_MOD");
         public final static Property IdUsarioReg = new Property(11, long.class, "idUsarioReg", false, "ID_USARIO_REG");
-        public final static Property IdSibasi = new Property(12, long.class, "idSibasi", false, "ID_SIBASI");
-        public final static Property IdCaserio = new Property(13, long.class, "idCaserio", false, "ID_CASERIO");
-        public final static Property IdUsuarioMod = new Property(14, long.class, "idUsuarioMod", false, "ID_USUARIO_MOD");
+        public final static Property Estado_sync = new Property(12, int.class, "estado_sync", false, "ESTADO_SYNC");
+        public final static Property IdSibasi = new Property(13, long.class, "idSibasi", false, "ID_SIBASI");
+        public final static Property IdCaserio = new Property(14, long.class, "idCaserio", false, "ID_CASERIO");
+        public final static Property IdUsuarioMod = new Property(15, long.class, "idUsuarioMod", false, "ID_USUARIO_MOD");
     }
 
     private DaoSession daoSession;
@@ -65,13 +66,14 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
                 "\"DESCRIPCION\" TEXT NOT NULL ," + // 4: descripcion
                 "\"LATITUD\" TEXT," + // 5: latitud
                 "\"LONGITUD\" TEXT," + // 6: longitud
-                "\"LONGITUD_CRIADERO\" INTEGER NOT NULL ," + // 7: longitudCriadero
-                "\"ANCHO_CRIADERO\" INTEGER NOT NULL ," + // 8: anchoCriadero
+                "\"LONGITUD_CRIADERO\" REAL NOT NULL ," + // 7: longitudCriadero
+                "\"ANCHO_CRIADERO\" REAL NOT NULL ," + // 8: anchoCriadero
                 "\"FECHA_HORA_REG\" INTEGER," + // 9: fechaHoraReg
                 "\"FECHA_HORA_MOD\" INTEGER," + // 10: fechaHoraMod
-                "\"ID_USARIO_REG\" INTEGER," + // 11: idUsarioReg
-                "\"ID_SIBASI\" INTEGER NOT NULL ," + // 12: idSibasi
-                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 13: idCaserio
+                "\"ID_USARIO_REG\" INTEGER NOT NULL ," + // 11: idUsarioReg
+                "\"ESTADO_SYNC\" INTEGER NOT NULL ," + // 12: estado_sync
+                "\"ID_SIBASI\" INTEGER NOT NULL ," + // 13: idSibasi
+                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 14: idCaserio
                 "\"ID_USUARIO_MOD\" INTEGER,"+"FOREIGN KEY(\"ID_SIBASI\")" +
                 " REFERENCES CTL_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_CASERIO\")" +
                 " REFERENCES CTL_CASERIO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_USUARIO_MOD\")" +
@@ -114,8 +116,8 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
         if (longitud != null) {
             stmt.bindString(7, longitud);
         }
-        stmt.bindLong(8, entity.getLongitudCriadero());
-        stmt.bindLong(9, entity.getAnchoCriadero());
+        stmt.bindDouble(8, entity.getLongitudCriadero());
+        stmt.bindDouble(9, entity.getAnchoCriadero());
  
         java.util.Date fechaHoraReg = entity.getFechaHoraReg();
         if (fechaHoraReg != null) {
@@ -127,9 +129,10 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
             stmt.bindLong(11, fechaHoraMod.getTime());
         }
         stmt.bindLong(12, entity.getIdUsarioReg());
-        stmt.bindLong(13, entity.getIdSibasi());
-        stmt.bindLong(14, entity.getIdCaserio());
-        stmt.bindLong(15, entity.getIdUsuarioMod());
+        stmt.bindLong(13, entity.getEstado_sync());
+        stmt.bindLong(14, entity.getIdSibasi());
+        stmt.bindLong(15, entity.getIdCaserio());
+        stmt.bindLong(16, entity.getIdUsuarioMod());
     }
 
     @Override
@@ -162,8 +165,8 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
         if (longitud != null) {
             stmt.bindString(7, longitud);
         }
-        stmt.bindLong(8, entity.getLongitudCriadero());
-        stmt.bindLong(9, entity.getAnchoCriadero());
+        stmt.bindDouble(8, entity.getLongitudCriadero());
+        stmt.bindDouble(9, entity.getAnchoCriadero());
  
         java.util.Date fechaHoraReg = entity.getFechaHoraReg();
         if (fechaHoraReg != null) {
@@ -175,9 +178,10 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
             stmt.bindLong(11, fechaHoraMod.getTime());
         }
         stmt.bindLong(12, entity.getIdUsarioReg());
-        stmt.bindLong(13, entity.getIdSibasi());
-        stmt.bindLong(14, entity.getIdCaserio());
-        stmt.bindLong(15, entity.getIdUsuarioMod());
+        stmt.bindLong(13, entity.getEstado_sync());
+        stmt.bindLong(14, entity.getIdSibasi());
+        stmt.bindLong(15, entity.getIdCaserio());
+        stmt.bindLong(16, entity.getIdUsuarioMod());
     }
 
     @Override
@@ -201,14 +205,15 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
             cursor.getString(offset + 4), // descripcion
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // latitud
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // longitud
-            cursor.getInt(offset + 7), // longitudCriadero
-            cursor.getInt(offset + 8), // anchoCriadero
+            cursor.getFloat(offset + 7), // longitudCriadero
+            cursor.getFloat(offset + 8), // anchoCriadero
             cursor.isNull(offset + 9) ? null : new java.util.Date(cursor.getLong(offset + 9)), // fechaHoraReg
             cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)), // fechaHoraMod
             cursor.getLong(offset + 11), // idUsarioReg
-            cursor.getLong(offset + 12), // idSibasi
-            cursor.getLong(offset + 13), // idCaserio
-            cursor.getLong(offset + 14) // idUsuarioMod
+            cursor.getInt(offset + 12), // estado_sync
+            cursor.getLong(offset + 13), // idSibasi
+            cursor.getLong(offset + 14), // idCaserio
+            cursor.getLong(offset + 15) // idUsuarioMod
         );
         return entity;
     }
@@ -222,14 +227,15 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
         entity.setDescripcion(cursor.getString(offset + 4));
         entity.setLatitud(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setLongitud(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setLongitudCriadero(cursor.getInt(offset + 7));
-        entity.setAnchoCriadero(cursor.getInt(offset + 8));
+        entity.setLongitudCriadero(cursor.getFloat(offset + 7));
+        entity.setAnchoCriadero(cursor.getFloat(offset + 8));
         entity.setFechaHoraReg(cursor.isNull(offset + 9) ? null : new java.util.Date(cursor.getLong(offset + 9)));
         entity.setFechaHoraMod(cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)));
         entity.setIdUsarioReg(cursor.getLong(offset + 11));
-        entity.setIdSibasi(cursor.getLong(offset + 12));
-        entity.setIdCaserio(cursor.getLong(offset + 13));
-        entity.setIdUsuarioMod(cursor.getLong(offset + 14));
+        entity.setEstado_sync(cursor.getInt(offset + 12));
+        entity.setIdSibasi(cursor.getLong(offset + 13));
+        entity.setIdCaserio(cursor.getLong(offset + 14));
+        entity.setIdUsuarioMod(cursor.getLong(offset + 15));
      }
     
     @Override

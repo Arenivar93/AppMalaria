@@ -31,8 +31,9 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
         public final static Property Nombre = new Property(3, String.class, "nombre", false, "NOMBRE");
         public final static Property Estado = new Property(4, Integer.class, "estado", false, "ESTADO");
         public final static Property Clave = new Property(5, String.class, "clave", false, "CLAVE");
-        public final static Property IdCaserio = new Property(6, long.class, "idCaserio", false, "ID_CASERIO");
-        public final static Property IdSibasi = new Property(7, long.class, "idSibasi", false, "ID_SIBASI");
+        public final static Property Estado_sync = new Property(6, int.class, "estado_sync", false, "ESTADO_SYNC");
+        public final static Property IdCaserio = new Property(7, long.class, "idCaserio", false, "ID_CASERIO");
+        public final static Property IdSibasi = new Property(8, long.class, "idSibasi", false, "ID_SIBASI");
     }
 
     private DaoSession daoSession;
@@ -57,7 +58,8 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
                 "\"NOMBRE\" TEXT," + // 3: nombre
                 "\"ESTADO\" INTEGER," + // 4: estado
                 "\"CLAVE\" TEXT," + // 5: clave
-                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 6: idCaserio
+                "\"ESTADO_SYNC\" INTEGER NOT NULL ," + // 6: estado_sync
+                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 7: idCaserio
                 "\"ID_SIBASI\" INTEGER NOT NULL ,"+"FOREIGN KEY(\"ID_CASERIO\")" +
                 " REFERENCES CTL_CASERIO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_SIBASI\")" +
                 " REFERENCES CTL_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE );"); // 7: idSibasi
@@ -102,8 +104,9 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
         if (clave != null) {
             stmt.bindString(6, clave);
         }
-        stmt.bindLong(7, entity.getIdCaserio());
-        stmt.bindLong(8, entity.getIdSibasi());
+        stmt.bindLong(7, entity.getEstado_sync());
+        stmt.bindLong(8, entity.getIdCaserio());
+        stmt.bindLong(9, entity.getIdSibasi());
     }
 
     @Override
@@ -139,8 +142,9 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
         if (clave != null) {
             stmt.bindString(6, clave);
         }
-        stmt.bindLong(7, entity.getIdCaserio());
-        stmt.bindLong(8, entity.getIdSibasi());
+        stmt.bindLong(7, entity.getEstado_sync());
+        stmt.bindLong(8, entity.getIdCaserio());
+        stmt.bindLong(9, entity.getIdSibasi());
     }
 
     @Override
@@ -163,8 +167,9 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // nombre
             cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // estado
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // clave
-            cursor.getLong(offset + 6), // idCaserio
-            cursor.getLong(offset + 7) // idSibasi
+            cursor.getInt(offset + 6), // estado_sync
+            cursor.getLong(offset + 7), // idCaserio
+            cursor.getLong(offset + 8) // idSibasi
         );
         return entity;
     }
@@ -177,8 +182,9 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
         entity.setNombre(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setEstado(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setClave(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setIdCaserio(cursor.getLong(offset + 6));
-        entity.setIdSibasi(cursor.getLong(offset + 7));
+        entity.setEstado_sync(cursor.getInt(offset + 6));
+        entity.setIdCaserio(cursor.getLong(offset + 7));
+        entity.setIdSibasi(cursor.getLong(offset + 8));
      }
     
     @Override

@@ -42,7 +42,6 @@ public class DaoMaster extends AbstractDaoMaster {
         CtlTabletDao.createTable(db, ifNotExists);
         BitacoraDao.createTable(db, ifNotExists);
         CtlPlCriaderoDao.createTable(db, ifNotExists);
-        CtlPlCriaderoTmpDao.createTable(db, ifNotExists);
         PlCapturaAnophelesDao.createTable(db, ifNotExists);
         PlSeguimientoBotiquinDao.createTable(db, ifNotExists);
         PlPesquisaLarvariaDao.createTable(db, ifNotExists);
@@ -71,7 +70,6 @@ public class DaoMaster extends AbstractDaoMaster {
         CtlTabletDao.dropTable(db, ifExists);
         BitacoraDao.dropTable(db, ifExists);
         CtlPlCriaderoDao.dropTable(db, ifExists);
-        CtlPlCriaderoTmpDao.dropTable(db, ifExists);
         PlCapturaAnophelesDao.dropTable(db, ifExists);
         PlSeguimientoBotiquinDao.dropTable(db, ifExists);
         PlPesquisaLarvariaDao.dropTable(db, ifExists);
@@ -114,7 +112,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(CtlTabletDao.class);
         registerDaoClass(BitacoraDao.class);
         registerDaoClass(CtlPlCriaderoDao.class);
-        registerDaoClass(CtlPlCriaderoTmpDao.class);
         registerDaoClass(PlCapturaAnophelesDao.class);
         registerDaoClass(PlSeguimientoBotiquinDao.class);
         registerDaoClass(PlPesquisaLarvariaDao.class);

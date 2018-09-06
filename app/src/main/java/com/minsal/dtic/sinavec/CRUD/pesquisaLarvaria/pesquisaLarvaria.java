@@ -58,7 +58,7 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
         // Add a marker in Sydney and move the camera
 
         for (CtlPlCriadero c: listaAdapter()){
-            LatLng sydney'"+c.getId()+"' = new LatLng(13.637981, -89.375867);
+            LatLng sydney = new LatLng(13.637981, -89.375867);
 
 
         }
