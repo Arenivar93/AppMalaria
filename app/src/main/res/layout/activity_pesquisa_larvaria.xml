@@ -4,137 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="@color/headtableLetra"
     tools:context=".CRUD.pesquisaLarvaria.pesquisaLarvaria">
-
-
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="2">
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        >
+        <Spinner
+            android:layout_width="360dp"
+            android:id="@+id/spMunicipioPesquisa"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Municipio:"/>
-            <EditText
-                android:id="@+id/nombreMunicipio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:focusable="false"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Canton:"/>
-            <EditText
-                android:id="@+id/nombreCanton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:focusable="false"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Caserio:"/>
-            <EditText
-                android:id="@+id/nombreCaserio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:focusable="false"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:text="Seleccione tipo de Busqueda:"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/linea"
-                android:orientation="horizontal"
-                />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <ToggleButton
-                    android:id="@+id/tipoBusqueda"
-                    android:layout_width="wrap_content"
-                    android:textOn="Manual"
-                    android:textOff="GPS"
-                    android:layout_height="wrap_content"/>
-                <ImageView
-                    android:id="@+id/imgBusqueda"
-                    android:layout_marginLeft="60dp"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_gravity="center"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Coordenadas:"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/linea"
-                android:orientation="horizontal"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Latitud:"/>
-
-            <EditText
-                android:id="@+id/criaderoLatitud"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:focusable="false"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Longitud:"/>
-            <EditText
-                android:id="@+id/criaderoLongitud"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:focusable="false"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <ImageView
-                    android:id="@+id/guardarGeoCaserio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:src="@mipmap/ic_save"
-                    android:text="Guardar" />
-
-                <ImageView
-                    android:id="@+id/cancelarGeoCaserio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:src="@mipmap/ic_cancel"
-                    android:text="Cancelar" />
-            </LinearLayout>
-        </LinearLayout>
+            android:id="@+id/btnBuscarCriaderoPes"
+            android:text="Buscar"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvCountCriadero"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -163,6 +55,7 @@
                 app:backgroundTint="@color/colorAccent"
                 app:borderWidth="0dp"
                 />
+
 
         </FrameLayout>
     </LinearLayout>
