@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.editarCriaderoDialogFragment;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.nuevoCriaderoDialogFragment;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
@@ -57,14 +58,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ActualizarCriaderoActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener,nuevoCriaderoDialogFragment.criaderoDialogListener{
+public class ActualizarCriaderoActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener,editarCriaderoDialogFragment.criaderoDialogListener{
 
     Spinner spMunicipio, spCanton,spCaserio;
     private GoogleMap mMap;
     private FloatingActionButton fab;
-    private EditText nomMunicipio,nomCanton,nomCaserio,latitudCriadero,longitudCriadero;
+    private EditText latitudCriadero,longitudCriadero;
     int idMunicipio=0,idCanton=0,idCaserio=0;
-    private String nombreCriadero;
     private int coordenada=0;
     private double latitud;
     private double longitud;
@@ -101,8 +101,6 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
     int idCas2=0;
     int controladorSaltos=0;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,7 +129,7 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
         criaderoDao=daoSession.getCtlPlCriaderoDao();
         utilidades=new Utilidades(daoSession);
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-        String elUser = prefs.getString("user", "");
+        elUser = prefs.getString("user", "");
         int idDepto=utilidades.deptoUser(elUser);
 
         listaCanton.add("Seleccione");
@@ -197,7 +195,10 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
                 if(!latitudCriadero.getText().toString().isEmpty()
                         && !longitudCriadero.getText().toString().isEmpty() && spCaserio.getSelectedItemPosition()!=0){
 
-                    nuevoCriaderoDialogFragment dialog = new nuevoCriaderoDialogFragment();
+                    editarCriaderoDialogFragment dialog = new editarCriaderoDialogFragment();
+                    Bundle datos=new Bundle();
+                    datos.putLong("id",criadero.getId());
+                    dialog.setArguments(datos);
                     dialog.show(getFragmentManager(), "dialog");
 
                 }else if(latitudCriadero.getText().toString().isEmpty() && longitudCriadero.getText().toString().isEmpty() && tipoBusqueda.isChecked()) {
@@ -455,7 +456,6 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
     }
 
     private void moverCamaraDepartamento() {
-        String elUser = prefs.getString("user", "");
         int idDepto=utilidades.deptoUser(elUser);
         List<Double> coordenadasDepto=utilidades.getCoordenadasDepartamento(idDepto);
         cameraZoom=new CameraPosition.Builder()
@@ -636,23 +636,12 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, String nombre, String descripcion, int tipo, float ancho, float largo) {
-
-        try {
+        try{
             Date fecha=new Date();
-            String sqlQUERY = "SELECT MAX(id) FROM CTL_PL_CRIADERO";
-            Cursor cursor = daoSession.getDatabase().rawQuery(sqlQUERY, null);
-            int idCriaderoMax = 0;
-            if (cursor.moveToFirst()) {
-                idCriaderoMax = cursor.getInt(0);
-            }
             long idUser=utilidades.getIdUser(elUser);
             FosUserUser usuario=daoSession.getFosUserUserDao().loadByRowId(idUser);
             CtlCaserio caserio=daoSession.getCtlCaserioDao().loadByRowId(caserios.get(spCaserio.getSelectedItemPosition()-1).getId());
-
-            CtlPlCriadero criadero=new CtlPlCriadero();
-            criadero.setId((long)(idCriaderoMax+1));
             criadero.setIdTipoCriadero(tipo);
-            criadero.setIdEstadoCriadero(1);
             criadero.setNombre(nombre);
             criadero.setDescripcion(descripcion);
             criadero.setLatitud(latitudCriadero.getText().toString());
@@ -660,27 +649,31 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
             criadero.setLongitudCriadero(largo);
             criadero.setAnchoCriadero(ancho);
             criadero.setFechaHoraMod(fecha);
-            criadero.setFechaHoraReg(fecha);
-            criadero.setIdUsarioReg(idUser);
             criadero.setFosUserUser(usuario);
-            criadero.setCtlEstablecimiento(usuario.getCtlEstablecimiento());
             criadero.setCtlCaserio(caserio);
             criadero.setEstado_sync(1);
-            daoSession.getCtlPlCriaderoDao().insert(criadero);
-
-            Intent listadoCriaderos=new Intent(this, BuscarCriaderoActivity.class);
-            startActivity(listadoCriaderos);
-            Toast.makeText(this,"El criadero fue registrado con exito!!!",Toast.LENGTH_LONG).show();
+            criaderoDao.update(criadero);
+            Intent geolocalizarCriadero=new Intent(ActualizarCriaderoActivity.this, MapaCriaderoActivity.class);
+            Bundle miBundle=new Bundle();
+            miBundle.putInt("idMunicipio",idMuni2);
+            miBundle.putInt("idCanton",idCtn2);
+            miBundle.putInt("idCaserio",idCas2);
+            miBundle.putString("criadero", criadero.getNombre());
+            miBundle.putLong("id",criadero.getId());
+            miBundle.putInt("coordenada",1);
+            miBundle.putDouble("latitud",Double.parseDouble(criadero.getLatitud()));
+            miBundle.putDouble("longitud",Double.parseDouble(criadero.getLongitud()));
+            geolocalizarCriadero.putExtras(miBundle);
+            Toast.makeText(this,"Criadero: "+criadero.getNombre()+" actualizado!!!",Toast.LENGTH_LONG).show();
+            startActivity(geolocalizarCriadero);
             finish();
-
         }catch (Exception e){
-            Toast.makeText(this,"Error, comuniquese con el administrador" +
-                    "del Sistema. Error:"+e.getMessage(),Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Ocurrio un Error, comuniquese con el" +
+                    "Administrador del Sistema",Toast.LENGTH_LONG).show();
         }
     }
-
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        Toast.makeText(this,"Cancelo la operación",Toast.LENGTH_LONG).show();
+        Toast.makeText(this,"Cancelo Criadero",Toast.LENGTH_LONG).show();
     }
 }

@@ -21,6 +21,7 @@
 
     <color name="colorButtonSiguiente">#0020b1</color>
     <color name="colorButtonLetra">#ffffff</color>
+    <color name="errorFormulario">#e20202</color>
 
 
 </resources>

@@ -143,6 +143,9 @@ public class BuscarCriaderoActivity extends AppCompatActivity{
                 if(controlError==4){
                     Toast.makeText(this,"Criadero Eliminado",Toast.LENGTH_LONG).show();
                 }
+                if(controlError==5){
+                    Toast.makeText(this,"El criadero fue registrado con exito!!!",Toast.LENGTH_LONG).show();
+                }
             }else{
                 Toast.makeText(this,"Error al momento de cargar los datos del caserio seleccionado",Toast.LENGTH_LONG).show();
             }

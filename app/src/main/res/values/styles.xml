@@ -20,4 +20,7 @@
     <style name="splashScreen" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
+    <style name="MyAppTheme.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/errorFormulario</item>
+    </style>
 </resources>

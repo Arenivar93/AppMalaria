@@ -549,6 +549,16 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
             Toast.makeText(this,"El criadero fue registrado con exito!!!",Toast.LENGTH_LONG).show();
             finish();
 
+            Intent guardarCriadero=new Intent(this, BuscarCriaderoActivity.class);
+            Bundle miBundle=new Bundle();
+            miBundle.putString("criadero", criadero.getNombre());
+            miBundle.putInt("idMuni",(int)(long)criadero.getCtlCaserio().getCtlCanton().getCtlMunicipio().getId());
+            miBundle.putInt("idCtn",(int)(long)criadero.getCtlCaserio().getCtlCanton().getId());
+            miBundle.putInt("idCas",(int)(long)criadero.getCtlCaserio().getId());
+            miBundle.putInt("bandera",5);
+            guardarCriadero.putExtras(miBundle);
+            startActivity(guardarCriadero);
+            finish();
         }catch (Exception e){
             Toast.makeText(this,"Error, comuniquese con el administrador" +
                     "del Sistema. Error:"+e.getMessage(),Toast.LENGTH_LONG).show();
