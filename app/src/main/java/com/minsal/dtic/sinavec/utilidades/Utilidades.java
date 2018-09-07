@@ -90,6 +90,14 @@ public class Utilidades {
         }
         return listaMunicipio;
     }
+    public ArrayList<String> getMunicipioTodos(List<CtlMunicipio> municipios) {
+        listaMunicipio = new ArrayList<String>();
+        listaMunicipio.add("Todos");
+        for (int i = 0; i < municipios.size(); i++) {
+            listaMunicipio.add(municipios.get(i).getNombre());
+        }
+        return listaMunicipio;
+    }
 
 
     public List<CtlCanton> loadSpinerCanton(Long idM) {
@@ -351,16 +359,31 @@ public class Utilidades {
     }
 
 
-    public List<CtlPlCriadero> loadCriaderosMap() {
+    public List<CtlPlCriadero> loadCriaderosMap( int idMunicipio) {
+
         criaderoDao = daoSession.getCtlPlCriaderoDao();
+
         criaderosMap = new ArrayList<CtlPlCriadero>();
-        criaderosMap = criaderoDao.queryBuilder()
-                .where(CtlPlCriaderoDao.Properties.Latitud.isNotNull()).list();
+        if (idMunicipio>0){
+            QueryBuilder<CtlPlCriadero> qb = criaderoDao.queryBuilder().where(CtlPlCriaderoDao.Properties.Latitud.isNotNull());
+            Join ctlCaserio = qb.join(CtlPlCriaderoDao.Properties.IdCaserio,CtlCaserio.class);
+            Join ctlCanton = qb.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
+                    CtlCanton.class,CtlCantonDao.Properties.Id);
+            Join ctlMunicipio = qb.join(ctlCanton,CtlCantonDao.Properties.IdMunicipio,
+                    CtlMunicipio.class,CtlMunicipioDao.Properties.Id);
+            ctlMunicipio.where(CtlMunicipioDao.Properties.Id.eq(idMunicipio));
+            criaderosMap = qb.orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
+        }else {
+            criaderosMap = criaderoDao.queryBuilder()
+                    .where(CtlPlCriaderoDao.Properties.Latitud.isNotNull()).list();
+        }
+
         return criaderosMap;
+
     }
 
         //obteniendo el usuario en sesion
-        public long getIdUser (String username){
+        public long getIdUser(String username) {
             long id = 0;
             if (!username.equals("")) {
                 List<FosUserUser> ids = null;
