@@ -110,15 +110,6 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
             }
 
         });
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-
-                NuevaPesquisaFragment dialog = new NuevaPesquisaFragment();
-                dialog.show(getFragmentManager(),"dialog");
-
-            }
-        });
 
 
     }
@@ -131,10 +122,10 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
                         .title(c.getNombre())).setTag(c);
-                tvCountCriadero.setText("Total de criaderos enontrados:"+String.valueOf(criaderos.size()));
             }
+            tvCountCriadero.setText("Total de criaderos enontrados: "+String.valueOf(criaderos.size()));
         }else{
-            tvCountCriadero.setText("No se encontraron criaderos registrados");
+            tvCountCriadero.setText("No se encontraron criaderos registrados con coordenadas");
         }
 
     }
@@ -192,12 +183,18 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
 
 
     @Override
-    public void OnDialogPositiveClick(DialogFragment dialog, String string) {
+    public void OnDialogPositiveClick(DialogFragment dialog, int anopheles12, int anopheles34,
+                                      int culicino12, int culicino34, int pupa, int cucharonada,
+                                      int largo, int ancho) {
+        String string = String.valueOf(anopheles12)+"-"+String.valueOf(anopheles34)+"-"+String.valueOf(culicino12)
+                +"-"+String.valueOf(anopheles34)+"-"+String.valueOf(cucharonada)+"-"+String.valueOf(ancho)+"-"+String.valueOf(largo);
+        Toast.makeText(getApplicationContext(), string,Toast.LENGTH_LONG).show();
 
     }
 
     @Override
-    public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog) {
+    public void onDialogNegativeClick(DialogFragment dialog) {
 
     }
+
 }
