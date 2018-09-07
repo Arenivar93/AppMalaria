@@ -26,6 +26,7 @@ import java.util.ArrayList;
  */
 public class nuevoCriaderoDialogFragment extends DialogFragment {
 
+
     private criaderoDialogListener mListener;
     private Spinner spTipoCriadero;
     ArrayAdapter<String> adapterTipoCriadero;
@@ -115,7 +116,7 @@ public class nuevoCriaderoDialogFragment extends DialogFragment {
                             tipoCriaderoVal = spTipoCriadero.getSelectedItemPosition();
                             float anchoVal=Float.parseFloat(ancho.getText().toString());
                             float largoVal=Float.parseFloat(largo.getText().toString());
-                            mListener.onDialogPositiveClick(nuevoCriaderoDialogFragment.this,nombreVal,descripcionVal,tipoCriaderoVal,anchoVal,largoVal);
+                           mListener.onDialogPositiveClick(nuevoCriaderoDialogFragment.this,nombreVal,descripcionVal,tipoCriaderoVal,anchoVal,largoVal);
                             ventana.dismiss();
                         }
                     }

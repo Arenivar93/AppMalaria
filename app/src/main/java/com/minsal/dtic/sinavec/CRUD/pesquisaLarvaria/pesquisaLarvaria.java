@@ -1,11 +1,13 @@
 package com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
-import android.os.AsyncTask;
+import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AbsSpinner;
@@ -34,7 +36,8 @@ import com.minsal.dtic.sinavec.utilidades.Utilidades;
 import java.util.ArrayList;
 import java.util.List;
 
-public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCallback,LocationListener {
+public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCallback,LocationListener
+                                                                    ,NuevaPesquisaFragment.OnFragmentInteractionListener{
 
     private GoogleMap mMap;
     private DaoSession daoSession;
@@ -56,10 +59,10 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pesquisa_larvaria);
-        daoSession      =((MyMalaria)getApplicationContext()).getDaoSession();
-        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-        spMunicipioPesquisa =(Spinner)findViewById(R.id.spMunicipioPesquisa);
-        tvCountCriadero = (TextView)findViewById(R.id.tvCountCriadero);
+        daoSession =((MyMalaria)getApplicationContext()).getDaoSession();
+        prefs      = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        spMunicipioPesquisa  =(Spinner)findViewById(R.id.spMunicipioPesquisa);
+        tvCountCriadero      = (TextView)findViewById(R.id.tvCountCriadero);
         btnBuscarCriaderoPes = (Button)findViewById(R.id.btnBuscarCriaderoPes);
         u=new Utilidades(daoSession);
         loadSpinerMun();
@@ -69,11 +72,12 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
 
         mapFragment.getMapAsync(this);
         btnBuscarCriaderoPes.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
+                mMap.clear();
                 long idMunicipio = getIdMunicipioPes();
                 criaderosMap((int)idMunicipio);
-                setupMap();
 
             }
         });
@@ -93,13 +97,8 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         moverCamaraDepartamento();
-        long muni=3;
-        /*for (CtlPlCriadero c: criaderosMap((int)muni)){
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
-                    .title(c.getNombre())).setTag(c);
-        }
-*/
+        //solo preparamos el mapa luego mostraremos los puntos al presionar el botin buscar
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -111,6 +110,8 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                NuevaPesquisaFragment dialog = new NuevaPesquisaFragment();
+                dialog.show(getFragmentManager(),"dialog");
 
             }
         });
@@ -118,20 +119,30 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
 
     }
 
-    public List<CtlPlCriadero> criaderosMap(int municipio){
+    public void criaderosMap(int municipio){
         Utilidades u = new Utilidades(daoSession);
-        List<CtlPlCriadero> criaderos = u.loadCriaderosMap();
-        return criaderos;
+        List<CtlPlCriadero> criaderos = u.loadCriaderosMap(municipio);
+        if (criaderos.size()>0){
+            for (CtlPlCriadero c: criaderos){
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
+                        .title(c.getNombre())).setTag(c);
+                tvCountCriadero.setText("Total de criaderos enontrados:"+String.valueOf(criaderos.size()));
+            }
+        }else{
+            tvCountCriadero.setText("No se encontraron criaderos registrados");
+        }
+
     }
 
-    private void moverCamaraDepartamento() {
+    private void moverCamaraDepartamento(){
         String elUser = prefs.getString("user", "");
         int idDepto=u.deptoUser(elUser);
         List<Double> coordenadasDepto=u.getCoordenadasDepartamento(idDepto);
         cameraZoom=new CameraPosition.Builder()
                 .target(new LatLng(coordenadasDepto.get(0),coordenadasDepto.get(1)))
-                .zoom(13)
-                .bearing(0)
+                .zoom(10)
+                .bearing(5)
                 .tilt(30)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
@@ -160,7 +171,7 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     private void loadSpinerMun() {
         Utilidades u   = new Utilidades(daoSession);
         municipios     = u.loadspinnerMunicipio(depto);
-        listaMunicipio = u.obtenerListaMunicipio(municipios);
+        listaMunicipio = u.getMunicipioTodos(municipios);
         ArrayAdapter<String> adapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_list_item_1, listaMunicipio);
         spMunicipioPesquisa.setAdapter(adapter);
@@ -174,15 +185,15 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
         }
         return idMunicipio;
     }
-    public void setupMap(){
-        long muni=3;
-        for (CtlPlCriadero c: criaderosMap((int)muni)){
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
-                    .title(c.getNombre())).setTag(c);
-        }
 
+
+    @Override
+    public void OnDialogPositiveClick(DialogFragment dialog, String string) {
 
     }
 
+    @Override
+    public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog) {
+
+    }
 }

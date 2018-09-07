@@ -163,7 +163,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
                         && !longitudCriadero.getText().toString().isEmpty() && spCaserio.getSelectedItemPosition()!=0){
 
                     nuevoCriaderoDialogFragment dialog = new nuevoCriaderoDialogFragment();
-                    dialog.show(getFragmentManager(), "dialog");
+                    dialog.show(getFragmentManager(),"dialog");
 
                 }else if(latitudCriadero.getText().toString().isEmpty() && longitudCriadero.getText().toString().isEmpty() && tipoBusqueda.isChecked()) {
                     if(!isGPSEnabled()){
