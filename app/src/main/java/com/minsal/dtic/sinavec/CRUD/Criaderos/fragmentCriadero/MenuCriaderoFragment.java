@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.BuscarCriaderoActivity;
+import com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero.ListaCriaderoMapa;
 import com.minsal.dtic.sinavec.R;
 
 
@@ -44,7 +45,8 @@ public class MenuCriaderoFragment extends Fragment {
         cvVer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(getContext(),ListaCriaderoMapa.class);
+                startActivity(i);
             }
         });
 

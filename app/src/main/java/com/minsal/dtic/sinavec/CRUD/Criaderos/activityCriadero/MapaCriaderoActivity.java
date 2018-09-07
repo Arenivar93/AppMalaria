@@ -254,14 +254,14 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
         if(coordenada!=1){
             moverCamaraDepartamento();
         }else{
-                markerManual = mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(latitud, longitud))
-                        .title("Latitud: "+latitud+" Longitud: "+longitud).draggable(true));
-                zoomToLocationCoordenadas(latitud,longitud);
-                latitudCriadero.setText(null);
-                longitudCriadero.setText(null);
-                latitudCriadero.setText(String.valueOf(latitud));
-                longitudCriadero.setText(String.valueOf(longitud));
+            markerManual = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(latitud, longitud))
+                    .title("Latitud: "+latitud+" Longitud: "+longitud).draggable(true));
+            zoomToLocationCoordenadas(latitud,longitud);
+            latitudCriadero.setText(null);
+            longitudCriadero.setText(null);
+            latitudCriadero.setText(String.valueOf(latitud));
+            longitudCriadero.setText(String.valueOf(longitud));
         }
         setUpMap();
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
