@@ -104,12 +104,16 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
             public boolean onMarkerClick(Marker marker) {
                 CtlPlCriadero cria = (CtlPlCriadero) marker.getTag();
                 Toast.makeText(getApplicationContext(),"id:"+cria.getId(),Toast.LENGTH_SHORT).show();
+                NuevaPesquisaFragment dialog = new NuevaPesquisaFragment();
+                dialog.show(getFragmentManager(),"dialog");
                 return false;
             }
+
         });
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+
                 NuevaPesquisaFragment dialog = new NuevaPesquisaFragment();
                 dialog.show(getFragmentManager(),"dialog");
 

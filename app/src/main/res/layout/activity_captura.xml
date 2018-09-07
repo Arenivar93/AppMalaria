@@ -26,7 +26,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="150dp"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -38,14 +38,14 @@
 
                     <Spinner
                         android:id="@+id/idMunicipioCap"
-                        android:layout_width="150dp"
+                        android:layout_width="220dp"
                         android:layout_height="40dp"
                         android:focusableInTouchMode="true"
                         />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="150dp"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -56,13 +56,13 @@
 
                     <Spinner
                         android:id="@+id/idCantonCap"
-                        android:layout_width="150dp"
+                        android:layout_width="220dp"
                         android:layout_height="40dp"
                         />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="150dp"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -75,7 +75,7 @@
 
                     <Spinner
                         android:id="@+id/idCaserioCap"
-                        android:layout_width="150dp"
+                        android:layout_width="220dp"
                         android:layout_height="40dp" />
                 </LinearLayout>
 
@@ -92,7 +92,7 @@
                 android:paddingTop="40dp">
 
                 <LinearLayout
-                    android:layout_width="150dp"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -109,7 +109,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="150dp"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -125,7 +125,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="150dp"
+                    android:layout_width="300dp"
                     android:layout_height="90dp"
                     android:orientation="vertical">
 
@@ -152,171 +152,143 @@
 
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/tilPropietario"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/titPropietario"
+                            android:layout_width="490dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:hint="Descripción"
+                            android:inputType="text" />
+                    </android.support.design.widget.TextInputLayout>
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/tilZancudo"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/titZancudo"
+                            android:layout_width="250dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:hint="Total de zancudos"
+                            android:inputType="number" />
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingTop="15dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilAnopheles"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/titAnopheles"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:hint="Total anopheles"
+                        android:inputType="number" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilTiempo"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/titTiempo"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:hint="Tiempo de Colecta"
+                        android:inputType="number" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilComponente"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/titComponente"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:hint="Tiempo de Colecta"
+                        android:inputType="number" />
+                </android.support.design.widget.TextInputLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/imGuardar"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="492dp"
+                    android:layout_marginTop="24dp"
+                    android:clickable="true"
+                    style="?android:borderlessButtonStyle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/edtTiempo"
+                    app:srcCompat="@drawable/guardar" />
 
-                    <TextView
-                        android:id="@+id/tvPropietario"
-                        android:layout_width="70dp"
-                        android:layout_height="59dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="80dp"
-                        android:text="Propietario/Descripcion:"
-                        app:layout_constraintEnd_toStartOf="@+id/edtPropietario"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <EditText
-                        android:id="@+id/edtPropietario"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="72dp"
-                        android:ems="10"
-                        android:hint="Descripcion de Lugar"
-                        android:inputType="textPersonName"
-                        app:layout_constraintStart_toEndOf="@+id/tvPropietario"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/textView10"
-                        android:layout_width="105dp"
-                        android:layout_height="34dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="40dp"
-                        android:layout_marginTop="80dp"
-                        android:text="Total Zancudos:"
-                        app:layout_constraintEnd_toStartOf="@+id/edtZancudo"
-                        app:layout_constraintStart_toEndOf="@+id/edtPropietario"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <EditText
-                        android:id="@+id/edtZancudo"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="72dp"
-                        android:ems="10"
-                        android:hint="Total Zancudos"
-                        android:inputType="textPersonName|number"
-                        app:layout_constraintStart_toEndOf="@+id/textView10"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/textView11"
-                        android:layout_width="96dp"
-                        android:layout_height="39dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="24dp"
-                        android:text="Total Anopheles:"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvPropietario" />
-
-                    <EditText
-                        android:id="@+id/edtAnopheles"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="36dp"
-                        android:ems="10"
-                        android:hint="Total Anopheles"
-                        android:inputType="textPersonName|number"
-                        app:layout_constraintStart_toEndOf="@+id/textView11"
-                        app:layout_constraintTop_toBottomOf="@+id/edtPropietario" />
-
-                    <EditText
-                        android:id="@+id/edtTiempo"
-                        android:layout_width="150dp"
-                        android:layout_height="43dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="28dp"
-                        android:ems="10"
-                        android:hint="Tiempo Colecta"
-                        android:inputType="textPersonName|number"
-                        app:layout_constraintStart_toEndOf="@+id/textView14"
-                        app:layout_constraintTop_toBottomOf="@+id/edtZancudo" />
-
-                    <TextView
-                        android:id="@+id/textView13"
-                        android:layout_width="96dp"
-                        android:layout_height="39dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="36dp"
-                        android:text="Componentes Inspeccionados:"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView11" />
-
-                    <EditText
-                        android:id="@+id/edtComponentes"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="60dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="36dp"
-                        android:ems="10"
-                        android:hint="Componentes Inspeccionados"
-                        android:inputType="number"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/textView13"
-                        app:layout_constraintTop_toBottomOf="@+id/edtAnopheles"
-                        app:layout_constraintVertical_bias="0.0" />
-
-
-                    <ImageView
-                        android:id="@+id/imGuardar"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:layout_marginStart="392dp"
-                        android:layout_marginTop="24dp"
-                        android:clickable="true"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/edtTiempo"
-                        app:srcCompat="@drawable/guardar" />
-
-                    <ImageView
-                        android:id="@+id/imHome"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="24dp"
-                        android:clickable="true"
-                        app:layout_constraintStart_toEndOf="@+id/imGuardar"
-                        app:layout_constraintTop_toBottomOf="@+id/edtTiempo"
-                        app:srcCompat="@drawable/if_home_173033" />
-
-                    <TextView
-                        android:id="@+id/textView14"
-                        android:layout_width="wrap_content"
-                        android:layout_height="26dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="40dp"
-                        android:layout_marginTop="44dp"
-                        android:text="Tiempo Colecta"
-                        app:layout_constraintEnd_toStartOf="@+id/edtTiempo"
-                        app:layout_constraintStart_toEndOf="@+id/edtAnopheles"
-                        app:layout_constraintTop_toBottomOf="@+id/textView10" />
-
-                    <TextView
-                        android:id="@+id/textView16"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="40dp"
-                        android:text="Min."
-                        app:layout_constraintStart_toEndOf="@+id/edtTiempo"
-                        app:layout_constraintTop_toBottomOf="@+id/edtZancudo" />
-                </android.support.constraint.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/imHome"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    style="?android:borderlessButtonStyle"
+                    android:clickable="true"
+                    app:layout_constraintStart_toEndOf="@+id/imGuardar"
+                    app:layout_constraintTop_toBottomOf="@+id/edtTiempo"
+                    app:srcCompat="@drawable/if_home_173033" />
             </LinearLayout>
+
         </LinearLayout>
+
+
     </ScrollView>
+
 
 </LinearLayout>
