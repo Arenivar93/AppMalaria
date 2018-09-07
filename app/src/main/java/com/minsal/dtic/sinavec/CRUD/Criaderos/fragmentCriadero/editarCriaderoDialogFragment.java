@@ -122,11 +122,11 @@ public class editarCriaderoDialogFragment extends DialogFragment {
                             errorText.setText("Seleccione");
                             error=1;
                         }
-                        if(ancho.getText().toString().isEmpty()){
+                        if(ancho.getText().toString().isEmpty() || ancho.getText().toString().equals(".") || ancho.getText().toString().equals(".0") || ancho.getText().toString().equals("0") || ancho.getText().toString().equals("0.")){
                             errorAncho.setError("Ancho requerido");
                             error=1;
                         }
-                        if(largo.getText().toString().isEmpty()){
+                        if(largo.getText().toString().isEmpty() || largo.getText().toString().equals(".") || largo.getText().toString().equals(".0") || largo.getText().toString().equals("0") || largo.getText().toString().equals("0.")){
                             errorLargo.setError("Largo requerido");
                             error=1;
                         }

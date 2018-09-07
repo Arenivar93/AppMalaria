@@ -16,6 +16,8 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -192,6 +195,7 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
         buttonSiguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TextView errorText=(TextView)spCaserio.getSelectedView();
                 if(!latitudCriadero.getText().toString().isEmpty()
                         && !longitudCriadero.getText().toString().isEmpty() && spCaserio.getSelectedItemPosition()!=0){
 
@@ -208,7 +212,9 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
                         Toast.makeText(getApplicationContext(),"Espere un momento, GPS calcula coordenadas",Toast.LENGTH_LONG).show();
                     }
                 }else if(spCaserio.getSelectedItemPosition()==0){
-                    Toast.makeText(getApplicationContext(),"Seleccione un caserio",Toast.LENGTH_LONG).show();
+                    errorText.setError("");
+                    errorText.setTextColor(Color.RED);
+                    errorText.setText("Seleccione");
                 }else{
                     Toast.makeText(getApplicationContext(),"Latitud y Longitud vacios, debe de " +
                             "geolocalizar el criadero",Toast.LENGTH_LONG).show();
