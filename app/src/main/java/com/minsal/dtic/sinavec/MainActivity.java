@@ -26,6 +26,7 @@ import com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol.MenuColvolFragment;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.MenuCriaderoFragment;
 import com.minsal.dtic.sinavec.EntityDAO.CtlDepartamentoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.Sincronizar.SubirDatos;
 import com.minsal.dtic.sinavec.fragment.ContenedorFragment;
 import com.minsal.dtic.sinavec.fragment.CapturaFragment;
 import com.minsal.dtic.sinavec.fragment.FebrilFragment;
@@ -124,18 +125,17 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MainFragment()).commit();
         } else if (id == R.id.gotas) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new FebrilFragment()).commit();
-        } else if (id == R.id.captura) {
-            fragmentManager.beginTransaction().replace(R.id.contenedor, new CapturaFragment()).commit();
-        } else if (id == R.id.pesquisa) {
-            fragmentManager.beginTransaction().replace(R.id.contenedor, new PesquisaFragment()).commit();
         } else if (id == R.id.criadero) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MenuCriaderoFragment()).commit();
         } else if (id == R.id.colvol) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MenuColvolFragment()).commit();
         } else if (id == R.id.salir) {
-            Intent siguiente = new Intent(MainActivity.this, MapsActivity.class);
+            Intent siguiente = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(siguiente);
-        } else if (id == R.id.tab) {
+        } else if(id== R.id.subir_datos){
+            Intent i = new Intent(getApplicationContext(), SubirDatos.class);
+            startActivity(i);
+        }else if (id == R.id.tab) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new ContenedorFragment()).commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -44,7 +44,7 @@ public class ListCapturaActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(),CapturaAnopheles.class);
                 i.putExtra("accion","Nueva");
                 startActivity(i);
-                finish();
+               // finish();
             }
         });
 
@@ -56,7 +56,7 @@ public class ListCapturaActivity extends AppCompatActivity {
                 nuevo.putExtra("accion","edit");
                 nuevo.putExtra("id",id);
                 startActivity(nuevo);
-                finish();
+                //finish();
             }
         });
     }

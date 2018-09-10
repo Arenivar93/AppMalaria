@@ -13,14 +13,6 @@
             android:icon="@drawable/ic_febril"
             android:title="Gotas Gruesas" />
         <item
-            android:id="@+id/captura"
-            android:icon="@drawable/ic_criadero"
-            android:title="Captura Anopheles" />
-        <item
-            android:id="@+id/pesquisa"
-            android:icon="@drawable/ic_entomologia"
-            android:title="Pesquisa Larvaria" />
-        <item
             android:id="@+id/colvol"
             android:icon="@drawable/ic_colvol"
             android:title="Colvol" />
@@ -37,9 +29,9 @@
     <item android:title="Configuración">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/subir_datos"
                 android:icon="@drawable/ic_cambiar"
-                android:title="Cambiar Clave" />
+                android:title="Sincronixar Datos Malaria" />
             <item
                 android:id="@+id/tab"
                 android:icon="@drawable/ic_menu_send"
