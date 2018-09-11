@@ -117,7 +117,7 @@ public class NuevaPesquisaFragment extends android.app.DialogFragment {
 
         }catch (Exception e){
             throw new ClassCastException(context.toString()
-                    + " must implement criaderoDialogListener");
+                    + " must implement colvolDialogListener");
         }
     }
 

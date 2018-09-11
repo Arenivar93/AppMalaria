@@ -161,12 +161,12 @@ public class editarCriaderoDialogFragment extends DialogFragment {
         // La actividad desde donde se levantara la modal, debe de implementar la intefaz junto
         // con sus metodos.
         try {
-            // Instantiate the criaderoDialogListener so we can send events to the host
+            // Instantiate the colvolDialogListener so we can send events to the host
             mListener = (criaderoDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement criaderoDialogListener");
+                    + " must implement colvolDialogListener");
         }
     }
 

@@ -60,6 +60,7 @@ public class Utilidades {
     PlCapturaAnophelesDao capDao;
     PlPesquisaLarvariaDao pesDao;
     CtlPlCriaderoDao criaderoDao;
+    PlColvolDao colvolDao;
 
     ArrayList<String> listaMunicipio;
     ArrayList<String> listaCanton;
@@ -72,6 +73,7 @@ public class Utilidades {
     List<PlPesquisaLarvaria> pesquisasBySem;
 
     List<CtlPlCriadero> criaderosMap;
+    List<PlColvol> colvolMap;
     List<CtlPlCriadero> criaderos;
     List<PlColvol> colvols;
     ArrayList<String> pesquisaPrueba;
@@ -409,6 +411,28 @@ public class Utilidades {
         }
 
         return criaderosMap;
+
+    }
+
+    public List<PlColvol> loadColvolMap( int idMunicipio) {
+
+        colvolDao = daoSession.getPlColvolDao();
+
+        colvolMap = new ArrayList<PlColvol>();
+        if (idMunicipio>0){
+            QueryBuilder<PlColvol> qb = colvolDao.queryBuilder().where(PlColvolDao.Properties.Latitud.isNotNull());
+            Join ctlCaserio = qb.join(PlColvolDao.Properties.IdCaserio,CtlCaserio.class);
+            Join ctlCanton = qb.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
+                    CtlCanton.class,CtlCantonDao.Properties.Id);
+            Join ctlMunicipio = qb.join(ctlCanton,CtlCantonDao.Properties.IdMunicipio,
+                    CtlMunicipio.class,CtlMunicipioDao.Properties.Id);
+            ctlMunicipio.where(CtlMunicipioDao.Properties.Id.eq(idMunicipio));
+            colvolMap = qb.orderAsc(PlColvolDao.Properties.Nombre).list();
+        }else {
+            colvolMap = colvolDao.queryBuilder()
+                    .where(PlColvolDao.Properties.Latitud.isNotNull()).list();
+        }
+        return colvolMap;
 
     }
 

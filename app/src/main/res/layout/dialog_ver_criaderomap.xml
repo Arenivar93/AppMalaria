@@ -6,68 +6,135 @@
     android:layout_height="match_parent"
     android:padding="10dp"
     android:id="@+id/dialog_ver_criaderomap_view">
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textoNombre"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
-        <android.support.design.widget.TextInputEditText
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Nombre:"/>
+        <EditText
             android:id="@+id/nombreCriadero"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre Criadero:"/>
-    </android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textoDescripcion"
+            android:inputType="none"
+            android:focusable="false"/>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
-        <android.support.design.widget.TextInputEditText
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Descripción:"/>
+        <EditText
             android:id="@+id/descripcionCriadero"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descripción:"/>
-    </android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textoTipoCriadero"
+            android:inputType="none"
+            android:focusable="false"/>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
-        <android.support.design.widget.TextInputEditText
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Tipo:"/>
+        <EditText
             android:id="@+id/tipoCriadero"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="none"
-            android:focusable="false"
-            android:hint="Tipo:"/>
-    </android.support.design.widget.TextInputLayout>
+            android:hint="Tipo:"
+            android:focusable="false"/>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textoAncho"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/anchoCriadero"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:hint="Ancho(m):"/>
-        </android.support.design.widget.TextInputLayout>
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textoLargo"
+            android:text="Ancho(m):"/>
+        <EditText
+            android:id="@+id/anchoCriadero"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:focusable="false"/>
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/largoCriadero"
-                android:layout_width="150dp"
+            android:text="Largo(m):"/>
+        <EditText
+            android:id="@+id/largoCriadero"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:focusable="false"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="25dp"
+        android:text="Dirección:"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/linea"
+        android:orientation="horizontal"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="90dp"
+                android:textSize="18dp"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:hint="Largo(m):"/>
-        </android.support.design.widget.TextInputLayout>
+                android:text="Municipio:"/>
+            <TextView
+                android:id="@+id/idMunicipio"
+                android:textSize="18dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="90dp"
+                android:textSize="18dp"
+                android:layout_height="wrap_content"
+                android:text="Canton:"/>
+            <TextView
+                android:id="@+id/idCanton"
+                android:textSize="18dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:text="Caserio:"
+                android:textSize="18dp"/>
+            <TextView
+                android:id="@+id/idCaserio"
+                android:textSize="18dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

@@ -48,12 +48,6 @@
             android:layout_weight="1"
             app:srcCompat="@drawable/logo_minsal" />
     </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-       >
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,37 +69,48 @@
 
 
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="465dp"
                 android:layout_height="435dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="60dp"
                 android:orientation="vertical">
-
-
-                <EditText
-                    android:id="@+id/edtUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="86dp"
-                    android:layout_marginTop="75dp"
-                    android:hint="@string/edtUser"
-                    android:inputType="textPersonName" />
-
-                <EditText
-                    android:id="@+id/edtPass"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/edtUserText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/edtPass"
-                    android:inputType="textPersonName"
-                    android:paddingTop="50dp" />
+                    android:layout_marginTop="95dp"
+                    app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edtUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Usuario:"
+                    android:inputType="textPersonName"/>
+                </android.support.design.widget.TextInputLayout>
 
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/edtPassText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleDrawable="@drawable/icon_selector"
+                    app:passwordToggleTint="@color/colorPrimary"
+                    app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edtPass"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="Contraseña:"
+                        android:inputType="textPassword"/>
+                </android.support.design.widget.TextInputLayout>
                 <Button
                     android:id="@+id/btnLogin"
+                    android:layout_marginTop="25dp"
                     android:layout_width="match_parent"
                     android:layout_height="79dp"
                     android:text="@string/btnLogin" />
-
                 <Switch
                     android:id="@+id/swRemeber"
                     android:layout_width="wrap_content"
@@ -116,5 +121,4 @@
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
 </android.support.constraint.ConstraintLayout>
