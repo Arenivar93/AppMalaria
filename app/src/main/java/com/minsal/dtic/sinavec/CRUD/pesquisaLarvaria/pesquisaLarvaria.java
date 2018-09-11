@@ -3,14 +3,12 @@ package com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
-import android.app.DialogFragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AbsSpinner;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -25,15 +23,26 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
+import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
+import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
 import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCallback,LocationListener
@@ -46,25 +55,28 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     private SharedPreferences prefs;
     private CameraPosition cameraZoom;
     ArrayList<LatLng> locations = new ArrayList();
-    ArrayList<String> nombres = new ArrayList();
+    ArrayList<String> nombres   = new ArrayList();
     private List<CtlMunicipio> municipios;
     private ArrayList<String> listaMunicipio;
     private Spinner spMunicipioPesquisa;
     int depto = MainActivity.depto;
     TextView tvCountCriadero;
     Button btnBuscarCriaderoPes;
+    long idCriadero;
+    private SharedPreferences pref;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pesquisa_larvaria);
-        daoSession =((MyMalaria)getApplicationContext()).getDaoSession();
-        prefs      = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-        spMunicipioPesquisa  =(Spinner)findViewById(R.id.spMunicipioPesquisa);
-        tvCountCriadero      = (TextView)findViewById(R.id.tvCountCriadero);
-        btnBuscarCriaderoPes = (Button)findViewById(R.id.btnBuscarCriaderoPes);
+        daoSession          =((MyMalaria)getApplicationContext()).getDaoSession();
+        prefs               = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        spMunicipioPesquisa =(Spinner)findViewById(R.id.spMunicipioPesquisa);
+        tvCountCriadero     = (TextView)findViewById(R.id.tvCountCriadero);
+        btnBuscarCriaderoPes= (Button)findViewById(R.id.btnBuscarCriaderoPes);
         u=new Utilidades(daoSession);
+        pref = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         loadSpinerMun();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -103,17 +115,12 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
             @Override
             public boolean onMarkerClick(Marker marker) {
                 CtlPlCriadero cria = (CtlPlCriadero) marker.getTag();
-                Toast.makeText(getApplicationContext(),"id:"+cria.getId(),Toast.LENGTH_SHORT).show();
+                idCriadero=cria.getId();
+                NuevaPesquisaFragment dialog = new NuevaPesquisaFragment().newInsrance(cria.getId(),cria.getNombre());
+                dialog.show(getFragmentManager(),"dialog");
                 return false;
             }
-        });
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                NuevaPesquisaFragment dialog = new NuevaPesquisaFragment();
-                dialog.show(getFragmentManager(),"dialog");
 
-            }
         });
 
 
@@ -127,10 +134,10 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
                         .title(c.getNombre())).setTag(c);
-                tvCountCriadero.setText("Total de criaderos enontrados:"+String.valueOf(criaderos.size()));
             }
+            tvCountCriadero.setText("Total de criaderos enontrados: "+String.valueOf(criaderos.size()));
         }else{
-            tvCountCriadero.setText("No se encontraron criaderos registrados");
+            tvCountCriadero.setText("No se encontraron criaderos registrados con coordenadas");
         }
 
     }
@@ -188,12 +195,89 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
 
 
     @Override
-    public void OnDialogPositiveClick(DialogFragment dialog, String string) {
+    public void OnDialogPositiveClick(DialogFragment dialog, int anopheles12, int anopheles34,
+                                      int culicino12, int culicino34, int pupa, int cucharonada,
+                                      int largo, int ancho) {
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String fecha = dateFormat.format(currentTime);
+        long idUsuario = getIdUser();
+        try {
+            Date fec = dateFormat.parse(fecha);
+            int semanaActual = getSemana();
+            PlPesquisaLarvariaDao pesDao = daoSession.getPlPesquisaLarvariaDao();
+            PlPesquisaLarvaria pes = new PlPesquisaLarvaria();
+            pes.setAnophelesUno(anopheles12);
+            pes.setAnophelesDos(anopheles34);
+            pes.setCulicinosUno(culicino12);
+            pes.setCulicinosDos(culicino34);
+            pes.setAncho(ancho);
+            pes.setLargo(largo);
+            pes.setIdCriadero(idCriadero);
+            pes.setFechaHoraReg(fec);
+            pes.setIdEstado(1);
+            pes.setFechaHoraMod(fec);// se debe quitar not null
+            pes.setFecha(fec);// se debe quitar not null
+            pes.setIdSemanaEpidemiologica(semanaActual);
+            pes.setIdUsuarioReg(idUsuario);
+            pes.setIdCaserio(2458);//el criadero esta amarradp a un caserio navegar a el
+            pes.setIdSibasi(8);
+            pes.setIdTablet(2);
+            pes.setEstado_sync(0);
+            pesDao.insert(pes);
+            Toast.makeText(getApplicationContext(),"se guardo",Toast.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+        }/*
+        String string = String.valueOf(anopheles12)+"-"+String.valueOf(anopheles34)+"-"+String.valueOf(culicino12)
+                +"-"+String.valueOf(culicino34)+"-"+String.valueOf(pupa)+"-"+String.valueOf(cucharonada)+"-"+String.valueOf(largo);
+        Toast.makeText(getApplicationContext(), string,Toast.LENGTH_LONG).show();*/
 
     }
 
     @Override
-    public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog) {
+    public void onDialogNegativeClick(DialogFragment dialog) {
 
     }
+    public int getSemana() {
+        int semana = 0;
+        try {
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+            Date now = new Date();
+            String strDate = sdfDate.format(now);
+            String sqlQUERY = "SELECT semana FROM ctl_semana_epi where '" + strDate + "' BETWEEN fecha_inicio " +
+                    "and fecha_fin";
+            Cursor c = daoSession.getDatabase().rawQuery(sqlQUERY, null);
+            if (c.moveToFirst()) {
+                do {
+                    semana = c.getInt(0);
+
+                } while (c.moveToNext());
+            }
+            c.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return semana;
+    }
+    public long getIdUser() {
+        String username = pref.getString("user", "");
+        long id = 0;
+        if (!username.equals("")) {
+            List<FosUserUser> ids = null;
+            FosUserUserDao userDao = daoSession.getFosUserUserDao();
+            QueryBuilder<FosUserUser> qb = userDao.queryBuilder();
+            qb.where(FosUserUserDao.Properties.Username.eq(username));
+            ids = qb.list();
+            for (FosUserUser f : ids) {
+                id = f.getId();
+            }
+        }
+        return id;
+    }
+
 }

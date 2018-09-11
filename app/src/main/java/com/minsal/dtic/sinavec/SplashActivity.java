@@ -3,15 +3,14 @@ package com.minsal.dtic.sinavec;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.Sincronizar.SettingActivity;
 import com.minsal.dtic.sinavec.utilidades.MetodosGlobales;
 
-import HelperDB.DbHelpers;
 import Utils.Util;
 
 public class SplashActivity extends AppCompatActivity {
