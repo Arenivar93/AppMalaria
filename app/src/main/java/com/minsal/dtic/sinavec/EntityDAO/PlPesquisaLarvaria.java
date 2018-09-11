@@ -23,10 +23,10 @@ public class PlPesquisaLarvaria {
     private int idEstado;
 
     @NotNull
-    private java.util.Date fechaHoraReg;
+    private String fechaHoraReg;
 
     @NotNull
-    private java.util.Date fechaHoraMod;
+    private String fechaHoraMod;
     private float indiceLarvario;
     private int anophelesDos;
     private int anophelesUno;
@@ -96,7 +96,7 @@ public class PlPesquisaLarvaria {
     }
 
     @Generated
-    public PlPesquisaLarvaria(Long id, int idSemanaEpidemiologica, int idUsuarioMod, int idEstado, java.util.Date fechaHoraReg, java.util.Date fechaHoraMod, float indiceLarvario, int anophelesDos, int anophelesUno, int culicinosUno, int culicinosDos, int pupa, int numeroCucharonada, float ancho, float largo, java.util.Date fecha, int estado_sync, long idTablet, long idSibasi, long idCriadero, long idCaserio, long idUsuarioReg) {
+    public PlPesquisaLarvaria(Long id, int idSemanaEpidemiologica, int idUsuarioMod, int idEstado, String fechaHoraReg, String fechaHoraMod, float indiceLarvario, int anophelesDos, int anophelesUno, int culicinosUno, int culicinosDos, int pupa, int numeroCucharonada, float ancho, float largo, java.util.Date fecha, int estado_sync, long idTablet, long idSibasi, long idCriadero, long idCaserio, long idUsuarioReg) {
         this.id = id;
         this.idSemanaEpidemiologica = idSemanaEpidemiologica;
         this.idUsuarioMod = idUsuarioMod;
@@ -161,22 +161,22 @@ public class PlPesquisaLarvaria {
     }
 
     @NotNull
-    public java.util.Date getFechaHoraReg() {
+    public String getFechaHoraReg() {
         return fechaHoraReg;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setFechaHoraReg(@NotNull java.util.Date fechaHoraReg) {
+    public void setFechaHoraReg(@NotNull String fechaHoraReg) {
         this.fechaHoraReg = fechaHoraReg;
     }
 
     @NotNull
-    public java.util.Date getFechaHoraMod() {
+    public String getFechaHoraMod() {
         return fechaHoraMod;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setFechaHoraMod(@NotNull java.util.Date fechaHoraMod) {
+    public void setFechaHoraMod(@NotNull String fechaHoraMod) {
         this.fechaHoraMod = fechaHoraMod;
     }
 

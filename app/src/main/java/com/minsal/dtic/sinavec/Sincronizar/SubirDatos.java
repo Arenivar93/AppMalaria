@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -46,11 +47,12 @@ public class SubirDatos extends AppCompatActivity {
         subirDatos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                long startTime = System.currentTimeMillis();
                 try {
                     JSONObject jo = new JSONObject();
                     JSONArray jaCapturas = getInsertCapturas();
                     jo.put("pl_capturas_insert",jaCapturas);
-                    String url = "http://10.0.2.2/tablets/subidaData.php";
+                    String url = "http://10.168.10.80/tablets/subirData.php";
                     RequestQueue rq  = Volley.newRequestQueue(getApplicationContext());
                     JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, jo,
                             new Response.Listener<JSONObject>() {
@@ -63,6 +65,7 @@ public class SubirDatos extends AppCompatActivity {
                                         for (int i = 0; i <Obj.length() ; i++) {
 
                                             tvja.setText(ja.getString(i));
+                                            Log.i("***ver****",ja.getString(i));
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -75,9 +78,12 @@ public class SubirDatos extends AppCompatActivity {
                         }
                     });
                     rq.add(postRequest);
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+                long endTime = System.currentTimeMillis() - startTime;
+                Toast.makeText(getApplicationContext(),"duraccion"+endTime,Toast.LENGTH_LONG).show();
+
 
             }
         });
@@ -88,7 +94,7 @@ public class SubirDatos extends AppCompatActivity {
         String insert = "";
         List<PlCapturaAnopheles> capturas = new ArrayList<PlCapturaAnopheles>();
         PlCapturaAnophelesDao capDao = daoSession.getPlCapturaAnophelesDao();
-        capturas = capDao.queryBuilder().where(PlCapturaAnophelesDao.Properties.Estado_sync.eq(0)).list();
+        capturas = capDao.queryBuilder().where(PlCapturaAnophelesDao.Properties.Estado_sync.eq(1)).list();
         SimpleDateFormat dateFormat;
         dateFormat=new SimpleDateFormat("yyyy-MM-dd");
         for (PlCapturaAnopheles p: capturas){
@@ -96,7 +102,7 @@ public class SubirDatos extends AppCompatActivity {
             insert = "INSERT INTO pl_captura_anopheles(id_captura, id_sibasi, id_tablet, id_semana_epidemiologica," +
                         "id_tipo_actividad, id_caserio, id_usuario_reg,id_estado, id_tipo_captura, total_mosquitos, total_anopheles," +
                         "casa_positiva, casa_inspeccionada, componente_inspeccionado, tiempo_colecta, fecha_hora_reg, propietario " +
-                        "VALUES ('"+p.getId()+"','"+p.getIdSibasi()+"','"+p.getIdTablet()+"','"+p.getIdSemanaEpidemiologica()+"','"+p.getIdTipoActividad()+"','"+p.getIdCaserio()+"','"+p.getIdUsuarioReg()+"'," +
+                        ")VALUES ('"+p.getId()+"','"+p.getIdSibasi()+"','"+p.getIdTablet()+"','"+p.getIdSemanaEpidemiologica()+"','"+p.getIdTipoActividad()+"','"+p.getIdCaserio()+"','"+p.getIdUsuarioReg()+"'," +
                         "'"+p.getIdEstado()+"','"+p.getIdTipoCaptura()+"','"+p.getTotalMosquitos()+"'" +
                         ","+p.getTotalAnopheles()+",'"+p.getCasaPositiva()+"','"+p.getCasaInspeccionada()+"','"+p.getComponenteInspeccionado()+"','"+p.getTiempoColecta()+"','"+date+"','"+p.getPropietario()+"');";
                   dataArray.put(insert);

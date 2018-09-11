@@ -1,4 +1,4 @@
-package com.minsal.dtic.sinavec;
+package com.minsal.dtic.sinavec.Sincronizar;
 
 import android.Manifest;
 import android.content.Context;
@@ -59,6 +59,9 @@ import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividad;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividadDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoCaptura;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoCapturaDao;
+import com.minsal.dtic.sinavec.LoginActivity;
+import com.minsal.dtic.sinavec.MyMalaria;
+import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.utilidades.MetodosGlobales;
 
 import org.json.JSONArray;
@@ -75,7 +78,6 @@ public class SettingActivity extends AppCompatActivity {
     private DaoSession daoSession;
     ProgressBar pbSetting;
     public static final int GET_IMEI_CODE =100;
-String imei = "867105021262810";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -367,8 +369,8 @@ String imei = "867105021262810";
 
         } else {
             Toast.makeText(getApplicationContext(), "Solicitando Datos al Servidor, espere...", Toast.LENGTH_SHORT).show();
-           // String imei = getIMEINumber();
-            String url = "http://192.168.1.15/tablets/catalogos.php?imei=" + imei;
+           String imei = getIMEINumber();
+            String url = "http://10.168.10.80/tablets/catalogos.php?imei=" + imei;
             RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
@@ -384,14 +386,14 @@ String imei = "867105021262810";
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                Log.i("eror", "no descarga datos");
+                                Toast.makeText(getApplicationContext(),"Error!!Por favor contacta al administrador"+e.getMessage(),Toast.LENGTH_LONG).show();
 
                             }
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.d("eror", String.valueOf(error));
+                    Toast.makeText(getApplicationContext(),"Error!Por favor contacta al administrador"+String.valueOf(error),Toast.LENGTH_LONG).show();
 
                 }
             });

@@ -21,6 +21,8 @@ import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
+import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
+import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividad;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividadDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoCaptura;
@@ -28,6 +30,7 @@ import com.minsal.dtic.sinavec.EntityDAO.PlTipoCapturaDao;
 
 import org.greenrobot.greendao.query.Join;
 import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +58,7 @@ public class Utilidades {
     CtlCantonDao daoCanton;
     CtlCaserioDao daoCaserio;
     PlCapturaAnophelesDao capDao;
+    PlPesquisaLarvariaDao pesDao;
     CtlPlCriaderoDao criaderoDao;
 
     ArrayList<String> listaMunicipio;
@@ -65,9 +69,12 @@ public class Utilidades {
 
     List<CtlCaserio> caserios;
     List<PlCapturaAnopheles> capturas;
+    List<PlPesquisaLarvaria> pesquisasBySem;
+
     List<CtlPlCriadero> criaderosMap;
     List<CtlPlCriadero> criaderos;
     List<PlColvol> colvols;
+    ArrayList<String> pesquisaPrueba;
 
     public Utilidades(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -356,6 +363,29 @@ public class Utilidades {
                     + "-" + capturas.get(i).getIdSemanaEpidemiologica());
         }
         return listaCapturas;
+    }
+
+    /**
+    *metodos para lista de pesquisa larvaria
+    */
+
+    public ArrayList<String> loadListPesquisaBySem() {
+        pesDao = daoSession.getPlPesquisaLarvariaDao();
+        pesquisasBySem = new ArrayList<PlPesquisaLarvaria>();
+        pesquisaPrueba = new ArrayList<String>();
+        float indice;
+        Cursor c = daoSession.getDatabase().rawQuery("SELECT strftime('%Y', fecha_hora_reg) AS anio, id_semana_epidemiologica," +
+                " SUM(anopheles_uno),SUM(anopheles_dos),SUM(numero_cucharonada) FROM PL_PESQUISA_LARVARIA GROUP BY id_semana_epidemiologica, anio", null);
+        if (c.moveToFirst()) {
+            do {
+                if (c.getInt(3)>0){
+                    indice = (float) c.getInt(2)/ c.getInt(3);
+                }else{indice=0;}
+                pesquisaPrueba.add(c.getString(0) + "-" + c.getInt(1) + "-" + c.getInt(2)+"-"+c.getInt(3)+"-"+c.getInt(4)+"-"+indice);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return pesquisaPrueba;
     }
 
 

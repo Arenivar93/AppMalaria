@@ -1,5 +1,6 @@
 package com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -86,11 +87,10 @@ public class NuevaPesquisaFragment extends android.app.DialogFragment {
                            String cucharonada = titCucharonada.getText().toString().trim();
                            String largo       = titLargo.getText().toString().trim();
                            String ancho       = titAncho.getText().toString().trim();
-                           Toast.makeText(getActivity(),"vas a guardae",Toast.LENGTH_SHORT).show();
-                                                           mListener.OnDialogPositiveClick(NuevaPesquisaFragment.this, Integer.parseInt(anopheles12),
-                                                            Integer.parseInt(anopheles34),Integer.parseInt(culicino12),
-                                                            Integer.parseInt(culicino34),Integer.parseInt(pupa),
-                                                            Integer.parseInt(cucharonada),Integer.parseInt(largo),Integer.parseInt(ancho));
+                           mListener.OnDialogPositiveClick(NuevaPesquisaFragment.this, Integer.parseInt(anopheles12),
+                            Integer.parseInt(anopheles34),Integer.parseInt(culicino12),
+                            Integer.parseInt(culicino34),Integer.parseInt(pupa),
+                            Integer.parseInt(cucharonada),Integer.parseInt(largo),Integer.parseInt(ancho));
                            dialog.dismiss();
                        }
                     }
@@ -110,7 +110,7 @@ public class NuevaPesquisaFragment extends android.app.DialogFragment {
 
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Activity context) {
         super.onAttach(context);
         try {
             mListener = (OnFragmentInteractionListener) context;

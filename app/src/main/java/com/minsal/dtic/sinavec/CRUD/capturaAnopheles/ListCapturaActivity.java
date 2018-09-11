@@ -38,6 +38,7 @@ public class ListCapturaActivity extends AppCompatActivity {
         AdapterCapturas adapter =new AdapterCapturas(this,capturasSemana);
         lvCaptura.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
         btnNuevaCaptura.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -8,7 +8,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -213,27 +216,26 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
             pes.setCulicinosDos(culicino34);
             pes.setAncho(ancho);
             pes.setLargo(largo);
+            pes.setNumeroCucharonada(cucharonada);
+            pes.setPupa(pupa);
             pes.setIdCriadero(idCriadero);
-            pes.setFechaHoraReg(fec);
+            pes.setFechaHoraReg(fecha);
             pes.setIdEstado(1);
-            pes.setFechaHoraMod(fec);// se debe quitar not null
+            pes.setFechaHoraMod(fecha);// se debe quitar not null
             pes.setFecha(fec);// se debe quitar not null
             pes.setIdSemanaEpidemiologica(semanaActual);
             pes.setIdUsuarioReg(idUsuario);
             pes.setIdCaserio(2458);//el criadero esta amarradp a un caserio navegar a el
             pes.setIdSibasi(8);
             pes.setIdTablet(2);
-            pes.setEstado_sync(0);
+            pes.setEstado_sync(1);
             pesDao.insert(pes);
-            Toast.makeText(getApplicationContext(),"se guardo",Toast.LENGTH_LONG).show();
+            customToadSuccess(getApplicationContext(),"Pesquisa Larvaria se guardo con éxito");
 
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-        }/*
-        String string = String.valueOf(anopheles12)+"-"+String.valueOf(anopheles34)+"-"+String.valueOf(culicino12)
-                +"-"+String.valueOf(culicino34)+"-"+String.valueOf(pupa)+"-"+String.valueOf(cucharonada)+"-"+String.valueOf(largo);
-        Toast.makeText(getApplicationContext(), string,Toast.LENGTH_LONG).show();*/
+        }
 
     }
 
@@ -278,6 +280,18 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
             }
         }
         return id;
+    }
+    public void customToadSuccess(Context context, String message) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toad_exito,
+                (ViewGroup) findViewById(R.id.custom_toast_container_exito));
+        TextView text = (TextView) layout.findViewById(R.id.tvToasExito);
+        text.setText(message);
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.BOTTOM, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
     }
 
 }

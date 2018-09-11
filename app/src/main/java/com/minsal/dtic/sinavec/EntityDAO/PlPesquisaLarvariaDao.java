@@ -29,8 +29,8 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
         public final static Property IdSemanaEpidemiologica = new Property(1, int.class, "idSemanaEpidemiologica", false, "ID_SEMANA_EPIDEMIOLOGICA");
         public final static Property IdUsuarioMod = new Property(2, int.class, "idUsuarioMod", false, "ID_USUARIO_MOD");
         public final static Property IdEstado = new Property(3, int.class, "idEstado", false, "ID_ESTADO");
-        public final static Property FechaHoraReg = new Property(4, java.util.Date.class, "fechaHoraReg", false, "FECHA_HORA_REG");
-        public final static Property FechaHoraMod = new Property(5, java.util.Date.class, "fechaHoraMod", false, "FECHA_HORA_MOD");
+        public final static Property FechaHoraReg = new Property(4, String.class, "fechaHoraReg", false, "FECHA_HORA_REG");
+        public final static Property FechaHoraMod = new Property(5, String.class, "fechaHoraMod", false, "FECHA_HORA_MOD");
         public final static Property IndiceLarvario = new Property(6, float.class, "indiceLarvario", false, "INDICE_LARVARIO");
         public final static Property AnophelesDos = new Property(7, int.class, "anophelesDos", false, "ANOPHELES_DOS");
         public final static Property AnophelesUno = new Property(8, int.class, "anophelesUno", false, "ANOPHELES_UNO");
@@ -69,8 +69,8 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
                 "\"ID_SEMANA_EPIDEMIOLOGICA\" INTEGER NOT NULL ," + // 1: idSemanaEpidemiologica
                 "\"ID_USUARIO_MOD\" INTEGER NOT NULL ," + // 2: idUsuarioMod
                 "\"ID_ESTADO\" INTEGER NOT NULL ," + // 3: idEstado
-                "\"FECHA_HORA_REG\" INTEGER NOT NULL ," + // 4: fechaHoraReg
-                "\"FECHA_HORA_MOD\" INTEGER NOT NULL ," + // 5: fechaHoraMod
+                "\"FECHA_HORA_REG\" DATE NOT NULL ," + // 4: fechaHoraReg
+                "\"FECHA_HORA_MOD\" INTEGER  ," + // 5: fechaHoraMod
                 "\"INDICE_LARVARIO\" REAL NOT NULL ," + // 6: indiceLarvario
                 "\"ANOPHELES_DOS\" INTEGER NOT NULL ," + // 7: anophelesDos
                 "\"ANOPHELES_UNO\" INTEGER NOT NULL ," + // 8: anophelesUno
@@ -111,8 +111,8 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
         stmt.bindLong(2, entity.getIdSemanaEpidemiologica());
         stmt.bindLong(3, entity.getIdUsuarioMod());
         stmt.bindLong(4, entity.getIdEstado());
-        stmt.bindLong(5, entity.getFechaHoraReg().getTime());
-        stmt.bindLong(6, entity.getFechaHoraMod().getTime());
+        stmt.bindString(5, entity.getFechaHoraReg());
+        stmt.bindString(6, entity.getFechaHoraMod());
         stmt.bindDouble(7, entity.getIndiceLarvario());
         stmt.bindLong(8, entity.getAnophelesDos());
         stmt.bindLong(9, entity.getAnophelesUno());
@@ -142,8 +142,8 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
         stmt.bindLong(2, entity.getIdSemanaEpidemiologica());
         stmt.bindLong(3, entity.getIdUsuarioMod());
         stmt.bindLong(4, entity.getIdEstado());
-        stmt.bindLong(5, entity.getFechaHoraReg().getTime());
-        stmt.bindLong(6, entity.getFechaHoraMod().getTime());
+        stmt.bindString(5, entity.getFechaHoraReg());
+        stmt.bindString(6, entity.getFechaHoraMod());
         stmt.bindDouble(7, entity.getIndiceLarvario());
         stmt.bindLong(8, entity.getAnophelesDos());
         stmt.bindLong(9, entity.getAnophelesUno());
@@ -180,8 +180,8 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
             cursor.getInt(offset + 1), // idSemanaEpidemiologica
             cursor.getInt(offset + 2), // idUsuarioMod
             cursor.getInt(offset + 3), // idEstado
-            new java.util.Date(cursor.getLong(offset + 4)), // fechaHoraReg
-            new java.util.Date(cursor.getLong(offset + 5)), // fechaHoraMod
+            cursor.getString(offset + 4), // fechaHoraReg
+            cursor.getString(offset + 5), // fechaHoraMod
             cursor.getFloat(offset + 6), // indiceLarvario
             cursor.getInt(offset + 7), // anophelesDos
             cursor.getInt(offset + 8), // anophelesUno
@@ -208,8 +208,8 @@ public class PlPesquisaLarvariaDao extends AbstractDao<PlPesquisaLarvaria, Long>
         entity.setIdSemanaEpidemiologica(cursor.getInt(offset + 1));
         entity.setIdUsuarioMod(cursor.getInt(offset + 2));
         entity.setIdEstado(cursor.getInt(offset + 3));
-        entity.setFechaHoraReg(new java.util.Date(cursor.getLong(offset + 4)));
-        entity.setFechaHoraMod(new java.util.Date(cursor.getLong(offset + 5)));
+        entity.setFechaHoraReg(cursor.getString(offset + 4));
+        entity.setFechaHoraMod(cursor.getString(offset + 5));
         entity.setIndiceLarvario(cursor.getFloat(offset + 6));
         entity.setAnophelesDos(cursor.getInt(offset + 7));
         entity.setAnophelesUno(cursor.getInt(offset + 8));

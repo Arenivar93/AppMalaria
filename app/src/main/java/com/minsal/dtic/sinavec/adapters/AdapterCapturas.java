@@ -67,7 +67,7 @@ public class AdapterCapturas extends BaseAdapter {
         tv3.setText(tvs[2]);
         tv4.setText(tvs[3]);
         tv5.setText(tvs[4]);
-       tv6.setText(tvs[5]);
+        tv6.setText(tvs[5]);
         return v;
     }
 

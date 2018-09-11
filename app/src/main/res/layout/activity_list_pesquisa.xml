@@ -58,39 +58,39 @@
                     android:layout_height="30dp"
                     android:layout_weight="1"
                     android:background="#5b5efa"
-                    android:text="Municipio" />
+                    android:text="Año" />
 
                 <TextView
                     android:id="@+id/textView15"
                     android:layout_width="50dp"
-                    android:background="#5b5efa"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:text="Canton" />
+                    android:background="#5b5efa"
+                    android:text="Semana" />
 
                 <TextView
                     android:id="@+id/textView17"
                     android:layout_width="50dp"
-                    android:background="#5b5efa"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:text="Criadero" />
+                    android:background="#5b5efa"
+                    android:text="Anopheles I-II" />
 
                 <TextView
                     android:id="@+id/textView19"
                     android:layout_width="50dp"
-                    android:background="#5b5efa"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:text="Fecha" />
+                    android:background="#5b5efa"
+                    android:text="Anopheles II-IV" />
 
                 <TextView
                     android:id="@+id/textView18"
                     android:layout_width="50dp"
-                    android:background="#5b5efa"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:text="Total Anopheles" />
+                    android:background="#5b5efa"
+                    android:text="Cucharonadas" />
                 <TextView
                     android:id="@+id/textView20"
                     android:layout_width="50dp"
