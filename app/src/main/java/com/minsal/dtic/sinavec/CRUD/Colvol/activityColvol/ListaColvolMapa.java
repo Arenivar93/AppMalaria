@@ -1,21 +1,18 @@
-package com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero;
+package com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol;
 
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationListener;
-import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,12 +22,12 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.verCriaderoDialogFragment;
+import com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol.verColvolMapDialogFragment;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.verCriaderoMapDialogFragment;
-import com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria.NuevaPesquisaFragment;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
@@ -39,7 +36,7 @@ import com.minsal.dtic.sinavec.utilidades.Utilidades;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCallback,LocationListener,verCriaderoMapDialogFragment.criaderoDialogListener {
+public class ListaColvolMapa extends AppCompatActivity implements OnMapReadyCallback,LocationListener,verColvolMapDialogFragment.colvolDialogListener {
     private GoogleMap mMap;
     private DaoSession daoSession;
     private List<CtlPlCriadero> criaderosMap;
@@ -50,30 +47,27 @@ public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCa
     ArrayList<String> nombres = new ArrayList();
     private List<CtlMunicipio> municipios;
     private ArrayList<String> listaMunicipio;
-    private Spinner spMunicipioPesquisa;
+    private Spinner spMunicipioColvol;
     int depto = MainActivity.depto;
-    TextView tvCountCriadero;
-    Button btnBuscarCriaderoPes;
-
+    TextView tvCountColvol;
+    Button btnBuscarColvol;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lista_criadero_mapa);
+        setContentView(R.layout.activity_lista_colvol_mapa);
+
         //Me permite regresar  a la actividad anterior
         ActionBar actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        Utilidades.fragment=1;
+        Utilidades.fragment=2;
 
         daoSession =((MyMalaria)getApplicationContext()).getDaoSession();
         prefs      = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-        spMunicipioPesquisa  =(Spinner)findViewById(R.id.spMunicipioPesquisa);
+        spMunicipioColvol  =(Spinner)findViewById(R.id.spMunicipioColvol);
 
-        //spMunicipioPesquisa.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonSiguiente), PorterDuff.Mode.SRC_ATOP);
-
-
-        tvCountCriadero      = (TextView)findViewById(R.id.tvCountCriadero);
-        btnBuscarCriaderoPes = (Button)findViewById(R.id.btnBuscarCriaderoPes);
+        tvCountColvol = (TextView)findViewById(R.id.tvCountCriadero);
+        btnBuscarColvol = (Button)findViewById(R.id.btnBuscarCriaderoPes);
         u=new Utilidades(daoSession);
         loadSpinerMun();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -81,13 +75,13 @@ public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCa
                 .findFragmentById(R.id.mapListCriadero);
 
         mapFragment.getMapAsync(this);
-        btnBuscarCriaderoPes.setOnClickListener(new View.OnClickListener() {
+        btnBuscarColvol.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 mMap.clear();
                 long idMunicipio = getIdMunicipioPes();
-                criaderosMap((int)idMunicipio);
+                colvolMap((int)idMunicipio);
 
             }
         });
@@ -104,10 +98,10 @@ public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCa
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                CtlPlCriadero cria = (CtlPlCriadero) marker.getTag();
-                verCriaderoMapDialogFragment dialog = new verCriaderoMapDialogFragment();
+                PlColvol col = (PlColvol) marker.getTag();
+                verColvolMapDialogFragment dialog = new verColvolMapDialogFragment();
                 Bundle datos=new Bundle();
-                datos.putLong("id",cria.getId());
+                datos.putLong("id",col.getId());
                 dialog.setArguments(datos);
                 dialog.show(getFragmentManager(), "dialog");
                 return false;
@@ -117,18 +111,18 @@ public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCa
 
     }
 
-    public void criaderosMap(int municipio){
+    public void colvolMap(int municipio){
         Utilidades u = new Utilidades(daoSession);
-        List<CtlPlCriadero> criaderos = u.loadCriaderosMap(municipio);
-        if (criaderos.size()>0){
-            for (CtlPlCriadero c: criaderos){
+        List<PlColvol> colvols = u.loadColvolMap(municipio);
+        if (colvols.size()>0){
+            for (PlColvol c: colvols){
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
                         .title(c.getNombre())).setTag(c);
             }
-            tvCountCriadero.setText("Total de criaderos enontrados:"+String.valueOf(criaderos.size()));
+            tvCountColvol.setText("Total de Colvol encontrados:"+String.valueOf(colvols.size()));
         }else{
-            tvCountCriadero.setText("No se encontraron criaderos");
+            tvCountColvol.setText("No se encontraron Colvol");
         }
 
     }
@@ -172,11 +166,11 @@ public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCa
         listaMunicipio = u.getMunicipioTodos(municipios);
         ArrayAdapter<String> adapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_list_item_1, listaMunicipio);
-        spMunicipioPesquisa.setAdapter(adapter);
+        spMunicipioColvol.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
     public long getIdMunicipioPes() {
-        int listIdMunicipio = spMunicipioPesquisa.getSelectedItemPosition();
+        int listIdMunicipio = spMunicipioColvol.getSelectedItemPosition();
         int idMunicipio = 0;
         if (listIdMunicipio != 0) {
             idMunicipio = (int) (long) municipios.get(listIdMunicipio - 1).getId();

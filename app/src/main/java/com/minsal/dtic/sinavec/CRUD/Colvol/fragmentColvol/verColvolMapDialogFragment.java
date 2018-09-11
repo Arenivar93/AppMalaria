@@ -1,4 +1,4 @@
-package com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero;
+package com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,18 +7,16 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 
@@ -27,19 +25,19 @@ import java.util.ArrayList;
 /**
  * Dialogo usado para el ingreso de los datos de un criadero
  */
-public class verCriaderoDialogFragment extends DialogFragment {
+public class verColvolMapDialogFragment extends DialogFragment {
 
-    private criaderoDialogListener mListener;
+    private colvolDialogListener mListener;
     ArrayAdapter<String> adapterTipoCriadero;
     ArrayList<String> tipoCriadero=new ArrayList<String>();
     private int tipoCriaderoVal=0;
-    private TextInputLayout errorNombre,errorDescripcion,errorAncho,errorLargo,errorTipo;
-    private TextInputEditText nombre,ancho,largo,descripcion,tipo;
-    private long idCriadero;
+    private EditText nombre,telefono,habilitado,clave,circuito;
+    private long idColvol;
     private DaoSession daoSession;
-    private CtlPlCriadero criadero;
+    private PlColvol colvol;
+    private TextView municipio,canton,caserio;
 
-    public interface criaderoDialogListener {
+    public interface colvolDialogListener {
         void onDialogPositiveClick(DialogFragment dialog, String nombre, String descripcion, int tipo, float ancho, float largo);
         void onDialogNegativeClick(DialogFragment dialog);
     }
@@ -48,39 +46,35 @@ public class verCriaderoDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View v = inflater.inflate(R.layout.dialog_ver_criadero, null);
+        final View v = inflater.inflate(R.layout.dialog_ver_colvolmap, null);
 
         daoSession=((MyMalaria) getActivity().getApplication()).getDaoSession();
 
-        errorNombre=(TextInputLayout)v.findViewById(R.id.textoNombre);
-        errorDescripcion=(TextInputLayout)v.findViewById(R.id.textoDescripcion);
-        errorAncho=(TextInputLayout)v.findViewById(R.id.textoAncho);
-        errorLargo=(TextInputLayout)v.findViewById(R.id.textoLargo);
-        errorTipo=(TextInputLayout)v.findViewById(R.id.textoTipoCriadero);
+        nombre=(EditText)v.findViewById(R.id.nombreColvol);
+        habilitado=((EditText)v.findViewById(R.id.habilitado));
+        clave=((EditText)v.findViewById(R.id.clave));
+        municipio=(TextView)v.findViewById(R.id.idMunicipio);
+        canton=(TextView)v.findViewById(R.id.idCanton);
+        caserio=(TextView)v.findViewById(R.id.idCaserio);
 
 
-        nombre=(TextInputEditText)v.findViewById(R.id.nombreCriadero);
-        ancho=((TextInputEditText)v.findViewById(R.id.anchoCriadero));
-        largo=((TextInputEditText)v.findViewById(R.id.largoCriadero));
-        descripcion=((TextInputEditText)v.findViewById(R.id.descripcionCriadero));
-        tipo=((TextInputEditText)v.findViewById(R.id.tipoCriadero));
-
-        idCriadero=getArguments().getLong("id");
-        criadero=daoSession.getCtlPlCriaderoDao().loadByRowId(idCriadero);
-        nombre.setText(criadero.getNombre());
-        ancho.setText(String.valueOf((int)criadero.getAnchoCriadero()));
-        largo.setText(String.valueOf((int)criadero.getLongitudCriadero()));
-        descripcion.setText(String.valueOf(criadero.getDescripcion()));
-        if(criadero.getIdTipoCriadero()==1){
-            tipo.setText("Permanente");
+        idColvol=getArguments().getLong("id");
+        colvol=daoSession.getPlColvolDao().loadByRowId(idColvol);
+        nombre.setText(colvol.getNombre());
+        if(colvol.getEstado()==1){
+            habilitado.setText("SI");
         }else{
-            tipo.setText("Temporal");
+            habilitado.setText("NO");
         }
 
+        clave.setText(colvol.getClave());
+        municipio.setText(colvol.getCtlCaserio().getCtlCanton().getCtlMunicipio().getNombre());
+        canton.setText(colvol.getCtlCaserio().getCtlCanton().getNombre());
+        caserio.setText(colvol.getCtlCaserio().getNombre());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(v);
-        builder.setTitle("Información de Criadero:");
+        builder.setTitle("Información de Colvol:");
         builder.setNegativeButton("Cerrar",null);
 
         final AlertDialog ventana=builder.create();
@@ -109,7 +103,7 @@ public class verCriaderoDialogFragment extends DialogFragment {
         // con sus metodos.
         try {
             // Instantiate the colvolDialogListener so we can send events to the host
-            mListener = (criaderoDialogListener) activity;
+            mListener = (colvolDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()

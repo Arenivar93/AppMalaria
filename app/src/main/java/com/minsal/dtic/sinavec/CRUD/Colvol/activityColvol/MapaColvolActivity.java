@@ -30,7 +30,6 @@ package com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol;
         import com.google.android.gms.maps.model.LatLng;
         import com.google.android.gms.maps.model.Marker;
         import com.google.android.gms.maps.model.MarkerOptions;
-        import com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol.BuscarColvolActivity;
         import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
         import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
         import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
@@ -131,10 +130,6 @@ public class MapaColvolActivity extends AppCompatActivity implements OnMapReadyC
             public void onClick(View view) {
 
                 if(!latitudColvol.getText().toString().isEmpty() && !longitudColvol.getText().toString().isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Coordenadas Cargadas: " +
-                            "Latitud: "+ latitudColvol.getText()+" Longitud: " +
-                            " "+ longitudColvol.getText(),Toast.LENGTH_LONG).show();
-
                     colvol.setLatitud(latitudColvol.getText().toString());
                     colvol.setLongitud(longitudColvol.getText().toString());
                     colvolDao.update(colvol);

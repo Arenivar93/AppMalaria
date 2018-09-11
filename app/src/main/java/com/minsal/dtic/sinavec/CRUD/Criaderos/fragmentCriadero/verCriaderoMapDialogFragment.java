@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
@@ -30,11 +32,11 @@ public class verCriaderoMapDialogFragment extends DialogFragment {
     ArrayAdapter<String> adapterTipoCriadero;
     ArrayList<String> tipoCriadero=new ArrayList<String>();
     private int tipoCriaderoVal=0;
-    private TextInputLayout errorNombre,errorDescripcion,errorAncho,errorLargo,errorTipo;
-    private TextInputEditText nombre,ancho,largo,descripcion,tipo;
+    private EditText nombre,ancho,largo,descripcion,tipo;
     private long idCriadero;
     private DaoSession daoSession;
     private CtlPlCriadero criadero;
+    private TextView municipio,canton,caserio;
 
     public interface criaderoDialogListener {
         void onDialogPositiveClick(DialogFragment dialog, String nombre, String descripcion, int tipo, float ancho, float largo);
@@ -49,18 +51,14 @@ public class verCriaderoMapDialogFragment extends DialogFragment {
 
         daoSession=((MyMalaria) getActivity().getApplication()).getDaoSession();
 
-        errorNombre=(TextInputLayout)v.findViewById(R.id.textoNombre);
-        errorDescripcion=(TextInputLayout)v.findViewById(R.id.textoDescripcion);
-        errorAncho=(TextInputLayout)v.findViewById(R.id.textoAncho);
-        errorLargo=(TextInputLayout)v.findViewById(R.id.textoLargo);
-        errorTipo=(TextInputLayout)v.findViewById(R.id.textoTipoCriadero);
-
-
-        nombre=(TextInputEditText)v.findViewById(R.id.nombreCriadero);
-        ancho=((TextInputEditText)v.findViewById(R.id.anchoCriadero));
-        largo=((TextInputEditText)v.findViewById(R.id.largoCriadero));
-        descripcion=((TextInputEditText)v.findViewById(R.id.descripcionCriadero));
-        tipo=((TextInputEditText)v.findViewById(R.id.tipoCriadero));
+        nombre=(EditText)v.findViewById(R.id.nombreCriadero);
+        ancho=((EditText)v.findViewById(R.id.anchoCriadero));
+        largo=((EditText)v.findViewById(R.id.largoCriadero));
+        descripcion=((EditText)v.findViewById(R.id.descripcionCriadero));
+        tipo=((EditText)v.findViewById(R.id.tipoCriadero));
+        municipio=(TextView)v.findViewById(R.id.idMunicipio);
+        canton=(TextView)v.findViewById(R.id.idCanton);
+        caserio=(TextView)v.findViewById(R.id.idCaserio);
 
 
         idCriadero=getArguments().getLong("id");
@@ -74,6 +72,9 @@ public class verCriaderoMapDialogFragment extends DialogFragment {
         }else{
             tipo.setText("Temporal");
         }
+        municipio.setText(criadero.getCtlCaserio().getCtlCanton().getCtlMunicipio().getNombre());
+        canton.setText(criadero.getCtlCaserio().getCtlCanton().getNombre());
+        caserio.setText(criadero.getCtlCaserio().getNombre());
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -106,12 +107,12 @@ public class verCriaderoMapDialogFragment extends DialogFragment {
         // La actividad desde donde se levantara la modal, debe de implementar la intefaz junto
         // con sus metodos.
         try {
-            // Instantiate the criaderoDialogListener so we can send events to the host
+            // Instantiate the colvolDialogListener so we can send events to the host
             mListener = (criaderoDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
-                    + " must implement criaderoDialogListener");
+                    + " must implement colvolDialogListener");
         }
     }
 

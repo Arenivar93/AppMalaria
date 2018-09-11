@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,7 +32,8 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import Utils.Util;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText edtUser, edtPass;
+    TextInputEditText edtUser, edtPass;
+    TextInputLayout textUSer,textPass;
     Switch swRemember;
     Button btnLogin;
 
@@ -45,8 +48,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-        edtUser = (EditText) findViewById(R.id.edtUser);
-        edtPass = (EditText) findViewById(R.id.edtPass);
+        edtUser = (TextInputEditText) findViewById(R.id.edtUser);
+        edtPass = (TextInputEditText) findViewById(R.id.edtPass);
+        textPass=(TextInputLayout)findViewById(R.id.edtPassText);
+        textUSer=(TextInputLayout)findViewById(R.id.edtUserText);
         btnLogin = (Button) findViewById(R.id.btnLogin);
         swRemember = (Switch) findViewById(R.id.swRemeber);
         setCredential(); // si tiene datos los pondre en los editext
@@ -58,21 +63,27 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String elUser = edtUser.getText().toString().trim();
                 String elPass = edtPass.getText().toString().trim();
-
                 metodoGlobal = new MetodosGlobales(daoSession);
-                boolean check = metodoGlobal.checkDataBase();// si exixte la base de datos
-                if (check) {
-                    boolean existe = metodoGlobal.validateLogin(elUser, elPass);
-                    if (existe) {
-                        saveOnPreferences(elUser, elPass);
-                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(i);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Usuario no encontrado", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "Esta Dispositivo aun no ha sido configurado", Toast.LENGTH_LONG).show();
+
+                textPass.setError("");
+                textUSer.setError("");
+                int respuesta = 0;//0---> usuario no encontrado 1--->contraseña incorrecta
+                                  //2---> datos validos
+                try {
+                    respuesta = metodoGlobal.validateLogin(elUser, elPass);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (respuesta==2) {
+                    saveOnPreferences(elUser, elPass);
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    Toast.makeText(getApplicationContext(), "Bienvenido!!!", Toast.LENGTH_LONG).show();
+                    startActivity(i);
+                }else if(respuesta==1) {
+                    textPass.setError("Contraseña incorrecta");
+                }else{
+                    textUSer.setError("Usuario no encontrado");
                 }
 
 

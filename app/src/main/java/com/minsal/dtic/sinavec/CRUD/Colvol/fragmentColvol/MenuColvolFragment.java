@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol.BuscarColvolActivity;
+import com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol.ListaColvolMapa;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.MenuCriaderoFragment;
 import com.minsal.dtic.sinavec.R;
 
@@ -43,7 +45,8 @@ public class MenuColvolFragment extends Fragment {
         cvVer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(getContext(),ListaColvolMapa.class);
+                startActivity(i);
             }
         });
 

@@ -1,4 +1,4 @@
-package com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol;
+package com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,7 +18,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol.MapaColvolActivity;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
