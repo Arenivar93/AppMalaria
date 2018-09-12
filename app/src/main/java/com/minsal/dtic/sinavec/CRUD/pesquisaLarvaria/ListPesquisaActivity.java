@@ -56,9 +56,12 @@ public class ListPesquisaActivity extends AppCompatActivity {
         lvPesquisa.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                int id_semana = pesquisaPrueba2.indexOf(position);
-                Toast.makeText(getApplicationContext(),String.valueOf(id_semana),Toast.LENGTH_LONG).show();
-
+                String fila = pesquisaPrueba2.get(position);
+                String semana_g= fila.substring(5,7); //semana_g probablelemte trae un gion si es menor a 10
+                String id_semana= semana_g.replace("-","");
+                Intent i = new Intent(getApplicationContext(),DetalleSemanaActivity.class);
+                i.putExtra("id_semana",id_semana);
+                startActivity(i);
             }
         });
     }

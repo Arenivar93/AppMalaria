@@ -3,27 +3,20 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 //Librerias para implementar la encriptacion de Sonata en Java
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
+
 import java.security.MessageDigest;
 import static java.util.Objects.hash;
 //import java.util.Base64;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
-import com.minsal.dtic.sinavec.R;
+
 
 import java.io.File;
-import java.util.Base64;
+
 
 public class MetodosGlobales{
     private static String DB_PATH="/data/data/com.minsal.dtic.sinavec/databases/";

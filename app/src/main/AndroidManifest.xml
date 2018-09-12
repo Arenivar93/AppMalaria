@@ -129,19 +129,23 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".CRUD.Colvol.activityColvol.ListaColvolMapa"
+        <activity
+            android:name=".CRUD.Colvol.activityColvol.ListaColvolMapa"
             android:label="Lista de Colaboradores Voluntarios"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
+
             <intent-filter>
-                <action android:name="android.intent.action.ListaColvolMapa"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.ListaColvolMapa" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Sincronizar.SubirDatos"></activity>
+        <activity android:name=".Sincronizar.SubirDatos" />
+        <activity android:name=".CRUD.pesquisaLarvaria.DetalleSemanaActivity"></activity>
     </application>
 
 </manifest>

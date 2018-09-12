@@ -77,6 +77,7 @@ public class Utilidades {
     List<CtlPlCriadero> criaderos;
     List<PlColvol> colvols;
     ArrayList<String> pesquisaPrueba;
+    private List<PlPesquisaLarvaria> pesquisas;
 
     public Utilidades(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -388,6 +389,13 @@ public class Utilidades {
         }
         c.close();
         return pesquisaPrueba;
+    }
+    public List<PlPesquisaLarvaria> loadPesquisasDetalleSemana(int semana) {
+        pesDao = daoSession.getPlPesquisaLarvariaDao();
+        pesquisas = new ArrayList<PlPesquisaLarvaria>();
+        QueryBuilder<PlPesquisaLarvaria> qb = pesDao.queryBuilder().where(PlPesquisaLarvariaDao.Properties.IdSemanaEpidemiologica.eq(semana));
+        pesquisas = qb.list();
+        return pesquisas;
     }
 
 

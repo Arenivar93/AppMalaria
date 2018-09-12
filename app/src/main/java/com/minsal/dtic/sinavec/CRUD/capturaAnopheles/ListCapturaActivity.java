@@ -28,10 +28,10 @@ public class ListCapturaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_captura);
-        btnNuevaCaptura = (Button)findViewById(R.id.btnNuevaCaptura);
-        lvCaptura = (ListView)findViewById(R.id.lvCaptura);
+        btnNuevaCaptura     = (Button)findViewById(R.id.btnNuevaCaptura);
+        lvCaptura           = (ListView)findViewById(R.id.lvCaptura);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar!=null){actionBar.setDisplayHomeAsUpEnabled(true);}
         daoSession      =((MyMalaria)getApplicationContext()).getDaoSession();
         u.fragment = 0;
         final ArrayList<String> capturasSemana = listaAdapter();
@@ -43,7 +43,7 @@ public class ListCapturaActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),CapturaAnopheles.class);
-                i.putExtra("accion","Nueva");
+                i.putExtra("accion","nueva");
                 startActivity(i);
                // finish();
             }
@@ -74,8 +74,6 @@ public class ListCapturaActivity extends AppCompatActivity {
                       +"-"+p.getTotalAnopheles()
                       +"-"+p.getIdSemanaEpidemiologica()) ;
         }
-
         return lista;
     }
-
 }

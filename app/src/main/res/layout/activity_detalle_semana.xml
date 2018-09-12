@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CRUD.pesquisaLarvaria.DetalleSemanaActivity">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:text="Lista de captura anopheles de las ultimas 4 semanas."
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnNuevaCaptura"
+            android:layout_width="181dp"
+            android:layout_height="42dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginTop="16dp"
+            android:drawableLeft="@android:drawable/ic_menu_add"
+            android:text=" Nueva Captura"
+            android:textColor="#0b6f02"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="15dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            tools:layout_editor_absoluteX="0dp"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#5b5efa"
+                android:text="Municipio" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="50dp"
+                android:background="#5b5efa"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Canton" />
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="50dp"
+                android:background="#5b5efa"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Caserio" />
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="50dp"
+                android:background="#5b5efa"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Descripción" />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="50dp"
+                android:background="#5b5efa"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Total Anopheles" />
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="50dp"
+                android:background="#5b5efa"
+                android:layout_marginEnd="15dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Semana" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/header">
+
+            <ListView
+                android:id="@+id/lvPesquisasSemana"
+                android:layout_width="match_parent"
+                android:layout_height="400dp" />
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>
