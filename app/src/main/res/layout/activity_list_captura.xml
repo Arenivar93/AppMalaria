@@ -13,7 +13,7 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tvDetalleSemana"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -44,7 +44,7 @@
             android:layout_marginStart="15dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/tvDetalleSemana"
             tools:layout_editor_absoluteX="0dp"
             tools:ignore="MissingConstraints">
 

@@ -2,11 +2,15 @@ package com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,12 +30,12 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles;
+
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
+
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
-import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
-import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
+
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
 import com.minsal.dtic.sinavec.MainActivity;
@@ -39,9 +43,6 @@ import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
-import org.greenrobot.greendao.query.QueryBuilder;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,20 +54,19 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
 
     private GoogleMap mMap;
     private DaoSession daoSession;
-    private List<CtlPlCriadero> criaderosMap;
     Utilidades u;
-    private SharedPreferences prefs;
     private CameraPosition cameraZoom;
-    ArrayList<LatLng> locations = new ArrayList();
-    ArrayList<String> nombres   = new ArrayList();
     private List<CtlMunicipio> municipios;
     private ArrayList<String> listaMunicipio;
     private Spinner spMunicipioPesquisa;
     int depto = MainActivity.depto;
     TextView tvCountCriadero;
     Button btnBuscarCriaderoPes;
-    long idCriadero;
-    private SharedPreferences pref;
+    long idCriadero, idCaserio;
+    long idSibasi ;
+    long idTablet ;
+    long idUsuario;
+    private SharedPreferences prefs;
 
 
     @Override
@@ -78,8 +78,14 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
         spMunicipioPesquisa =(Spinner)findViewById(R.id.spMunicipioPesquisa);
         tvCountCriadero     = (TextView)findViewById(R.id.tvCountCriadero);
         btnBuscarCriaderoPes= (Button)findViewById(R.id.btnBuscarCriaderoPes);
+        idSibasi  = prefs.getLong("idSibasiUser",0);
+        idTablet  = prefs.getLong("idTablet",0);
+        idUsuario = prefs.getLong("idUser",0);
         u=new Utilidades(daoSession);
-        pref = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        u.fragment = 0;
+        ActionBar actionBar=getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         loadSpinerMun();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -96,6 +102,7 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
 
             }
         });
+
     }
 
 
@@ -119,7 +126,8 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
             public boolean onMarkerClick(Marker marker) {
                 CtlPlCriadero cria = (CtlPlCriadero) marker.getTag();
                 idCriadero=cria.getId();
-                NuevaPesquisaFragment dialog = new NuevaPesquisaFragment().newInsrance(cria.getId(),cria.getNombre());
+                idCaserio=cria.getCtlCaserio().getId();
+                NuevaPesquisaFragment dialog = new NuevaPesquisaFragment().newInstance(cria.getId(),cria.getNombre());
                 dialog.show(getFragmentManager(),"dialog");
                 return false;
             }
@@ -138,7 +146,7 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
                         .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
                         .title(c.getNombre())).setTag(c);
             }
-            tvCountCriadero.setText("Total de criaderos enontrados: "+String.valueOf(criaderos.size()));
+            tvCountCriadero.setText(String.format("Total de criaderos enontrados: %s", String.valueOf(criaderos.size())));
         }else{
             tvCountCriadero.setText("No se encontraron criaderos registrados con coordenadas");
         }
@@ -197,39 +205,50 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void OnDialogPositiveClick(DialogFragment dialog, int anopheles12, int anopheles34,
                                       int culicino12, int culicino34, int pupa, int cucharonada,
-                                      int largo, int ancho) {
+                                      float largo, float ancho) {
         Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //String prueba = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(currentTime);
         String fecha = dateFormat.format(currentTime);
-        long idUsuario = getIdUser();
+        float indice;
+        if (cucharonada>0 && anopheles34>0){
+            indice = anopheles34/cucharonada;
+        }else {indice=0;}
+
         try {
-            Date fec = dateFormat.parse(fecha);
-            int semanaActual = getSemana();
-            PlPesquisaLarvariaDao pesDao = daoSession.getPlPesquisaLarvariaDao();
-            PlPesquisaLarvaria pes = new PlPesquisaLarvaria();
-            pes.setAnophelesUno(anopheles12);
-            pes.setAnophelesDos(anopheles34);
-            pes.setCulicinosUno(culicino12);
-            pes.setCulicinosDos(culicino34);
-            pes.setAncho(ancho);
-            pes.setLargo(largo);
-            pes.setNumeroCucharonada(cucharonada);
-            pes.setPupa(pupa);
-            pes.setIdCriadero(idCriadero);
-            pes.setFechaHoraReg(fecha);
-            pes.setIdEstado(1);
-            pes.setFechaHoraMod(fecha);// se debe quitar not null
-            pes.setFecha(fec);// se debe quitar not null
-            pes.setIdSemanaEpidemiologica(semanaActual);
-            pes.setIdUsuarioReg(idUsuario);
-            pes.setIdCaserio(2458);//el criadero esta amarradp a un caserio navegar a el
-            pes.setIdSibasi(8);
-            pes.setIdTablet(2);
-            pes.setEstado_sync(1);
-            pesDao.insert(pes);
+            for (int i = 0; i <200 ; i++) {
+                Date fec = dateFormat.parse(fecha);
+                int semanaActual = getSemana();
+                PlPesquisaLarvariaDao pesDao = daoSession.getPlPesquisaLarvariaDao();
+                PlPesquisaLarvaria pes = new PlPesquisaLarvaria();
+                pes.setAnophelesUno(anopheles12);
+                pes.setAnophelesDos(anopheles34);
+                pes.setCulicinosUno(culicino12);
+                pes.setCulicinosDos(culicino34);
+                pes.setAncho(ancho);
+                pes.setLargo(largo);
+                pes.setNumeroCucharonada(cucharonada);
+                pes.setPupa(pupa);
+                pes.setIdCriadero(idCriadero);
+                pes.setFechaHoraReg(fecha);
+                pes.setIdEstado(1);
+                pes.setFechaHoraMod(fecha);// se debe quitar not null
+                pes.setFecha(currentTime);
+                pes.setIdSemanaEpidemiologica(semanaActual);
+                pes.setIdUsuarioReg(idUsuario);
+                pes.setIdCaserio(idCaserio);//el criadero esta amarradp a un caserio navegar a el
+                pes.setIdSibasi(idSibasi);
+                pes.setIdTablet(idTablet);
+                pes.setIndiceLarvario(indice);
+                pes.setEstado_sync(1);
+                pesDao.insert(pes);
+
+            }
+
             customToadSuccess(getApplicationContext(),"Pesquisa Larvaria se guardo con éxito");
 
         } catch (Exception e) {
@@ -266,21 +285,7 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
 
         return semana;
     }
-    public long getIdUser() {
-        String username = pref.getString("user", "");
-        long id = 0;
-        if (!username.equals("")) {
-            List<FosUserUser> ids = null;
-            FosUserUserDao userDao = daoSession.getFosUserUserDao();
-            QueryBuilder<FosUserUser> qb = userDao.queryBuilder();
-            qb.where(FosUserUserDao.Properties.Username.eq(username));
-            ids = qb.list();
-            for (FosUserUser f : ids) {
-                id = f.getId();
-            }
-        }
-        return id;
-    }
+
     public void customToadSuccess(Context context, String message) {
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.toad_exito,
@@ -293,5 +298,12 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
         toast.setView(layout);
         toast.show();
     }
+    @Override
+    public void onBackPressed() {
+        Intent list =new Intent(getApplicationContext(),ListPesquisaActivity.class);
+        startActivity(list);
+        finish();
+    }
+
 
 }

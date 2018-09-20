@@ -12,9 +12,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
-import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -31,7 +31,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.nuevoCriaderoDialogFragment;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.verCriaderoDialogFragment;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
@@ -40,6 +39,10 @@ import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MapaCriaderoActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener, verCriaderoDialogFragment.criaderoDialogListener {
@@ -137,9 +140,16 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try {
 
                 if(!latitudCriadero.getText().toString().isEmpty() && !longitudCriadero.getText().toString().isEmpty()){
 
+                   Date currentTime = Calendar.getInstance().getTime();
+                   SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                   String fecha = dateFormat.format(currentTime);
+                   Date fec = dateFormat.parse(fecha);
+
+                    criadero.setFechaHoraMod(fec);
                     criadero.setLatitud(latitudCriadero.getText().toString());
                     criadero.setLongitud(longitudCriadero.getText().toString());
                     int estado_sync=criadero.getEstado_sync();
@@ -168,6 +178,10 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
                     Toast.makeText(getApplicationContext(),"Latitud y Longitud vacios, debe de " +
                             "geolocalizar el criadero",Toast.LENGTH_LONG).show();
                 }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             }
         });
         cancelar.setOnClickListener(new View.OnClickListener() {

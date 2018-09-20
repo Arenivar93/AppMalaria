@@ -4,30 +4,35 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.R;
+
+import Utils.Util;
 
 
 public class NuevaPesquisaFragment extends android.app.DialogFragment {
     TextInputEditText titAnopheles12,titAnopheles34,titCulicino12,titCulicino34;
     TextInputEditText titPupa, titCucharonada, titLargo,titAncho;
     private OnFragmentInteractionListener mListener;
+    TextView tvIndiceLarvario;
     String nombre;
     long mNum;
-    static NuevaPesquisaFragment newInsrance(long id,String nombre){//no srive para traer el id desde la vista de la activity y asi mio
+    static NuevaPesquisaFragment newInstance(long id,String nombre){//no srive para traer el id desde la vista de la activity
         NuevaPesquisaFragment f = new NuevaPesquisaFragment();
         Bundle args = new Bundle();
         args.putLong("num", id);
@@ -38,7 +43,7 @@ public class NuevaPesquisaFragment extends android.app.DialogFragment {
     }
     public interface OnFragmentInteractionListener {
         void OnDialogPositiveClick(DialogFragment dialog, int anopheles12, int anopheles34,
-                                   int culicino12, int culicino34, int pupa, int cucharonada, int largo, int ancho);
+                                   int culicino12, int culicino34, int pupa, int cucharonada, float largo, float ancho);
         void onDialogNegativeClick(DialogFragment dialog);
     }
 
@@ -50,7 +55,7 @@ public class NuevaPesquisaFragment extends android.app.DialogFragment {
         mNum = (int) getArguments().getLong("num");
         nombre = getArguments().getString("nombre");
         final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View v = inflater.inflate(R.layout.fragment_nueva_pesquisa, null);
+        final View v = inflater.inflate(R.layout.dialog_fragment_nueva_pesquisa, null);
         titAnopheles12  = (TextInputEditText)v.findViewById(R.id.titAnopheles12);
         titAnopheles34  = (TextInputEditText)v.findViewById(R.id.titAnopheles34);
         titCulicino12   = (TextInputEditText)v.findViewById(R.id.titCulicino12);
@@ -59,6 +64,7 @@ public class NuevaPesquisaFragment extends android.app.DialogFragment {
         titCucharonada  = (TextInputEditText)v.findViewById(R.id.titCucharonada);
         titLargo        = (TextInputEditText)v.findViewById(R.id.titLargo);
         titAncho        = (TextInputEditText)v.findViewById(R.id.titAncho);
+        tvIndiceLarvario= (TextView)v.findViewById(R.id.tvIndiceLarvario);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setView(v);
@@ -90,7 +96,7 @@ public class NuevaPesquisaFragment extends android.app.DialogFragment {
                            mListener.OnDialogPositiveClick(NuevaPesquisaFragment.this, Integer.parseInt(anopheles12),
                             Integer.parseInt(anopheles34),Integer.parseInt(culicino12),
                             Integer.parseInt(culicino34),Integer.parseInt(pupa),
-                            Integer.parseInt(cucharonada),Integer.parseInt(largo),Integer.parseInt(ancho));
+                            Integer.parseInt(cucharonada),Float.parseFloat(largo),Float.parseFloat(ancho));
                            dialog.dismiss();
                        }
                     }
@@ -101,6 +107,53 @@ public class NuevaPesquisaFragment extends android.app.DialogFragment {
             }
 
 
+        });
+        titAnopheles34.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //Toast.makeText(getActivity(),"antes",Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //Toast.makeText(getActivity(),"durante",Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String anopheles = titAnopheles34.getText().toString().trim();
+                String cucharonada = titCucharonada.getText().toString().trim();
+                if(!TextUtils.isEmpty(anopheles) && !TextUtils.isEmpty(cucharonada)){
+                  float indice=  calcularIndice(Float.parseFloat(anopheles),Float.parseFloat(cucharonada));
+                    tvIndiceLarvario.setText(String.valueOf(indice));
+                }else{
+                    tvIndiceLarvario.setText(String.valueOf(0));
+                }
+            }
+        });
+        titCucharonada.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String anopheles = titAnopheles34.getText().toString().trim();
+                String cucharonada = titCucharonada.getText().toString().trim();
+                if(!TextUtils.isEmpty(anopheles) && !TextUtils.isEmpty(cucharonada)){
+                   float indice= calcularIndice(Float.parseFloat(anopheles),Float.parseFloat(cucharonada));
+                   tvIndiceLarvario.setText(String.valueOf(indice));
+                }else{
+                    tvIndiceLarvario.setText(String.valueOf(0));
+                }
+
+            }
         });
 
         return dialog;
@@ -154,9 +207,8 @@ public class NuevaPesquisaFragment extends android.app.DialogFragment {
             titAnopheles34.requestFocus();
 
         }else if (TextUtils.isEmpty(titCulicino12.getText().toString().trim())){
-            titCulicino12.setError("Cantidad de Anopheles estadío vI o II requerida");
+            titCulicino12.setError("Cantidad de Culicino estadío I o II requerida");
             titCulicino12.requestFocus();
-
         }else if (TextUtils.isEmpty(titCulicino34.getText().toString().trim())){
             titCulicino34.setError("Cantidad de Culicinos estadío III o IV requerida");
             titCulicino34.requestFocus();
@@ -176,5 +228,13 @@ public class NuevaPesquisaFragment extends android.app.DialogFragment {
             validate= true;
         }
         return validate;
+    }
+    public float calcularIndice(float anopheles34,float cucharonada){
+        float indice;
+        if (cucharonada>0){
+            indice = anopheles34 / cucharonada;
+        }else{indice = 0;}
+
+        return indice;
     }
 }

@@ -9,13 +9,12 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
-import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
 import com.minsal.dtic.sinavec.R;
 
 import java.util.ArrayList;
-import java.util.List;
-public class AdapterCapturas extends BaseAdapter {
+
+public class AdapterSemanaPesquisa extends BaseAdapter {
     Context context;
    // ArrayList<String> capturas;
     DaoSession daoSession;
@@ -23,7 +22,7 @@ public class AdapterCapturas extends BaseAdapter {
     ArrayList<String> capturas;
     PlCapturaAnophelesDao capDao;
 
-    public AdapterCapturas(Context context,  ArrayList<String> capturas) {
+    public AdapterSemanaPesquisa(Context context, ArrayList<String> capturas) {
         this.context = context;
         this.capturas = capturas;
 
@@ -67,8 +66,11 @@ public class AdapterCapturas extends BaseAdapter {
         tv2.setText(tvs[1]);
         tv3.setText(tvs[2]);
         tv4.setText(tvs[3]);
+        tv4.setGravity(Gravity.CENTER_HORIZONTAL);
         tv5.setText(tvs[4]);
+        tv5.setGravity(Gravity.CENTER_HORIZONTAL);
         tv6.setText(tvs[5]);
+        tv6.setGravity(Gravity.CENTER_HORIZONTAL);
         tv7.setText(tvs[6]);
         return v;
     }

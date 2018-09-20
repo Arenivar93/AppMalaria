@@ -77,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (respuesta==2) {
                     saveOnPreferences(elUser, elPass);
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    i.putExtra("bandera_pref","guardar_ids");
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     Toast.makeText(getApplicationContext(), "Bienvenido!!!", Toast.LENGTH_LONG).show();
                     startActivity(i);

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles;
 import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.ListCapturaActivity;
 import com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria.ListPesquisaActivity;
+import com.minsal.dtic.sinavec.CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity;
 import com.minsal.dtic.sinavec.R;
 
 
@@ -55,7 +56,7 @@ public class MainFragment extends Fragment{
             public void onClick(View v) {
                 Intent intent=new Intent(getActivity(),CapturaAnopheles.class);
                 startActivity(intent);
-                Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),"Gota Gruesa",Toast.LENGTH_SHORT).show();
             }
         });
         pesquisaCard.setOnClickListener(new View.OnClickListener() {
@@ -76,9 +77,9 @@ public class MainFragment extends Fragment{
         botiquinCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),CapturaAnopheles.class);
+                Intent intent=new Intent(getActivity(),SeguimientoBotiquinActivity.class);
                 startActivity(intent);
-                Toast.makeText(getContext(),"Redirige",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),"seguimiento Botiquin",Toast.LENGTH_SHORT).show();
             }
         });
         return vista;

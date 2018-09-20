@@ -1,11 +1,16 @@
 package com.minsal.dtic.sinavec;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,7 +31,11 @@ import android.widget.Toast;
 import com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol.MenuColvolFragment;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.MenuCriaderoFragment;
 import com.minsal.dtic.sinavec.EntityDAO.CtlDepartamentoDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlTablet;
+import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
 import com.minsal.dtic.sinavec.Sincronizar.SubirDatos;
 import com.minsal.dtic.sinavec.fragment.ContenedorFragment;
 import com.minsal.dtic.sinavec.fragment.CapturaFragment;
@@ -35,6 +45,10 @@ import com.minsal.dtic.sinavec.fragment.MainFragment;
 import com.minsal.dtic.sinavec.fragment.MapFragment;
 import com.minsal.dtic.sinavec.fragment.PesquisaFragment;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
+
+import org.greenrobot.greendao.query.QueryBuilder;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
@@ -47,9 +61,11 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences prefs;
     public static int depto;
     private DaoSession daoSession;
+    static final int GET_IMEI = 100;
     //  TextView tvUser;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,10 +73,19 @@ public class MainActivity extends AppCompatActivity
         daoSession = ((MyMalaria) getApplication()).getDaoSession();
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Bundle bundle = getIntent().getExtras();
         setSupportActionBar(toolbar);
         String elUser = prefs.getString("user", "");
+        long idSibasiUser = idSibasiUser();
+        long idTablet     = getIdTablet();
+        long iduser       = getIdUser();
+        depto             = deptoUser(elUser); // este id lo usaremos para conocer el departamento al que pertence el usaurio
+        if (bundle!=null){
+            if (bundle.get("bandera_pref")!=null){
+                saveOnPreferences(idSibasiUser,idTablet,iduser,depto);
+            }
+        }
 
-        depto = deptoUser(elUser); // este id lo usaremos para conocer el departamento al que pertence el usaurio
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -79,7 +104,9 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
-      //  View headerView = navigationView.getHeaderView(0);
+
+
+
     }
 
     @Override
@@ -95,6 +122,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
 
         return true;
     }
@@ -162,8 +190,13 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public int deptoUser(String username) {
 
+    /**
+     * estos metodos los los usaremos para guardar valores que se usaran en toda la aplicacion
+     * en los diferentes formularios
+     *
+     */
+    public int deptoUser(String username) {
         CtlDepartamentoDao departamentoDao = daoSession.getCtlDepartamentoDao();
         String sqlQUERY = "SELECT d.id FROM ctl_departamento d " +
                 "INNER JOIN ctl_municipio m on (m.id_departamento = d.id)\n" +
@@ -178,6 +211,79 @@ public class MainActivity extends AppCompatActivity
         }
         return idDepartamento;
     }
+
+    public long idSibasiUser() {
+        long idSibasi = 0;
+        String username = prefs.getString("user", "");
+        if (!username.equals("")) {
+            List<FosUserUser> ids = null;
+            FosUserUserDao userDao = daoSession.getFosUserUserDao();
+            QueryBuilder<FosUserUser> qb = userDao.queryBuilder();
+            qb.where(FosUserUserDao.Properties.Username.eq(username));
+            ids = qb.list();
+            for (FosUserUser f : ids) {
+                idSibasi = f.getIdSibasi();
+            }
+        }
+        return idSibasi;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public long getIdTablet() {
+        String imei = getIMEINumber();
+        long idtablet = 0;
+        if (!imei.equals("")) {
+            List<CtlTablet> ids = null;
+            CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+            QueryBuilder<CtlTablet> qb = tabDao.queryBuilder();
+            qb.where(CtlTabletDao.Properties.Serie.eq(imei)); //el imei se esta guardando en el campo serie
+            ids = qb.list();
+            for (CtlTablet t : ids) {
+                idtablet = t.getId();
+            }
+        }
+        return idtablet;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public String getIMEINumber() {
+        String myAndroidDeviceId = "";
+        TelephonyManager mTelephony = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        //comprobar version de android usando
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, GET_IMEI);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
+                ;
+            myAndroidDeviceId = mTelephony.getDeviceId();
+            return myAndroidDeviceId;
+        } else {
+            myAndroidDeviceId = mTelephony.getImei();
+
+        }
+        return myAndroidDeviceId;
+    }
+    private void saveOnPreferences(long idSibasiUser, long idTablet, long idUser,long idDeptoUser) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong("idSibasiUser",idSibasiUser);
+            editor.putLong("idTablet",idTablet);
+            editor.putLong("idUser",idUser);
+            editor.putLong("idDeptoUser",idDeptoUser);
+            editor.apply();
+    }
+    public long getIdUser() {
+        String username = prefs.getString("user", "");
+        long id = 0;
+        if (!username.equals("")) {
+            List<FosUserUser> ids = null;
+            FosUserUserDao userDao = daoSession.getFosUserUserDao();
+            QueryBuilder<FosUserUser> qb = userDao.queryBuilder();
+            qb.where(FosUserUserDao.Properties.Username.eq(username));
+            ids = qb.list();
+            for (FosUserUser f : ids) {
+                id = f.getId();
+            }
+        }
+        return id;
+    }
+
 
 
 }

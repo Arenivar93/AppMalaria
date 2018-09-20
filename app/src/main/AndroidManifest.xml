@@ -88,11 +88,14 @@
         <activity
             android:name=".CRUD.capturaAnopheles.ListCapturaActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".CRUD.pesquisaLarvaria.ListPesquisaActivity" />
+        <activity
+            android:name=".CRUD.pesquisaLarvaria.ListPesquisaActivity"
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".CRUD.pesquisaLarvaria.pesquisaLarvaria"
-            android:label="@string/title_activity_pesquisa_larvaria" />
-        android:screenOrientation="landscape"/>
+            android:label="Pesquisa Larvaria"
+            android:parentActivityName=".CRUD.pesquisaLarvaria.ListPesquisaActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".CRUD.Criaderos.activityCriadero.AgregarCriaderoActivity"
             android:label="Agregar Criadero"
@@ -110,7 +113,17 @@
         </activity>
         <activity
             android:name=".CRUD.capturaAnopheles.CapturaAnopheles"
-            android:parentActivityName=".CRUD.capturaAnopheles.ListCapturaActivity" />
+            android:parentActivityName=".CRUD.capturaAnopheles.ListCapturaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CRUD.capturaAnopheles.ListCapturaActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.CapturaAnopheles" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".CRUD.Criaderos.activityCriadero.ActualizarCriaderoActivity"
             android:label="Actualizar Criadero" />
@@ -145,7 +158,23 @@
             </intent-filter>
         </activity>
         <activity android:name=".Sincronizar.SubirDatos" />
-        <activity android:name=".CRUD.pesquisaLarvaria.DetalleSemanaActivity"></activity>
+        <activity
+            android:name=".CRUD.pesquisaLarvaria.DetalleSemanaActivity"
+            android:parentActivityName=".CRUD.pesquisaLarvaria.ListPesquisaActivity">
+            <meta-data
+                android:name="androd.support.PARENT_ACTIVITY"
+                android:value=".CRUD.pesquisaLarvaria.ListPesquisa" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.DetalleSemanaActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".CRUD.pesquisaLarvaria.EditPesquisaActivity"
+            android:parentActivityName=".CRUD.pesquisaLarvaria.ListPesquisaActivity" />
+        <activity android:name=".CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity"></activity>
     </application>
 
 </manifest>

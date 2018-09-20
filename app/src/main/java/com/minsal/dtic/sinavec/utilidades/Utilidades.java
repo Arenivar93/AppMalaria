@@ -378,13 +378,13 @@ public class Utilidades {
         pesquisaPrueba = new ArrayList<String>();
         float indice;
         Cursor c = daoSession.getDatabase().rawQuery("SELECT strftime('%Y', fecha_hora_reg) AS anio, id_semana_epidemiologica," +
-                " SUM(anopheles_uno),SUM(anopheles_dos),SUM(numero_cucharonada) FROM PL_PESQUISA_LARVARIA GROUP BY id_semana_epidemiologica, anio", null);
+                " SUM(anopheles_uno),SUM(anopheles_dos),SUM(pupa),SUM(numero_cucharonada)FROM PL_PESQUISA_LARVARIA GROUP BY id_semana_epidemiologica, anio", null);
         if (c.moveToFirst()) {
             do {
                 if (c.getInt(3)>0){
                     indice = (float) c.getInt(2)/ c.getInt(3);
                 }else{indice=0;}
-                pesquisaPrueba.add(c.getString(0) + "-" + c.getInt(1) + "-" + c.getInt(2)+"-"+c.getInt(3)+"-"+c.getInt(4)+"-"+indice);
+                pesquisaPrueba.add(c.getString(0) + "-" + c.getInt(1) + "-" + c.getInt(2)+"-"+c.getInt(3)+"-"+c.getInt(4)+"-"+c.getInt(5)+"-"+indice);
             } while (c.moveToNext());
         }
         c.close();
@@ -405,7 +405,7 @@ public class Utilidades {
 
         criaderosMap = new ArrayList<CtlPlCriadero>();
         if (idMunicipio>0){
-            QueryBuilder<CtlPlCriadero> qb = criaderoDao.queryBuilder().where(CtlPlCriaderoDao.Properties.Latitud.isNotNull());
+            QueryBuilder<CtlPlCriadero> qb = criaderoDao.queryBuilder().where(CtlPlCriaderoDao.Properties.Latitud.isNotNull()).where(CtlPlCriaderoDao.Properties.Estado_sync.notEq(1));
             Join ctlCaserio = qb.join(CtlPlCriaderoDao.Properties.IdCaserio,CtlCaserio.class);
             Join ctlCanton = qb.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
                     CtlCanton.class,CtlCantonDao.Properties.Id);
@@ -415,7 +415,7 @@ public class Utilidades {
             criaderosMap = qb.orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
         }else {
             criaderosMap = criaderoDao.queryBuilder()
-                    .where(CtlPlCriaderoDao.Properties.Latitud.isNotNull()).list();
+                    .where(CtlPlCriaderoDao.Properties.Latitud.isNotNull()).where(CtlPlCriaderoDao.Properties.Estado_sync.notEq(1)).list();
         }
 
         return criaderosMap;

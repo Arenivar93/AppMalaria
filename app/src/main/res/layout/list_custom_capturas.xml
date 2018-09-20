@@ -18,10 +18,9 @@
 
         <TextView
             android:id="@+id/tvCap2"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tvCap3"
@@ -35,25 +34,26 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
              />
+
         <TextView
             android:id="@+id/tvCap5"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
-        <TextView
-            android:id="@+id/tvCap6"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-             />
-
-        <TextView
-            android:id="@+id/tvCapId"
             android:layout_width="50dp"
             android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-            android:visibility="invisible" />
+        <TextView
+            android:id="@+id/tvCap6"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tvCapt7"
+            android:layout_width="50dp"
+            android:layout_marginEnd="15dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
 

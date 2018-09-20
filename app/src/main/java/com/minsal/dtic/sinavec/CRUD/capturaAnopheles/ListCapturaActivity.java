@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
+import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.adapters.AdapterCapturas;
@@ -45,7 +46,7 @@ public class ListCapturaActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(),CapturaAnopheles.class);
                 i.putExtra("accion","nueva");
                 startActivity(i);
-               // finish();
+                 //finish();
             }
         });
 
@@ -71,9 +72,17 @@ public class ListCapturaActivity extends AppCompatActivity {
                       +"-"+p.getCtlCaserio().getCtlCanton().getNombre()
                       +"-"+p.getCtlCaserio().getNombre()
                       +"-"+p.getPropietario()
+                      +"-"+p.getTotalMosquitos()
                       +"-"+p.getTotalAnopheles()
                       +"-"+p.getIdSemanaEpidemiologica()) ;
         }
         return lista;
+    }
+    @Override
+    public void onBackPressed() {
+        Intent m =new Intent(getApplicationContext(),MainActivity.class);
+        m.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(m);
+        finish();
     }
 }

@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
+import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.adapters.AdapterCapturas;
@@ -49,7 +50,7 @@ public class ListPesquisaActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),pesquisaLarvaria.class);
-                startActivity(i);finish();
+                startActivity(i);
             }
         });
 
@@ -62,6 +63,7 @@ public class ListPesquisaActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(),DetalleSemanaActivity.class);
                 i.putExtra("id_semana",id_semana);
                 startActivity(i);
+
             }
         });
     }
@@ -70,4 +72,12 @@ public class ListPesquisaActivity extends AppCompatActivity {
         ArrayList<String> lista= u.loadListPesquisaBySem();
         return lista;
     }
+    @Override
+    public void onBackPressed() {
+        Intent m =new Intent(getApplicationContext(),MainActivity.class);
+        m.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(m);
+        finish();
+    }
+
 }

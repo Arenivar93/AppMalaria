@@ -13,9 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
