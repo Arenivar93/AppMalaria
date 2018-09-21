@@ -90,7 +90,7 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".CRUD.pesquisaLarvaria.ListPesquisaActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".CRUD.pesquisaLarvaria.pesquisaLarvaria"
             android:label="Pesquisa Larvaria"
@@ -174,7 +174,8 @@
         <activity
             android:name=".CRUD.pesquisaLarvaria.EditPesquisaActivity"
             android:parentActivityName=".CRUD.pesquisaLarvaria.ListPesquisaActivity" />
-        <activity android:name=".CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity"></activity>
+        <activity android:name=".CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity" />
+        <activity android:name=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin"></activity>
     </application>
 
 </manifest>

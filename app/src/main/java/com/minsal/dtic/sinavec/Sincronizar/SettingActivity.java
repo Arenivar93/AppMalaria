@@ -268,10 +268,13 @@ public class SettingActivity extends AppCompatActivity {
         CtlEstablecimiento est = new CtlEstablecimiento();
         est.setId(id);
         est.setNombre(nombre);
-        est.setLatitud(lat);
-        est.setLongitud(lon);
+
         if (idMpo != 0) {
             est.setIdMunicipio(idMpo);
+        }
+        if (!lat.equals("null")&& !lon.equals("null")){
+            est.setLatitud(lat);
+            est.setLongitud(lon);
         }
         est.setIdEstablecimientoPadre(idPadre);
         est.setIdTipoEstablecimiento(idTipo);

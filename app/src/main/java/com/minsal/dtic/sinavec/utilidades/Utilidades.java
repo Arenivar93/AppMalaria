@@ -9,7 +9,10 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserioDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlDepartamento;
 import com.minsal.dtic.sinavec.EntityDAO.CtlDepartamentoDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimiento;
+import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimientoDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
@@ -61,6 +64,7 @@ public class Utilidades {
     PlPesquisaLarvariaDao pesDao;
     CtlPlCriaderoDao criaderoDao;
     PlColvolDao colvolDao;
+    CtlEstablecimientoDao estDao;
 
     ArrayList<String> listaMunicipio;
     ArrayList<String> listaCanton;
@@ -73,6 +77,7 @@ public class Utilidades {
     List<PlPesquisaLarvaria> pesquisasBySem;
 
     List<CtlPlCriadero> criaderosMap;
+    List<CtlEstablecimiento> establecimientoMap;
     List<PlColvol> colvolMap;
     List<CtlPlCriadero> criaderos;
     List<PlColvol> colvols;
@@ -421,11 +426,29 @@ public class Utilidades {
         return criaderosMap;
 
     }
+    public List<CtlEstablecimiento> loadEstablecimientoMap(int idMunicipio, int idDepto) {
+        estDao = daoSession.getCtlEstablecimientoDao();
+        establecimientoMap = new ArrayList<CtlEstablecimiento>();
+        if (idMunicipio>0){
+            QueryBuilder<CtlEstablecimiento> qb = estDao.queryBuilder().where(CtlEstablecimientoDao.Properties.Latitud.isNotNull()).where(CtlEstablecimientoDao.Properties.IdMunicipio.eq(idMunicipio));
+
+            establecimientoMap = qb.orderAsc(CtlEstablecimientoDao.Properties.Nombre).list();
+        }else {
+            QueryBuilder<CtlEstablecimiento> qb = estDao.queryBuilder().where(CtlEstablecimientoDao.Properties.Latitud.isNotNull());
+            Join ctlMunicipio = qb.join(CtlEstablecimientoDao.Properties.IdMunicipio,CtlMunicipio.class);
+            Join ctlDepartamento = qb.join(ctlMunicipio,CtlMunicipioDao.Properties.IdDepartamento,
+                    CtlDepartamento.class,CtlDepartamentoDao.Properties.Id);
+            ctlDepartamento.where(CtlDepartamentoDao.Properties.Id.eq(idDepto));
+            establecimientoMap = qb.list();
+        }
+        return establecimientoMap;
+    }
+
+
 
     public List<PlColvol> loadColvolMap( int idMunicipio) {
 
         colvolDao = daoSession.getPlColvolDao();
-
         colvolMap = new ArrayList<PlColvol>();
         if (idMunicipio>0){
             QueryBuilder<PlColvol> qb = colvolDao.queryBuilder().where(PlColvolDao.Properties.Latitud.isNotNull());

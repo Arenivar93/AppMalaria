@@ -27,6 +27,7 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
+import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
@@ -54,6 +55,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
     Utilidades utilidades;
+    int depto = MainActivity.depto;
     List<PlColvol> colvols;
     private ProgressDialog progressDialog;
     Integer longitud;
@@ -93,7 +95,7 @@ public class BuscarColvolActivity extends AppCompatActivity {
 
         listaCanton.add("Seleccione");
         listaCaserios.add("Seleccione");
-        municipios=utilidades.loadspinnerMunicipio(3);
+        municipios=utilidades.loadspinnerMunicipio(depto);
         listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
 
         adapter=new ArrayAdapter
