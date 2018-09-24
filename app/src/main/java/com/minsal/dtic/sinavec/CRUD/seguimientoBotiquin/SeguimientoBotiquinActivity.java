@@ -1,5 +1,6 @@
 package com.minsal.dtic.sinavec.CRUD.seguimientoBotiquin;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -21,11 +22,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimiento;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
+import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquin;
 import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
@@ -36,7 +39,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeguimientoBotiquinActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener {
+public class SeguimientoBotiquinActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener,NuevoSeguimientoFragment.OnFragmentInteractionListener {
     private SharedPreferences prefs;
     Utilidades u;
     private DaoSession daoSession;
@@ -89,6 +92,15 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         moverCamaraDepartamento();
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                CtlEstablecimiento est = (CtlEstablecimiento) marker.getTag();
+                NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(est.getId());
+                dialog.show(getFragmentManager(),"dialog");
+                return false;
+            }
+        });
 
 
     }
@@ -174,5 +186,15 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
         } else {
             tvCountBotiquin.setText("No se encontraron colvol registrados con coordenadas");
         }
+    }
+
+    @Override
+    public void OnDialogPositiveClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
     }
 }

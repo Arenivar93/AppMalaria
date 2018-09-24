@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_seguimienyo_botiquin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rdbSupervisado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Supervisado:" />
+
+            <RadioButton
+                android:id="@+id/rdbVisitado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Visitado" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/titMuestras"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Numero de muestras" />
+            </android.support.design.widget.TextInputLayout>
+        </RadioGroup>
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>
