@@ -26,6 +26,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.minsal.dtic.sinavec.EntityDAO.Clave;
 import com.minsal.dtic.sinavec.EntityDAO.ClaveDao;
+import com.minsal.dtic.sinavec.EntityDAO.ColvolCalve;
+import com.minsal.dtic.sinavec.EntityDAO.ColvolCalveDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
@@ -51,6 +53,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTipoEstablecimiento;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTipoEstablecimientoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.EstablecimientoClave;
+import com.minsal.dtic.sinavec.EntityDAO.EstablecimientoClaveDao;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
@@ -272,7 +276,8 @@ public class SettingActivity extends AppCompatActivity {
         if (idMpo != 0) {
             est.setIdMunicipio(idMpo);
         }
-        if (!lat.equals("null")&& !lon.equals("null")){
+        if (!lat.equals("null")&& !
+                lon.equals("null")){
             est.setLatitud(lat);
             est.setLongitud(lon);
         }
@@ -362,6 +367,23 @@ public class SettingActivity extends AppCompatActivity {
         colvol.setEstado_sync(0);
         colvolDao.insert(colvol);
     }
+    public void saveColvolClave(long id, long idClave,long idColvol){
+        ColvolCalveDao claDao = daoSession.getColvolCalveDao();
+        ColvolCalve cla = new ColvolCalve();
+        cla.setId(id);
+        cla.setIdClave(idClave);
+        cla.setIdColvol(idColvol);
+        claDao.insert(cla);
+    }
+    public void saveEstClave(long id, long idClave,long idEstablecimiento){
+        EstablecimientoClaveDao claDao = daoSession.getEstablecimientoClaveDao();
+        EstablecimientoClave cla = new EstablecimientoClave();
+        cla.setId(id);
+        cla.setIdClave(idClave);
+        cla.setIdEstablecimiento(idEstablecimiento);
+        claDao.insert(cla);
+    }
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -446,6 +468,8 @@ public class SettingActivity extends AppCompatActivity {
                 JSONArray jaActividad    = jsTotal.getJSONArray("actividad");
                 JSONArray jaSemana       = jsTotal.getJSONArray("semana");
                 JSONArray jaColvol       = jsTotal.getJSONArray("colvol");
+                JSONArray jaColvolClave  = jsTotal.getJSONArray("colvolClave");
+                JSONArray jaEstClave     = jsTotal.getJSONArray("estClave");
                // JSONArray jsTotal22      = jsTotal.getJSONArray("total");
                 for (int i = 0; i < jaPaises.length(); i++) {
                     JSONObject joPais = jaPaises.getJSONObject(i);
@@ -593,6 +617,15 @@ public class SettingActivity extends AppCompatActivity {
                               ,joColvol.getString("latitud"),joColvol.getString("longitud"));
 
                 }
+                for (int c = 0; c <jaColvolClave.length() ; c++) {
+                    JSONObject joc = jaColvolClave.getJSONObject(c);
+                    saveColvolClave(joc.getLong("id"),joc.getLong("id_clave"),joc.getLong("id_colvol"));
+                }
+                for (int c = 0; c <jaEstClave.length() ; c++) {
+                    JSONObject joc = jaEstClave.getJSONObject(c);
+                    saveEstClave(joc.getLong("id"),joc.getLong("id_clave"),joc.getLong("id_establecimiento"));
+                }
+
 
             } catch (Exception e) {
                 e.printStackTrace();

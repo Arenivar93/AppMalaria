@@ -109,7 +109,7 @@ public class SubirDatos extends AppCompatActivity {
         dateFormat=new SimpleDateFormat("yyyy-MM-dd");
         for (PlCapturaAnopheles p: capturas){
             String date = dateFormat.format(p.getFechaHoraReg());
-            insert = "INSERT INTO pl_captura_anopheles(id_captura, id_sibasi, id_tablet, id_semana_epidemiologica," +
+            insert = "INSERT INTO prueba.PL_CAPTURA_ANOPHELES(id_captura, id_sibasi, id_tablet, id_semana_epidemiologica," +
                         "id_tipo_actividad, id_caserio, id_usuario_reg,id_estado, id_tipo_captura, total_mosquitos, total_anopheles," +
                         "casa_positiva, casa_inspeccionada, componente_inspeccionado, tiempo_colecta, fecha_hora_reg, propietario,fecha " +
                         ")VALUES ("+p.getId()+","+p.getIdSibasi()+","+p.getIdTablet()+","+p.getIdSemanaEpidemiologica()+","+p.getIdTipoActividad()+","+p.getIdCaserio()+","+p.getIdUsuarioReg()+"," +

@@ -66,6 +66,7 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     long idSibasi ;
     long idTablet ;
     long idUsuario;
+
     private SharedPreferences prefs;
 
 
@@ -210,7 +211,7 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     public void OnDialogPositiveClick(DialogFragment dialog, int anopheles12, int anopheles34,
                                       int culicino12, int culicino34, int pupa, int cucharonada,
                                       float largo, float ancho) {
-        Date currentTime = Calendar.getInstance().getTime();
+       Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //String prueba = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(currentTime);
         String fecha = dateFormat.format(currentTime);

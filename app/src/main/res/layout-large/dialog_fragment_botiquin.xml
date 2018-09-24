@@ -7,16 +7,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="10dp">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:orientation="horizontal">
 
         <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/rdgAccion"
+            android:layout_width="113dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <RadioButton
                 android:id="@+id/rdbSupervisado"
@@ -28,24 +30,52 @@
                 android:id="@+id/rdbVisitado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="Visitado" />
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/titMuestras"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Numero de muestras" />
-            </android.support.design.widget.TextInputLayout>
         </RadioGroup>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/titMuestras"
+                android:layout_width="214dp"
+                android:layout_height="wrap_content"
+                android:hint="Numero de muestras"
+                android:inputType="number" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="215dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/titPersonas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Numero de Personas a las que se les divulgo"
+                android:inputType="number" />
+        </android.support.design.widget.TextInputLayout>
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Switch
+            android:id="@+id/swRiesgoSocial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Riesgo Social?"/>
 
 
+    </LinearLayout>
 
 
 </LinearLayout>

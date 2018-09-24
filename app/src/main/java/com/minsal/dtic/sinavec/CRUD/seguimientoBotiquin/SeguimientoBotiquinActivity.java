@@ -3,6 +3,7 @@ package com.minsal.dtic.sinavec.CRUD.seguimientoBotiquin;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.support.v7.app.ActionBar;
@@ -29,6 +30,7 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquin;
+import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquinDao;
 import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
@@ -36,7 +38,10 @@ import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class SeguimientoBotiquinActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener,NuevoSeguimientoFragment.OnFragmentInteractionListener {
@@ -51,7 +56,11 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
     private List<CtlMunicipio> municipios;
     private ArrayList<String> listaMunicipio;
     int depto = MainActivity.depto;
+    int bandera;
+    long idEstablecimiento, idColvol;
     TextView tvCountBotiquin;
+    String clave;
+    long idSibasi,idTablet,idUsuario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +73,9 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
         ivBuscar   = (ImageView)findViewById(R.id.ivBuscarBotiquin);
         spMunicipio=(Spinner)findViewById(R.id.spMunicipioBotiquin);
         tvCountBotiquin    = (TextView)findViewById(R.id.tvCountBotiquin);
+        idSibasi  = prefs.getLong("idSibasiUser",0);
+        idTablet  = prefs.getLong("idTablet",0);
+        idUsuario = prefs.getLong("idUser",0);
         ActionBar actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         loadSpinerMun();
@@ -79,11 +91,11 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
                 long idMunicipio = getIdMunicipioPes();
                 if (rdbSmo.isChecked()){
                     establecimientosMap((int) idMunicipio);
+                    bandera = 2;
                 }else{
                     colvolMap((int) idMunicipio);
-
+                    bandera=1;
                 }
-
             }
         });
     }//fin metodo oncreate
@@ -95,14 +107,10 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                CtlEstablecimiento est = (CtlEstablecimiento) marker.getTag();
-                NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(est.getId());
-                dialog.show(getFragmentManager(),"dialog");
+                setObjectMarker(bandera, marker);
                 return false;
             }
         });
-
-
     }
 
     @Override
@@ -188,13 +196,108 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
         }
     }
 
+//la bandera que recibe colvol= col , establecimiento = est para buscar dependiendo de eso el id clave
     @Override
-    public void OnDialogPositiveClick(DialogFragment dialog) {
+    public void OnDialogPositiveClick(DialogFragment dialog, int muestras, int personas, String accion, int riesgo,String bandera, long id) {
+        Date currentTime = Calendar.getInstance().getTime();
+        Toast.makeText(getApplicationContext(),bandera,Toast.LENGTH_LONG).show();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //String prueba = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(currentTime);
+        String fecha = dateFormat.format(currentTime);
+        int idClave = getIdClave(id,bandera);
+        try {
+            int semanaActual = getSemana();
+            Date fec = dateFormat.parse(fecha);
+            PlSeguimientoBotiquinDao segDao = daoSession.getPlSeguimientoBotiquinDao();
+            PlSeguimientoBotiquin seg = new PlSeguimientoBotiquin();
+            seg.setIdClave(idClave);
+            seg.setNumeroMuestra(muestras);
+            seg.setNumeroPersonaDivulgo(personas);
+            seg.setFecha(fec);
+            seg.setFechaHoraReg(fec);
+            seg.setFechaRegistro(fec);
+            seg.setIdSibasi(idSibasi);
+            seg.setIdUsuarioReg(idUsuario);
+            seg.setIdTablet(idTablet);
+            seg.setEstado_sync(1);
+            seg.setIdEstadoFormulario(2);
+            seg.setIdSemanaEpidemiologica(semanaActual);
+            if (accion.equals("visitar")){
+                seg.setVisitado(1);
+            }else{
+                seg.setSupervisado(1);
+            }
+            if (riesgo==1){
+                seg.setEnRiesgo(1);
+            }else{
+                seg.setEnRiesgo(0);
+            }
+            segDao.insert(seg);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
 
+    }
+    /** este metodo nos servira para saber si vamos a castear un colvol o establecimiento en el mapa
+     *la bandera recibira el paramtro si es colvol o si establecimiento
+     * 1= colvol 2= establecimiento
+     */
+    public void setObjectMarker(int bandera,Marker marker){
+        if (bandera==2){
+            CtlEstablecimiento est = (CtlEstablecimiento) marker.getTag();
+            idEstablecimiento = est.getId();
+            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(est.getId(),est.getNombre(),"est");
+            dialog.show(getFragmentManager(),"dialog");
+        }else{
+            PlColvol col = (PlColvol) marker.getTag();
+            idColvol = col.getId();
+            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(col.getId(),col.getNombre(),"col");
+            dialog.show(getFragmentManager(),"dialog");
+        }
+    }
+    public int getIdClave(long id, String bandera){
+        int idClave = 0;
+        if (bandera.equals("est")){
+            String sqlQUERY = "SELECT ID_CLAVE FROM ESTABLECIMIENTO_CLAVE WHERE ID_ESTABLECIMIENTO='" + id + "'";
+            Cursor cursor = daoSession.getDatabase().rawQuery(sqlQUERY, null);
+            if (cursor.moveToFirst()) {
+                idClave = cursor.getInt(0);
+            }
+        }else{
+            String sqlQUERY = "SELECT ID_CLAVE FROM COLVOL_CALVE WHERE ID_COLVOL='" + id + "'";
+            Cursor cursor = daoSession.getDatabase().rawQuery(sqlQUERY, null);
+            if (cursor.moveToFirst()) {
+                idClave = cursor.getInt(0);
+            }
+        }
+        return  idClave;
+    }
+    public int getSemana() {
+        int semana = 0;
+        try {
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+            Date now = new Date();
+            String strDate = sdfDate.format(now);
+            String sqlQUERY = "SELECT semana FROM ctl_semana_epi where '" + strDate + "' BETWEEN fecha_inicio " +
+                    "and fecha_fin";
+            Cursor c = daoSession.getDatabase().rawQuery(sqlQUERY, null);
+            if (c.moveToFirst()) {
+                do {
+                    semana = c.getInt(0);
+
+                } while (c.moveToNext());
+            }
+            c.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return semana;
     }
 }
