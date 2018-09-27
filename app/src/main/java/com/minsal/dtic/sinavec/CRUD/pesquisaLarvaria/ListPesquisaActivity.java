@@ -29,17 +29,22 @@ public class ListPesquisaActivity extends AppCompatActivity {
     Utilidades u;
     private DaoSession daoSession;
 
+    /**
+     * Esta clase nos muestra un listado de las pesquisas agrupadas por semana epidemiologica
+     *
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_pesquisa);
-        btnNueva = (Button)findViewById(R.id.btnNuevaPesquisa);
+        btnNueva   = (Button)findViewById(R.id.btnNuevaPesquisa);
         lvPesquisa = (ListView)findViewById(R.id.lvPesquisa);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         daoSession      =((MyMalaria)getApplicationContext()).getDaoSession();
         u.fragment = 0;
-      final ArrayList<String> pesquisaPrueba2 = listaAdapter();
+       final ArrayList<String> pesquisaPrueba2 = listaAdapter();
         AdapterCapturas adapter =new AdapterCapturas(this,pesquisaPrueba2);
         lvPesquisa.setAdapter(adapter);
         adapter.notifyDataSetChanged();

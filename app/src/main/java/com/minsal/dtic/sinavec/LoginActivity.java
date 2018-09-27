@@ -107,6 +107,8 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("user", user);
             editor.putString("pass", pass);
+            editor.putString("userRem", user);
+            editor.putString("passRem", pass);
             editor.apply();
 
         }

@@ -8,8 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -19,16 +17,13 @@ import android.widget.Toast;
 
 
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
-import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
-import com.minsal.dtic.sinavec.adapters.AdapterCapturas;
 import com.minsal.dtic.sinavec.adapters.AdapterSemanaPesquisa;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 

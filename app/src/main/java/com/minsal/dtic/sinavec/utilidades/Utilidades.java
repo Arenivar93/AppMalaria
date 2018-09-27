@@ -26,6 +26,8 @@ import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
+import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquin;
+import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquinDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividad;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoActividadDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlTipoCaptura;
@@ -46,6 +48,7 @@ public class Utilidades {
 
     public static int rotacion = 0;
     public static boolean valida = true;
+    public static String token = null;
 
     public static final int LIST = 1;
     public static final int GRID = 2;
@@ -56,32 +59,24 @@ public class Utilidades {
     public static int fragment = 0;
 
 
-    DaoSession daoSession;
-    CtlMunicipioDao daoMunicipio;
-    CtlCantonDao daoCanton;
-    CtlCaserioDao daoCaserio;
-    PlCapturaAnophelesDao capDao;
-    PlPesquisaLarvariaDao pesDao;
-    CtlPlCriaderoDao criaderoDao;
-    PlColvolDao colvolDao;
-    CtlEstablecimientoDao estDao;
+    private DaoSession daoSession;
+    private PlPesquisaLarvariaDao pesDao;
+    private CtlEstablecimientoDao estDao;
 
-    ArrayList<String> listaMunicipio;
-    ArrayList<String> listaCanton;
-    List<CtlCanton> cantones;
-    ArrayList<String> listaCaserios;
-    ArrayList<String> listaCapturas;
+    private ArrayList<String> listaMunicipio;
+    private ArrayList<String> listaCanton;
+    private List<CtlCanton> cantones;
+    private ArrayList<String> listaCaserios;
 
-    List<CtlCaserio> caserios;
-    List<PlCapturaAnopheles> capturas;
-    List<PlPesquisaLarvaria> pesquisasBySem;
+    private List<CtlCaserio> caserios;
+    private List<PlCapturaAnopheles> capturas;
+    private List<PlPesquisaLarvaria> pesquisasBySem;
 
-    List<CtlPlCriadero> criaderosMap;
-    List<CtlEstablecimiento> establecimientoMap;
-    List<PlColvol> colvolMap;
-    List<CtlPlCriadero> criaderos;
-    List<PlColvol> colvols;
-    ArrayList<String> pesquisaPrueba;
+    private List<CtlPlCriadero> criaderosMap;
+    private List<CtlEstablecimiento> establecimientoMap;
+    private List<PlColvol> colvolMap;
+    private List<CtlPlCriadero> criaderos;
+    private List<PlColvol> colvols;
     private List<PlPesquisaLarvaria> pesquisas;
 
     public Utilidades(DaoSession daoSession) {
@@ -90,7 +85,7 @@ public class Utilidades {
 
     public List<CtlMunicipio> loadspinnerMunicipio(int idDepto) {
         CtlMunicipio municipio = null;
-        daoMunicipio = daoSession.getCtlMunicipioDao();
+        CtlMunicipioDao daoMunicipio = daoSession.getCtlMunicipioDao();
         List<CtlMunicipio> municipios = new ArrayList<CtlMunicipio>();
         municipios = daoMunicipio.queryBuilder().where(CtlMunicipioDao.Properties.IdDepartamento.eq(idDepto))
                 .orderAsc(CtlMunicipioDao.Properties.Nombre).list();
@@ -116,7 +111,7 @@ public class Utilidades {
 
 
     public List<CtlCanton> loadSpinerCanton(Long idM) {
-        daoCanton = daoSession.getCtlCantonDao();
+        CtlCantonDao daoCanton = daoSession.getCtlCantonDao();
         cantones = new ArrayList<CtlCanton>();
         cantones = daoCanton.queryBuilder().where(CtlCantonDao.Properties.IdMunicipio.eq(idM))
                 .orderAsc(CtlCantonDao.Properties.Nombre).list();
@@ -134,7 +129,7 @@ public class Utilidades {
 
 
     public List<CtlCaserio> loadSpinerCaserio(Long idCtn) {
-        daoCaserio = daoSession.getCtlCaserioDao();
+        CtlCaserioDao daoCaserio = daoSession.getCtlCaserioDao();
         caserios = new ArrayList<CtlCaserio>();
         caserios = daoCaserio.queryBuilder().where(CtlCaserioDao.Properties.IdCanton.eq(idCtn))
                 .orderAsc(CtlCaserioDao.Properties.Nombre).list();
@@ -154,12 +149,6 @@ public class Utilidades {
         criaderos = new ArrayList<CtlPlCriadero>();
         if (idMuni != 0) {
             if (idCtn != 0 && idCas == 0) {
-                //Ejecutara busqueda de municipio y canton
-                 /* QueryBuilder<User> queryBuilder = userDao.queryBuilder();
-                queryBuilder.join(Address.class, AddressDao.Properties.userId)
-                        .where(AddressDao.Properties.Street.eq("Sesame Street"));
-                List<User> users = queryBuilder.list();*/
-
                 CtlPlCriaderoDao criaderoDao = daoSession.getCtlPlCriaderoDao();
 
                 QueryBuilder<CtlPlCriadero> queryBuilder = criaderoDao.queryBuilder();
@@ -354,14 +343,14 @@ public class Utilidades {
     }
 
     public List<PlCapturaAnopheles> loadListcapturas() {
-        capDao = daoSession.getPlCapturaAnophelesDao();
+        PlCapturaAnophelesDao capDao = daoSession.getPlCapturaAnophelesDao();
         capturas = new ArrayList<PlCapturaAnopheles>();
         capturas = capDao.loadAll();
         return capturas;
     }
 
     public ArrayList<String> getListaCapturas(List<PlCapturaAnopheles> capturas) {
-        listaCapturas = new ArrayList<String>();
+        ArrayList<String> listaCapturas = new ArrayList<String>();
         for (int i = 0; i < capturas.size(); i++) {
             listaCapturas.add(capturas.get(i).getCtlCaserio().getCtlCanton().getCtlMunicipio().getNombre()
                     + "-" + capturas.get(i).getCtlCaserio().getCtlCanton().getNombre()
@@ -379,8 +368,8 @@ public class Utilidades {
 
     public ArrayList<String> loadListPesquisaBySem() {
         pesDao = daoSession.getPlPesquisaLarvariaDao();
-        pesquisasBySem = new ArrayList<PlPesquisaLarvaria>();
-        pesquisaPrueba = new ArrayList<String>();
+      //  pesquisasBySem = new ArrayList<PlPesquisaLarvaria>();
+        ArrayList<String> pesquisaPrueba = new ArrayList<String>();
         float indice;
         Cursor c = daoSession.getDatabase().rawQuery("SELECT strftime('%Y', fecha_hora_reg) AS anio, id_semana_epidemiologica," +
                 " SUM(anopheles_uno),SUM(anopheles_dos),SUM(pupa),SUM(numero_cucharonada)FROM PL_PESQUISA_LARVARIA GROUP BY id_semana_epidemiologica, anio", null);
@@ -395,6 +384,59 @@ public class Utilidades {
         c.close();
         return pesquisaPrueba;
     }
+    /**
+     *metodos para lista de seguimiento de botiquin por semana
+     */
+
+    public ArrayList<String> loadSeguimientosBySem() {
+           ArrayList seguimientoBySem = new ArrayList<PlSeguimientoBotiquin>();
+       //  pesquisaPrueba = new ArrayList<String>();
+        int total;
+        Cursor c = daoSession.getDatabase().rawQuery("SELECT strftime('%Y', fecha_hora_reg) AS anio, id_semana_epidemiologica," +
+                " SUM(supervisado),SUM(visitado),SUM(en_riesgo),SUM(numero_persona_divulgo)FROM PL_SEGUIMIENTO_BOTIQUIN GROUP BY id_semana_epidemiologica, anio", null);
+        if (c.moveToFirst()) {
+            do {
+                total = c.getInt(2)+c.getInt(3);
+                seguimientoBySem.add(c.getString(0) + "-" + c.getInt(1) + "-" + c.getInt(2)+"-"+c.getInt(3)+"-"+c.getInt(4)+"-"+c.getInt(5)+"-"+total);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return seguimientoBySem;
+    }
+    public ArrayList<String> loadSeguimientosDetalleCombinado(int semana) {
+        ArrayList seguimientoCombinado = new ArrayList<PlSeguimientoBotiquin>();
+        int total;
+        String sql = "select seg.id,cla.clave,pro.nombre AS procedencia, col.nombre, mun.nombre as municipio, seg.FECHA_HORA_REG,seg.SUPERVISADO,seg.VISITADO,seg.EN_RIESGO from PL_SEGUIMIENTO_BOTIQUIN seg "+
+                     "inner join CLAVE cla ON (seg.ID_CLAVE =cla.id) "+
+                     "INNER JOIN CTL_PROCEDENCIA pro ON (pro.id= cla.ID_PROCEDENCIA) "+
+                     "INNER join PL_COLVOL col on (col.CLAVE= cla.CLAVE) "+
+                     "INNER join CTL_CASERIO cas on (cas.id= col.ID_CASERIO) "+
+                     " INNER join CTL_CANTON can on (can.id = cas.ID_CANTON) "+
+                     " INNER join CTL_MUNICIPIO mun ON (mun.id = can.ID_MUNICIPIO) "+
+                     "WHERE seg.ID_SEMANA_EPIDEMIOLOGICA='"+semana+"'"+
+                     " UNION "+
+                     " select seg.id,cla.clave,pro.nombre AS procedencia, EST.nombre, mun.nombre as municipio, seg.FECHA_HORA_REG,seg.SUPERVISADO,seg.VISITADO,seg.EN_RIESGO  from PL_SEGUIMIENTO_BOTIQUIN seg "+
+                     " inner join CLAVE cla ON (seg.ID_CLAVE =cla.id) "+
+                     " INNER JOIN CTL_PROCEDENCIA pro ON (pro.id= cla.ID_PROCEDENCIA) "+
+                     " INNER JOIN ESTABLECIMIENTO_CLAVE ESTC ON (ESTC.ID_CLAVE= CLA.ID) "+
+                     " INNER JOIN CTL_ESTABLECIMIENTO EST ON (ESTC.ID_ESTABLECIMIENTO= EST.ID) "+
+                     " INNER JOIN CTL_MUNICIPIO mun on (mun.id = est.ID_MUNICIPIO) "+
+                     "WHERE seg.ID_SEMANA_EPIDEMIOLOGICA='"+semana+"'";
+        Cursor c = daoSession.getDatabase().rawQuery(sql, null);
+        if (c.moveToFirst()) {
+            do {
+                  seguimientoCombinado.add(c.getString(0) + "/" +c.getString(2)+ "/"+c.getString(4) + "/" + c.getString(3)+"/"+c.getInt(6)+"/"+c.getInt(7)+"/"+c.getInt(8)+"/"+c.getString(5));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return seguimientoCombinado;
+    }
+
+
+
+
+
+
     public List<PlPesquisaLarvaria> loadPesquisasDetalleSemana(int semana) {
         pesDao = daoSession.getPlPesquisaLarvariaDao();
         pesquisas = new ArrayList<PlPesquisaLarvaria>();
@@ -402,11 +444,18 @@ public class Utilidades {
         pesquisas = qb.list();
         return pesquisas;
     }
+    public List<PlSeguimientoBotiquin> loadSeguimientoDetalleSemana(int semana) {
+        PlSeguimientoBotiquinDao segDao  = daoSession.getPlSeguimientoBotiquinDao();
+        List<PlSeguimientoBotiquin> seguimientos = new ArrayList<PlSeguimientoBotiquin>();
+        QueryBuilder<PlSeguimientoBotiquin> qb = segDao.queryBuilder().where(PlSeguimientoBotiquinDao.Properties.IdSemanaEpidemiologica.eq(semana));
+        seguimientos = qb.list();
+        return seguimientos;
+    }
 
 
     public List<CtlPlCriadero> loadCriaderosMap( int idMunicipio) {
 
-        criaderoDao = daoSession.getCtlPlCriaderoDao();
+        CtlPlCriaderoDao criaderoDao = daoSession.getCtlPlCriaderoDao();
 
         criaderosMap = new ArrayList<CtlPlCriadero>();
         if (idMunicipio>0){
@@ -448,7 +497,7 @@ public class Utilidades {
 
     public List<PlColvol> loadColvolMap( int idMunicipio) {
 
-        colvolDao = daoSession.getPlColvolDao();
+        PlColvolDao colvolDao = daoSession.getPlColvolDao();
         colvolMap = new ArrayList<PlColvol>();
         if (idMunicipio>0){
             QueryBuilder<PlColvol> qb = colvolDao.queryBuilder().where(PlColvolDao.Properties.Latitud.isNotNull());

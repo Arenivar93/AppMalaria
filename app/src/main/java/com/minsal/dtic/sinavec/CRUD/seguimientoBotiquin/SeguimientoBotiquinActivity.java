@@ -2,6 +2,7 @@ package com.minsal.dtic.sinavec.CRUD.seguimientoBotiquin;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
@@ -9,7 +10,10 @@ import android.location.LocationListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -87,15 +91,19 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
             @Override
             public void onClick(View view) {
                 mMap.clear();
-                validateSpinnerRadio();
-                long idMunicipio = getIdMunicipioPes();
-                if (rdbSmo.isChecked()){
-                    establecimientosMap((int) idMunicipio);
-                    bandera = 2;
-                }else{
-                    colvolMap((int) idMunicipio);
-                    bandera=1;
-                }
+               boolean validate= validateSpinnerRadio();
+               if (validate){
+                   long idMunicipio = getIdMunicipioPes();
+                   if (rdbSmo.isChecked()){
+                       establecimientosMap((int) idMunicipio);
+                       bandera = 2;
+                   }else{
+                       colvolMap((int) idMunicipio);
+                       bandera=1;
+                   }
+
+               }
+
             }
         });
     }//fin metodo oncreate
@@ -153,10 +161,13 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
         spMunicipio.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
-    public void validateSpinnerRadio(){
+    public boolean validateSpinnerRadio(){
+        boolean validate= true;
         if (!rdbSmo.isChecked() && !rdbColvol.isChecked()){
             Toast.makeText(getApplicationContext(),"Seleccione el tipo de botiquin",Toast.LENGTH_LONG).show();
+            validate = false;
             }
+            return validate;
     }
     public long getIdMunicipioPes() {
         int listIdMunicipio = spMunicipio.getSelectedItemPosition();
@@ -195,45 +206,47 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
             tvCountBotiquin.setText("No se encontraron colvol registrados con coordenadas");
         }
     }
-
 //la bandera que recibe colvol= col , establecimiento = est para buscar dependiendo de eso el id clave
     @Override
     public void OnDialogPositiveClick(DialogFragment dialog, int muestras, int personas, String accion, int riesgo,String bandera, long id) {
         Date currentTime = Calendar.getInstance().getTime();
-        Toast.makeText(getApplicationContext(),bandera,Toast.LENGTH_LONG).show();
+       // Toast.makeText(getApplicationContext(),bandera,Toast.LENGTH_LONG).show();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        //String prueba = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(currentTime);
         String fecha = dateFormat.format(currentTime);
         int idClave = getIdClave(id,bandera);
         try {
-            int semanaActual = getSemana();
-            Date fec = dateFormat.parse(fecha);
-            PlSeguimientoBotiquinDao segDao = daoSession.getPlSeguimientoBotiquinDao();
-            PlSeguimientoBotiquin seg = new PlSeguimientoBotiquin();
-            seg.setIdClave(idClave);
-            seg.setNumeroMuestra(muestras);
-            seg.setNumeroPersonaDivulgo(personas);
-            seg.setFecha(fec);
-            seg.setFechaHoraReg(fec);
-            seg.setFechaRegistro(fec);
-            seg.setIdSibasi(idSibasi);
-            seg.setIdUsuarioReg(idUsuario);
-            seg.setIdTablet(idTablet);
-            seg.setEstado_sync(1);
-            seg.setIdEstadoFormulario(2);
-            seg.setIdSemanaEpidemiologica(semanaActual);
-            if (accion.equals("visitar")){
-                seg.setVisitado(1);
-            }else{
-                seg.setSupervisado(1);
-            }
-            if (riesgo==1){
-                seg.setEnRiesgo(1);
-            }else{
-                seg.setEnRiesgo(0);
-            }
-            segDao.insert(seg);
+                int semanaActual = getSemana();
+                Date fec = dateFormat.parse(fecha);
+                PlSeguimientoBotiquinDao segDao = daoSession.getPlSeguimientoBotiquinDao();
+                PlSeguimientoBotiquin seg = new PlSeguimientoBotiquin();
+                seg.setIdClave(idClave);
+                seg.setNumeroMuestra(muestras);
+                seg.setNumeroPersonaDivulgo(personas);
+                seg.setFecha(fec);
+                seg.setFechaHoraReg(fecha);
+                seg.setFechaRegistro(fec);
+                seg.setIdSibasi(idSibasi);
+                seg.setIdUsuarioReg(idUsuario);
+                seg.setIdTablet(idTablet);
+                seg.setEstado_sync(1);
+                seg.setIdEstadoFormulario(2);
+                seg.setIdSemanaEpidemiologica(semanaActual);
+                if (accion.equals("visitar")){
+                    seg.setVisitado(1);
+                }else{
+                    seg.setSupervisado(1);
+                }
+                if (riesgo==1){
+                    seg.setEnRiesgo(1);
+                }else{
+                    seg.setEnRiesgo(0);
+                }
+                segDao.insert(seg);
+
+            customToadSuccess(getApplicationContext(),"Seguimiento de Botiquin registrado con éxito");
+
         }catch (Exception e){
+            Toast.makeText(getApplicationContext(),"Error"+e.getMessage(),Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
 
@@ -299,5 +312,24 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
         }
 
         return semana;
+    }
+    public void customToadSuccess(Context context, String message) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toad_exito,
+                (ViewGroup) findViewById(R.id.custom_toast_container_exito));
+        TextView text = (TextView) layout.findViewById(R.id.tvToasExito);
+        text.setText(message);
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.BOTTOM, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(getApplicationContext(),ListSeguimientoBotiquin.class);
+        startActivity(i);
+        finish();
     }
 }

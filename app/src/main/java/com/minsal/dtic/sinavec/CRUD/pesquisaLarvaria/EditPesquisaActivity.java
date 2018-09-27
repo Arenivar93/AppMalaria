@@ -76,7 +76,7 @@ public class EditPesquisaActivity extends AppCompatActivity {
 
         pref = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         pesDao          = daoSession.getPlPesquisaLarvariaDao();
-        id_pesquisa     =bundle.get("id_pesquisa");
+        //id_pesquisa     =bundle.get("id_pesquisa");
         id_semana       =bundle.get("id_semana");
        // Toast.makeText(getApplicationContext(),String.valueOf(id_pesquisa),Toast.LENGTH_LONG).show();
         try {

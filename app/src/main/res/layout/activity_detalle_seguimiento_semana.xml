@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CRUD.pesquisaLarvaria.DetalleSemanaActivity">
+    tools:context=".CRUD.seguimientoBotiquin.DetalleSeguimientoSemana">
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,13 +24,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/nuevaPesquisa"
+            android:id="@+id/btnNuevoSeguimientoDetalle"
             android:layout_width="248dp"
             android:layout_height="67dp"
             android:layout_marginEnd="36dp"
             android:layout_marginTop="16dp"
             android:drawableLeft="@android:drawable/ic_menu_add"
-            android:text=" Nueva Pesquisa"
+            android:text="Nuevo Seguimiento"
             android:textColor="#0b6f02"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +64,7 @@
                 android:layout_weight="1"
                 android:background="#5b5efa"
                 android:paddingStart="5dp"
-                android:text="Canton"
+                android:text="Tipo Botiquin"
                 android:textAlignment="textStart" />
 
             <TextView
@@ -73,7 +73,7 @@
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:background="#5b5efa"
-                android:text="Criadero"
+                android:text="Nombre"
                 android:textAlignment="textStart" />
 
             <TextView
@@ -82,7 +82,7 @@
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:background="#5b5efa"
-                android:text="Anopheles(I-II)"
+                android:text="Supervisado"
                 android:textAlignment="textStart" />
 
             <TextView
@@ -91,7 +91,7 @@
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:background="#5b5efa"
-                android:text="Anopheles (II-IV)"
+                android:text="Visitado"
                 android:textAlignment="textStart" />
 
             <TextView
@@ -100,7 +100,7 @@
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:background="#5b5efa"
-                android:text="Cucharonadas"
+                android:text="En riesgo"
                 android:textAlignment="textStart" />
 
             <TextView
@@ -110,7 +110,7 @@
                 android:layout_marginEnd="15dp"
                 android:layout_weight="1"
                 android:background="#5b5efa"
-                android:text="Fecha Pesquiza"
+                android:text="Fecha"
                 android:textAlignment="textStart" />
         </LinearLayout>
 
@@ -123,10 +123,10 @@
             app:layout_constraintTop_toBottomOf="@+id/header">
 
             <ListView
-                android:id="@+id/lvPesquisasSemana"
+                android:id="@+id/lvSeguimientoSemana"
                 android:layout_width="match_parent"
-                android:longClickable="true"
-                android:layout_height="400dp" />
+                android:layout_height="400dp"
+                android:longClickable="true" />
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 

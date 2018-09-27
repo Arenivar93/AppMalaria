@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CRUD.seguimientoBotiquin.EditSeguimiento">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="151dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tvNombreBotiquinEdi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text=""/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <RadioGroup
+                android:id="@+id/rdgAccionEdit"
+                android:layout_width="269dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rdbSupervisadoEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Supervisado:" />
+
+                <RadioButton
+                    android:id="@+id/rdbVisitadoEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Visitado" />
+            </RadioGroup>
+
+            <Switch
+                android:id="@+id/swRiesgoSocialEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="68dp"
+                android:layout_marginTop="10dp"
+                android:text="Riesgo Social?" />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="167dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="254dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/titMuestrasEdit"
+                android:layout_width="254dp"
+                android:layout_height="wrap_content"
+                android:hint="Numero de muestras"
+                android:inputType="number" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="254dp"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/titPersonasEdit"
+                android:layout_width="254dp"
+                android:layout_height="wrap_content"
+
+                android:hint="Numero de Personas a las que se les divulgo"
+                android:inputType="number" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imActualizarSeguimiento"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/actualizar"
+            android:clickable="true"/>
+        <View
+            android:layout_width="30dp"
+            android:layout_height="20dp"/>
+
+        <ImageView
+            android:id="@+id/imEliminarSeguimiento"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:clickable="true"
+            android:src="@drawable/borrar" />
+    </LinearLayout>
+
+
+</LinearLayout>

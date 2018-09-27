@@ -104,15 +104,15 @@ public class PlSeguimientoBotiquinDao extends AbstractDao<PlSeguimientoBotiquin,
         stmt.bindLong(4, entity.getVisitado());
         stmt.bindLong(5, entity.getEnRiesgo());
         stmt.bindLong(6, entity.getNumeroPersonaDivulgo());
- 
-        java.util.Date fechaHoraReg = entity.getFechaHoraReg();
+
+        String fechaHoraReg = entity.getFechaHoraReg();
         if (fechaHoraReg != null) {
-            stmt.bindLong(7, fechaHoraReg.getTime());
+            stmt.bindString(7, fechaHoraReg);
         }
- 
-        java.util.Date fechaHoraMod = entity.getFechaHoraMod();
+
+        String fechaHoraMod = entity.getFechaHoraMod();
         if (fechaHoraMod != null) {
-            stmt.bindLong(8, fechaHoraMod.getTime());
+            stmt.bindString(8, fechaHoraMod);
         }
         stmt.bindLong(9, entity.getFecha().getTime());
         stmt.bindLong(10, entity.getIdSemanaEpidemiologica());
@@ -140,14 +140,14 @@ public class PlSeguimientoBotiquinDao extends AbstractDao<PlSeguimientoBotiquin,
         stmt.bindLong(5, entity.getEnRiesgo());
         stmt.bindLong(6, entity.getNumeroPersonaDivulgo());
  
-        java.util.Date fechaHoraReg = entity.getFechaHoraReg();
+       String fechaHoraReg = entity.getFechaHoraReg();
         if (fechaHoraReg != null) {
-            stmt.bindLong(7, fechaHoraReg.getTime());
+            stmt.bindString(7, fechaHoraReg);
         }
- 
-        java.util.Date fechaHoraMod = entity.getFechaHoraMod();
+
+        String fechaHoraMod = entity.getFechaHoraMod();
         if (fechaHoraMod != null) {
-            stmt.bindLong(8, fechaHoraMod.getTime());
+            stmt.bindString(8, fechaHoraMod);
         }
         stmt.bindLong(9, entity.getFecha().getTime());
         stmt.bindLong(10, entity.getIdSemanaEpidemiologica());
@@ -181,8 +181,8 @@ public class PlSeguimientoBotiquinDao extends AbstractDao<PlSeguimientoBotiquin,
             cursor.getInt(offset + 3), // visitado
             cursor.getInt(offset + 4), // enRiesgo
             cursor.getInt(offset + 5), // numeroPersonaDivulgo
-            cursor.isNull(offset + 6) ? null : new java.util.Date(cursor.getLong(offset + 6)), // fechaHoraReg
-            cursor.isNull(offset + 7) ? null : new java.util.Date(cursor.getLong(offset + 7)), // fechaHoraMod
+            cursor.getString(offset + 6), // fechaHoraReg
+            cursor.getString(offset + 7), // fechaHoraMod
             new java.util.Date(cursor.getLong(offset + 8)), // fecha
             cursor.getInt(offset + 9), // idSemanaEpidemiologica
             new java.util.Date(cursor.getLong(offset + 10)), // fechaRegistro
@@ -205,8 +205,8 @@ public class PlSeguimientoBotiquinDao extends AbstractDao<PlSeguimientoBotiquin,
         entity.setVisitado(cursor.getInt(offset + 3));
         entity.setEnRiesgo(cursor.getInt(offset + 4));
         entity.setNumeroPersonaDivulgo(cursor.getInt(offset + 5));
-        entity.setFechaHoraReg(cursor.isNull(offset + 6) ? null : new java.util.Date(cursor.getLong(offset + 6)));
-        entity.setFechaHoraMod(cursor.isNull(offset + 7) ? null : new java.util.Date(cursor.getLong(offset + 7)));
+        entity.setFechaHoraReg(cursor.getString(offset + 6));
+        entity.setFechaHoraMod(cursor.getString(offset + 7));
         entity.setFecha(new java.util.Date(cursor.getLong(offset + 8)));
         entity.setIdSemanaEpidemiologica(cursor.getInt(offset + 9));
         entity.setFechaRegistro(new java.util.Date(cursor.getLong(offset + 10)));

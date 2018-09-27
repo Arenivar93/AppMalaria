@@ -23,8 +23,8 @@ public class PlSeguimientoBotiquin {
     private int visitado;
     private int enRiesgo;
     private int numeroPersonaDivulgo;
-    private java.util.Date fechaHoraReg;
-    private java.util.Date fechaHoraMod;
+    String fechaHoraReg;
+    String fechaHoraMod;
 
     @NotNull
     private java.util.Date fecha;
@@ -84,7 +84,7 @@ public class PlSeguimientoBotiquin {
     }
 
     @Generated
-    public PlSeguimientoBotiquin(Long id, int idEstadoFormulario, int supervisado, int visitado, int enRiesgo, int numeroPersonaDivulgo, java.util.Date fechaHoraReg, java.util.Date fechaHoraMod, java.util.Date fecha, int idSemanaEpidemiologica, java.util.Date fechaRegistro, int numeroMuestra, int idUsuarioMod, int estado_sync, long idClave, long idTablet, long idUsuarioReg, long idSibasi) {
+    public PlSeguimientoBotiquin(Long id, int idEstadoFormulario, int supervisado, int visitado, int enRiesgo, int numeroPersonaDivulgo, String fechaHoraReg, String fechaHoraMod, java.util.Date fecha, int idSemanaEpidemiologica, java.util.Date fechaRegistro, int numeroMuestra, int idUsuarioMod, int estado_sync, long idClave, long idTablet, long idUsuarioReg, long idSibasi) {
         this.id = id;
         this.idEstadoFormulario = idEstadoFormulario;
         this.supervisado = supervisado;
@@ -160,19 +160,19 @@ public class PlSeguimientoBotiquin {
         this.numeroPersonaDivulgo = numeroPersonaDivulgo;
     }
 
-    public java.util.Date getFechaHoraReg() {
+    public String getFechaHoraReg() {
         return fechaHoraReg;
     }
 
-    public void setFechaHoraReg(java.util.Date fechaHoraReg) {
+    public void setFechaHoraReg(String fechaHoraReg) {
         this.fechaHoraReg = fechaHoraReg;
     }
 
-    public java.util.Date getFechaHoraMod() {
+    public String getFechaHoraMod() {
         return fechaHoraMod;
     }
 
-    public void setFechaHoraMod(java.util.Date fechaHoraMod) {
+    public void setFechaHoraMod(String fechaHoraMod) {
         this.fechaHoraMod = fechaHoraMod;
     }
 
