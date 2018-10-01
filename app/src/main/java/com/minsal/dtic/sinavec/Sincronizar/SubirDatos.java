@@ -83,7 +83,7 @@ public class SubirDatos extends AppCompatActivity {
     }
 
     public JSONArray getInsertCapturas() throws JSONException {
-        JSONObject jo = new JSONObject();
+
         JSONArray joTotal = new JSONArray();
 
         List<PlCapturaAnopheles> capturas;
@@ -92,6 +92,7 @@ public class SubirDatos extends AppCompatActivity {
         SimpleDateFormat dateFormat;
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         for (PlCapturaAnopheles p : capturas) {
+            JSONObject jo = new JSONObject();
             String date = dateFormat.format(p.getFechaHoraReg());
             jo.put("id",p.getId());
             jo.put("fecha", date);
@@ -147,7 +148,7 @@ public class SubirDatos extends AppCompatActivity {
     }
 
     public JSONArray getInsertPesquisas() throws JSONException {
-        JSONObject joPesquisas = new JSONObject();
+
         JSONArray joTotal = new JSONArray();
         List<PlPesquisaLarvaria> pesquisas;
         PlPesquisaLarvariaDao pesDao = daoSession.getPlPesquisaLarvariaDao();
@@ -156,6 +157,7 @@ public class SubirDatos extends AppCompatActivity {
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         for (PlPesquisaLarvaria p : pesquisas) {
+            JSONObject joPesquisas = new JSONObject();
             String date = dateFormat.format(p.getFecha());
             joPesquisas.put("id", p.getId());
             joPesquisas.put("idTablet", p.getIdTablet());

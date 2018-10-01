@@ -42,9 +42,5 @@ public class SplashActivity extends AppCompatActivity {
         }
         //noq queremos que esta activity se guarde en el historial
         finish();
-
-
     }
-
-
 }
