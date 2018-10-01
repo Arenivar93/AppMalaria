@@ -1,7 +1,10 @@
 package com.minsal.dtic.sinavec.Sincronizar;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -73,8 +76,19 @@ public class SubirDatos extends AppCompatActivity {
         subirDatos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/entomologicas";
-                checkinServer();
+                try {
+                    String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/entomologicas";
+                    float carga =calculoBateria(getApplicationContext());
+                    if (carga<0.50){
+                        Toast.makeText(getApplicationContext(),"El estado de carga es menor al 50%, Por favor conecte el dispositivo",Toast.LENGTH_LONG).show();
+                    }else {
+                        checkinServer();
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
                 //String json ="hola";
                // send();
 
@@ -83,7 +97,6 @@ public class SubirDatos extends AppCompatActivity {
     }
 
     public JSONArray getInsertCapturas() throws JSONException {
-
         JSONArray joTotal = new JSONArray();
 
         List<PlCapturaAnopheles> capturas;
@@ -118,8 +131,9 @@ public class SubirDatos extends AppCompatActivity {
 
     public void updateLocalCapturas(JSONObject joCapturas) {
         try {
-            JSONArray jaCapturasIserted = joCapturas.getJSONArray("capturas");
+            JSONArray jaCapturasIserted = joCapturas.getJSONArray("ids");
             for (int i = 0; i < jaCapturasIserted.length(); i++) {
+              //  Log.i("***ids******", String.valueOf(jaCapturasIserted.get(i)));
                 String id = String.valueOf(jaCapturasIserted.get(i));
                 PlCapturaAnophelesDao capDao = daoSession.getPlCapturaAnophelesDao();
                 PlCapturaAnopheles capUpdate = capDao.loadByRowId(Long.parseLong(id));
@@ -131,24 +145,29 @@ public class SubirDatos extends AppCompatActivity {
         }
     }
 
-    public JSONObject getUpdateCriaderos() throws JSONException {
+    public JSONArray getUpdateCriaderos() throws JSONException {
+        JSONArray jaUpdate = new JSONArray();
         JSONObject joCriaderos = new JSONObject();
         String insert = "";
         List<CtlPlCriadero> criaderos = new ArrayList<CtlPlCriadero>();
         CtlPlCriaderoDao criaderoDao = daoSession.getCtlPlCriaderoDao();
         criaderos = criaderoDao.queryBuilder().where(CtlPlCriaderoDao.Properties.Estado_sync.eq(2)).list();
         SimpleDateFormat dateFormat;
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (CtlPlCriadero c : criaderos) {
             String date = dateFormat.format(c.getFechaHoraMod());
-            insert = "UPDATE ctl_pl_criadero SET latitud='" + c.getLatitud() + "',longitud='" + c.getLongitud() + "' WHERE id= '" + c.getId() + "'";
-            joCriaderos.put(String.valueOf(c.getId()), insert);
-        }
-        return joCriaderos;
+            JSONObject joCriaderoUpdate = new JSONObject();
+            joCriaderoUpdate.put("id",c.getId());
+            joCriaderoUpdate.put("longitud",c.getLongitud());
+            joCriaderoUpdate.put("latitud",c.getLatitud());
+            joCriaderoUpdate.put("idUsuarioMod",c.getIdUsuarioMod());
+            joCriaderoUpdate.put("fechaHoraMod",date);
+            jaUpdate.put(joCriaderoUpdate);
+            }
+        return jaUpdate;
     }
 
     public JSONArray getInsertPesquisas() throws JSONException {
-
         JSONArray joTotal = new JSONArray();
         List<PlPesquisaLarvaria> pesquisas;
         PlPesquisaLarvariaDao pesDao = daoSession.getPlPesquisaLarvariaDao();
@@ -182,151 +201,116 @@ public class SubirDatos extends AppCompatActivity {
         return joTotal;
     }
 
-    public void updateLocalPesquisas(JSONObject joPesquisas) {
-        try {
-            JSONArray jaPesquisasIserted = joPesquisas.getJSONArray("pesquisas");
-            for (int i = 0; i < jaPesquisasIserted.length(); i++) {
-                String id = String.valueOf(jaPesquisasIserted.get(i));
-                PlPesquisaLarvariaDao pesDao = daoSession.getPlPesquisaLarvariaDao();
-                PlPesquisaLarvaria pesUpdate = pesDao.loadByRowId(Long.parseLong(id));
-                pesUpdate.setEstado_sync(0);
-                pesDao.update(pesUpdate);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+    /**
+     * subir los nuevos criaderos
+     */
+    public JSONArray getInsetCriaderos() throws JSONException {
+        JSONArray jaUpdate = new JSONArray();
+        JSONObject joCriaderos = new JSONObject();
+        String insert = "";
+        List<CtlPlCriadero> criaderos = new ArrayList<CtlPlCriadero>();
+        CtlPlCriaderoDao criaderoDao = daoSession.getCtlPlCriaderoDao();
+        criaderos = criaderoDao.queryBuilder().where(CtlPlCriaderoDao.Properties.Estado_sync.eq(1)).list();
+        SimpleDateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (CtlPlCriadero c : criaderos) {
+            String date = dateFormat.format(c.getFechaHoraReg());
+            JSONObject joCriaderoUpdate = new JSONObject();
+            joCriaderoUpdate.put("id",c.getId());
+            joCriaderoUpdate.put("idTipoCriadero",c.getIdTipoCriadero());
+            joCriaderoUpdate.put("idEstadoCriadero",c.getIdEstadoCriadero());
+            joCriaderoUpdate.put("nombre",c.getNombre());
+            joCriaderoUpdate.put("descripcion",c.getDescripcion());
+            joCriaderoUpdate.put("longitud",c.getLongitud());
+            joCriaderoUpdate.put("latitud",c.getLatitud());
+            joCriaderoUpdate.put("idSibasi",c.getIdSibasi());
+            joCriaderoUpdate.put("idCaserio",c.getIdCaserio());
+            joCriaderoUpdate.put("longitudCriadero",c.getLongitudCriadero());
+            joCriaderoUpdate.put("anchoCriadero",c.getAnchoCriadero());
+            joCriaderoUpdate.put("idCaserio",c.getIdCaserio());
+            joCriaderoUpdate.put("idUsuarioReg",c.getIdUsarioReg());
+            joCriaderoUpdate.put("fechaHoraReg",date);
+           // joCriaderoUpdate.put("idTablet",c.getId);
+            jaUpdate.put(joCriaderoUpdate);
         }
+        return jaUpdate;
     }
 
-    public void checkinServer() {
+    public void updateLocalPesquisas(JSONObject joPesquisas) {
+            try {
+                JSONArray jaPesquisasIserted = joPesquisas.getJSONArray("ids");
+                int total = jaPesquisasIserted.length();
+                if (total>0){
+                    for (int i = 0; i < jaPesquisasIserted.length(); i++) {
+                        String id = String.valueOf(jaPesquisasIserted.get(i));
+                        PlPesquisaLarvariaDao pesDao = daoSession.getPlPesquisaLarvariaDao();
+                        PlPesquisaLarvaria pesUpdate = pesDao.loadByRowId(Long.parseLong(id));
+                        pesUpdate.setEstado_sync(0);
+                        pesDao.update(pesUpdate);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+    }
+
+    public void checkinServer() throws JSONException {
         boolean red = MetodosGlobales.compruebaConexion(getApplicationContext());
         if (!red) {
             Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
 
         } else {
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
-            RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
+            //antes de hacer una peticion vamos a comprobar que hay registros para enviar
+            int countCapturas = getInsertCapturas().length();
+            int countPesquisas = getInsertPesquisas().length();
+            int countCriaderosUpdate = getUpdateCriaderos().length();
+            if (countCapturas>0 || countPesquisas>0 || countCriaderosUpdate>0){
+                tvPesquisa.setText(String.format("Pesquisas lista para sincronizar: %d", countPesquisas));
+                tvja.setText(String.format("Capturas lista para sincronizar: %d", countCapturas));
+                String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
+                RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
 
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                token = jsonObject.getString("token");
-                                send(token);
-                                sendDataPesquisa(token);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Toast.makeText(getApplicationContext(), "Error!!Por favor contacta al administrador" + e.getMessage(), Toast.LENGTH_LONG).show();
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    token = jsonObject.getString("token");
+                                    sendCapturas(token);
+                                    sendDataPesquisa(token);
+                                    sendCriaderosUpdate(token);
+                                    sendCriaderos(token);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(getApplicationContext(), "Error!!Por favor contacta al administrador" + e.getMessage(), Toast.LENGTH_LONG).show();
 
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), "Error!Por favor contacta al administrador" + String.valueOf(error), Toast.LENGTH_LONG).show();
-
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> parameters = new HashMap<String, String>();
-                    parameters.put("Content-Type", "application/json");
-                    parameters.put("_username", "mvalladares");
-                    parameters.put("_password", "mvalladares");
-                    return parameters;
-                }
-
-            };
-            cola.add(stringRequest);
-        }
-    }
-
-    private void sendData(final String token) {
-        String tkn = token;
-        try {
-            JSONArray ja = getInsertCapturas();
-            
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/entomologicas";
-            RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
-            JsonArrayRequest postRequest = new JsonArrayRequest(Request.Method.POST, url, ja,
-                    new Response.Listener<JSONArray>() {
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            try {
-                                if (response != null) {
-
-                                    tvja.setText(String.valueOf(response.toString()));
-                                    Log.i("aaaa", String.valueOf(response.toString()));
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.i("***errorCaptura", error.getMessage());
-                }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("Content-Type", "application/json");
-                    params.put("Authorization", "Bearer " + token);
-                    return params;
-                }
-            };
-            postRequest.setShouldCache(false);
-            rq.getCache().clear();
-            rq.add(postRequest);
-        } catch (Exception e) {
-            e.printStackTrace();
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "Error!Por favor contacta al administrador" + String.valueOf(error), Toast.LENGTH_LONG).show();
+
+                    }
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> parameters = new HashMap<String, String>();
+                        parameters.put("Content-Type", "application/json");
+                        parameters.put("_username", "mvalladares");
+                        parameters.put("_password", "mvalladares");
+                        return parameters;
+                    }
+
+                };
+                cola.add(stringRequest);
+            }else{
+             Toast.makeText(getApplicationContext(),"No hay registros pendiente de sincronizacion",Toast.LENGTH_LONG).show();
+            }
         }
     }
 
-    private void sendDataUpdatePesquisa(final String token) {
-        String tkn = token;
-        try {
-            JSONArray ja = new JSONArray();
-            ja.put(getInsertPesquisas());
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/pesquisas";
-            RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
-            JsonArrayRequest postRequest = new JsonArrayRequest(Request.Method.PUT, url, ja,
-                    new Response.Listener<JSONArray>() {
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            try {
-                                if (response != null) {
-
-                                    tvja.setText(String.valueOf(response.toString()));
-                                    Log.i("aaaa", String.valueOf(response.toString()));
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.i("***errorPesquisa", error.getMessage());
-                }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("Content-Type", "application/json");
-                    params.put("Authorization", "Bearer " + token);
-                    return params;
-                }
-            };
-            postRequest.setShouldCache(false);
-            //rq.getCache().clear();
-            rq.add(postRequest);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
     /**
@@ -342,12 +326,8 @@ public class SubirDatos extends AppCompatActivity {
 
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
-
-
-    private void send(String tkn) throws JSONException {
+    private void sendCapturas(String tkn) throws JSONException {
         JSONArray json = getInsertCapturas();
-        int cont = json.length();
-
         String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/entomologicas";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
@@ -355,24 +335,31 @@ public class SubirDatos extends AppCompatActivity {
                 .post(body)
                 .header("Authorization", "Bearer " + tkn)
                 .build();
-
         try {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.i("***okhttp error**", String.valueOf(e));
+                   tvja.setText("Error:"+String.valueOf(e));
                 }
-
                 @Override
-                public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                public void onResponse(Call call, final okhttp3.Response response) throws IOException {
                     if (response.isSuccessful()) {
 
                         final String res = response.body().string();
                         SubirDatos.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.i("***okhttr succ**", res);
-                                tvja.setText(res);
+                                try {
+                                    JSONArray respuesta = new JSONArray(res);
+                                    JSONObject jores = respuesta.getJSONObject(1);
+                                    updateLocalCapturas(jores);
+                                    tvja.setText("Capturas Anopheles ingresadas con éxito");
+
+                                   // Log.i("***okhttr succ**", String.valueOf(jores.getJSONArray("ids")));
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
                     }
@@ -382,12 +369,10 @@ public class SubirDatos extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
     private void sendDataPesquisa(final String token) throws JSONException {
         JSONArray json = getInsertPesquisas();
         int cont = json.length();
-
         String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/pesquisas";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
@@ -395,24 +380,28 @@ public class SubirDatos extends AppCompatActivity {
                 .post(body)
                 .header("Authorization", "Bearer " + token)
                 .build();
-
         try {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.i("***pesuiza error**", String.valueOf(e));
+                   tvPesquisa.setText(String.valueOf(e));
                 }
-
                 @Override
                 public void onResponse(Call call, okhttp3.Response response) throws IOException {
                     if (response.isSuccessful()) {
-
                         final String res2 = response.body().string();
                         SubirDatos.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.i("***pesquiza succ**", res2);
-                                tvPesquisa.setText(res2);
+                                JSONArray respuesta = null;
+                                try {
+                                    respuesta = new JSONArray(res2);
+                                    JSONObject jores = respuesta.getJSONObject(1);
+                                    updateLocalPesquisas(jores);
+                                    tvPesquisa.setText("Pesquisas Ingresadas con Exito");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
                     }
@@ -422,10 +411,100 @@ public class SubirDatos extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+    private void sendCriaderos(String tkn) throws JSONException {
+        JSONArray json = getInsetCriaderos();
+        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/crideros";
+        RequestBody body = RequestBody.create(JSON, json.toString());
+        final okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(body)
+                .header("Authorization", "Bearer " + tkn)
+                .build();
+        try {
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    tvja.setText("Error:"+String.valueOf(e));
+                }
+                @Override
+                public void onResponse(Call call, final okhttp3.Response response) throws IOException {
+                    if (response.isSuccessful()) {
 
+                        final String res = response.body().string();
+                        SubirDatos.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    JSONArray respuesta = new JSONArray(res);
+                                    JSONObject jores = respuesta.getJSONObject(1);
+
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
+    private void sendCriaderosUpdate(String token) throws JSONException {
+        JSONArray json = getUpdateCriaderos();
+        int cont = json.length();
+        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
+        RequestBody body = RequestBody.create(JSON, json.toString());
+        final okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .put(body)
+                .header("Authorization", "Bearer " + token)
+                .build();
+        try {
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    tvPesquisa.setText(String.valueOf(e));
+                }
+                @Override
+                public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        final String res2 = response.body().string();
+                        SubirDatos.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                JSONArray respuesta = null;
+                                try {
+                                    respuesta = new JSONArray(res2);
+                                    //JSONObject jores = respuesta.getJSONObject(1);
+                                    //updateLocalPesquisas(jores);
+                                   // tvPesquisa.setText("Pesquisas Ingresadas con Exito");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public float calculoBateria(Context context){
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, ifilter);
+        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+        float batteryPct = level / (float)scale;
+        return batteryPct;
+
+    }
 
 }
