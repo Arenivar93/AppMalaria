@@ -39,8 +39,9 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
         public final static Property IdUsarioReg = new Property(11, long.class, "idUsarioReg", false, "ID_USARIO_REG");
         public final static Property Estado_sync = new Property(12, int.class, "estado_sync", false, "ESTADO_SYNC");
         public final static Property IdSibasi = new Property(13, long.class, "idSibasi", false, "ID_SIBASI");
-        public final static Property IdCaserio = new Property(14, long.class, "idCaserio", false, "ID_CASERIO");
-        public final static Property IdUsuarioMod = new Property(15, long.class, "idUsuarioMod", false, "ID_USUARIO_MOD");
+        public final static Property IdTablet = new Property(14, long.class, "idTablet", false, "ID_TABLET");
+        public final static Property IdCaserio = new Property(15, long.class, "idCaserio", false, "ID_CASERIO");
+        public final static Property IdUsuarioMod = new Property(16, long.class, "idUsuarioMod", false, "ID_USUARIO_MOD");
     }
 
     private DaoSession daoSession;
@@ -73,7 +74,8 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
                 "\"ID_USARIO_REG\" INTEGER NOT NULL ," + // 11: idUsarioReg
                 "\"ESTADO_SYNC\" INTEGER NOT NULL ," + // 12: estado_sync
                 "\"ID_SIBASI\" INTEGER NOT NULL ," + // 13: idSibasi
-                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 14: idCaserio
+                "\"ID_TABLET\" INTEGER NOT NULL ," + // 14: idTablet
+                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 15: idCaserio
                 "\"ID_USUARIO_MOD\" INTEGER,"+"FOREIGN KEY(\"ID_SIBASI\")" +
                 " REFERENCES CTL_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_CASERIO\")" +
                 " REFERENCES CTL_CASERIO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_USUARIO_MOD\")" +
@@ -131,8 +133,9 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
         stmt.bindLong(12, entity.getIdUsarioReg());
         stmt.bindLong(13, entity.getEstado_sync());
         stmt.bindLong(14, entity.getIdSibasi());
-        stmt.bindLong(15, entity.getIdCaserio());
-        stmt.bindLong(16, entity.getIdUsuarioMod());
+        stmt.bindLong(15, entity.getIdTablet());
+        stmt.bindLong(16, entity.getIdCaserio());
+        stmt.bindLong(17, entity.getIdUsuarioMod());
     }
 
     @Override
@@ -180,8 +183,9 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
         stmt.bindLong(12, entity.getIdUsarioReg());
         stmt.bindLong(13, entity.getEstado_sync());
         stmt.bindLong(14, entity.getIdSibasi());
-        stmt.bindLong(15, entity.getIdCaserio());
-        stmt.bindLong(16, entity.getIdUsuarioMod());
+        stmt.bindLong(15, entity.getIdTablet());
+        stmt.bindLong(16, entity.getIdCaserio());
+        stmt.bindLong(17, entity.getIdUsuarioMod());
     }
 
     @Override
@@ -212,8 +216,9 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
             cursor.getLong(offset + 11), // idUsarioReg
             cursor.getInt(offset + 12), // estado_sync
             cursor.getLong(offset + 13), // idSibasi
-            cursor.getLong(offset + 14), // idCaserio
-            cursor.getLong(offset + 15) // idUsuarioMod
+            cursor.getLong(offset + 14), // idTablet
+            cursor.getLong(offset + 15), // idCaserio
+            cursor.getLong(offset + 16) // idUsuarioMod
         );
         return entity;
     }
@@ -234,8 +239,9 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
         entity.setIdUsarioReg(cursor.getLong(offset + 11));
         entity.setEstado_sync(cursor.getInt(offset + 12));
         entity.setIdSibasi(cursor.getLong(offset + 13));
-        entity.setIdCaserio(cursor.getLong(offset + 14));
-        entity.setIdUsuarioMod(cursor.getLong(offset + 15));
+        entity.setIdTablet(cursor.getLong(offset + 14));
+        entity.setIdCaserio(cursor.getLong(offset + 15));
+        entity.setIdUsuarioMod(cursor.getLong(offset + 16));
      }
     
     @Override
@@ -272,13 +278,16 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
             builder.append(',');
             SqlUtils.appendColumns(builder, "T0", daoSession.getCtlEstablecimientoDao().getAllColumns());
             builder.append(',');
-            SqlUtils.appendColumns(builder, "T1", daoSession.getCtlCaserioDao().getAllColumns());
+            SqlUtils.appendColumns(builder, "T1", daoSession.getCtlTabletDao().getAllColumns());
             builder.append(',');
-            SqlUtils.appendColumns(builder, "T2", daoSession.getFosUserUserDao().getAllColumns());
+            SqlUtils.appendColumns(builder, "T2", daoSession.getCtlCaserioDao().getAllColumns());
+            builder.append(',');
+            SqlUtils.appendColumns(builder, "T3", daoSession.getFosUserUserDao().getAllColumns());
             builder.append(" FROM CTL_PL_CRIADERO T");
             builder.append(" LEFT JOIN CTL_ESTABLECIMIENTO T0 ON T.\"ID_SIBASI\"=T0.\"ID\"");
-            builder.append(" LEFT JOIN CTL_CASERIO T1 ON T.\"ID_CASERIO\"=T1.\"ID\"");
-            builder.append(" LEFT JOIN FOS_USER_USER T2 ON T.\"ID_USUARIO_MOD\"=T2.\"ID\"");
+            builder.append(" LEFT JOIN CTL_TABLET T1 ON T.\"ID_TABLET\"=T1.\"ID\"");
+            builder.append(" LEFT JOIN CTL_CASERIO T2 ON T.\"ID_CASERIO\"=T2.\"ID\"");
+            builder.append(" LEFT JOIN FOS_USER_USER T3 ON T.\"ID_USUARIO_MOD\"=T3.\"ID\"");
             builder.append(' ');
             selectDeep = builder.toString();
         }
@@ -294,6 +303,12 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
             entity.setCtlEstablecimiento(ctlEstablecimiento);
         }
         offset += daoSession.getCtlEstablecimientoDao().getAllColumns().length;
+
+        CtlTablet ctlTablet = loadCurrentOther(daoSession.getCtlTabletDao(), cursor, offset);
+         if(ctlTablet != null) {
+            entity.setCtlTablet(ctlTablet);
+        }
+        offset += daoSession.getCtlTabletDao().getAllColumns().length;
 
         CtlCaserio ctlCaserio = loadCurrentOther(daoSession.getCtlCaserioDao(), cursor, offset);
          if(ctlCaserio != null) {

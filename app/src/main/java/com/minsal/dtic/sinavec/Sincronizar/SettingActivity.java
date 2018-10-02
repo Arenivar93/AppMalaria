@@ -307,7 +307,9 @@ public class SettingActivity extends AppCompatActivity {
         cria.setIdCaserio(idCaserio);
         cria.setIdTipoCriadero(tipo);
         cria.setIdUsarioReg(usuarioreg);
-        cria.setIdUsuarioMod(usuarioMod);
+        if (usuarioMod >0){
+            cria.setIdUsuarioMod(usuarioMod);
+        }
         cria.setNombre(nombre);
         cria.setDescripcion(descripcion);
         if (!latitud.equals("null") && !longitud.equals("null")){
@@ -579,9 +581,11 @@ public class SettingActivity extends AppCompatActivity {
                 }
                 for (int y = 0; y < jaCriadero.length(); y++) {
                     JSONObject joCria = jaCriadero.getJSONObject(y);
-                    //int sibasi = joCria.getInt("id_sibasi");
+                    int idUsuarioMod;
+
+                    if(!joCria.isNull("id_usuario_mod")){idUsuarioMod= joCria.getInt("id_usuario_mod");}else{idUsuarioMod=0;}
                     saveCriadero(joCria.getLong("id"), joCria.getLong("id_caserio"), joCria.getInt("id_tipo_criadero"),
-                            joCria.getLong("id_usuario_reg"), joCria.getInt("id_usuario_mod"),
+                            joCria.getLong("id_usuario_reg"),idUsuarioMod,
                             joCria.getString("nombre"), joCria.getString("descripcion"),
                             joCria.getString("latitud"), joCria.getString("longitud"), joCria.getInt("longitud_criadero"),
                             joCria.getInt("ancho_criadero"), joCria.getString("fecha_hora_reg"), joCria.getString("fecha_hora_mod"),

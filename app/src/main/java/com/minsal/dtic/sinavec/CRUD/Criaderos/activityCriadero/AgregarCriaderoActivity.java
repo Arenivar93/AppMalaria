@@ -86,6 +86,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
     private DaoSession daoSession;
+    private SharedPreferences pref;
     Utilidades utilidades;
     private CtlPlCriadero criadero;
     private CtlPlCriaderoDao criaderoDao;
@@ -101,6 +102,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
         //Me permite regresar  a la actividad anterior
         ActionBar actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        pref = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -519,6 +521,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
     public void onDialogPositiveClick(DialogFragment dialog, String nombre, String descripcion, int tipo, float ancho, float largo) {
 
         try {
+            long idTablet  = pref.getLong("idTablet",0);
             Date fecha=new Date();
             String sqlQUERY = "SELECT MAX(id) FROM CTL_PL_CRIADERO";
             Cursor cursor = daoSession.getDatabase().rawQuery(sqlQUERY, null);
@@ -543,6 +546,7 @@ public class AgregarCriaderoActivity extends AppCompatActivity implements OnMapR
             criadero.setFechaHoraMod(fecha);
             criadero.setFechaHoraReg(fecha);
             criadero.setIdUsarioReg(idUser);
+            criadero.setIdTablet(idTablet);
             criadero.setFosUserUser(usuario);
             criadero.setCtlEstablecimiento(usuario.getCtlEstablecimiento());
             criadero.setCtlCaserio(caserio);

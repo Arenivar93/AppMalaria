@@ -35,6 +35,7 @@ public class CtlPlCriadero {
     private long idUsarioReg;
     private int estado_sync;
     private long idSibasi;
+    private long idTablet;
     private long idCaserio;
     private long idUsuarioMod;
 
@@ -51,6 +52,12 @@ public class CtlPlCriadero {
 
     @Generated
     private transient Long ctlEstablecimiento__resolvedKey;
+
+    @ToOne(joinProperty = "idTablet")
+    private CtlTablet ctlTablet;
+
+    @Generated
+    private transient Long ctlTablet__resolvedKey;
 
     @ToOne(joinProperty = "idCaserio")
     private CtlCaserio ctlCaserio;
@@ -76,7 +83,7 @@ public class CtlPlCriadero {
     }
 
     @Generated
-    public CtlPlCriadero(Long id, Integer idTipoCriadero, Integer idEstadoCriadero, String nombre, String descripcion, String latitud, String longitud, float longitudCriadero, float anchoCriadero, java.util.Date fechaHoraReg, java.util.Date fechaHoraMod, long idUsarioReg, int estado_sync, long idSibasi, long idCaserio, long idUsuarioMod) {
+    public CtlPlCriadero(Long id, Integer idTipoCriadero, Integer idEstadoCriadero, String nombre, String descripcion, String latitud, String longitud, float longitudCriadero, float anchoCriadero, java.util.Date fechaHoraReg, java.util.Date fechaHoraMod, long idUsarioReg, int estado_sync, long idSibasi, long idTablet, long idCaserio, long idUsuarioMod) {
         this.id = id;
         this.idTipoCriadero = idTipoCriadero;
         this.idEstadoCriadero = idEstadoCriadero;
@@ -91,6 +98,7 @@ public class CtlPlCriadero {
         this.idUsarioReg = idUsarioReg;
         this.estado_sync = estado_sync;
         this.idSibasi = idSibasi;
+        this.idTablet = idTablet;
         this.idCaserio = idCaserio;
         this.idUsuarioMod = idUsuarioMod;
     }
@@ -218,6 +226,14 @@ public class CtlPlCriadero {
         this.idSibasi = idSibasi;
     }
 
+    public long getIdTablet() {
+        return idTablet;
+    }
+
+    public void setIdTablet(long idTablet) {
+        this.idTablet = idTablet;
+    }
+
     public long getIdCaserio() {
         return idCaserio;
     }
@@ -259,6 +275,34 @@ public class CtlPlCriadero {
             this.ctlEstablecimiento = ctlEstablecimiento;
             idSibasi = ctlEstablecimiento.getId();
             ctlEstablecimiento__resolvedKey = idSibasi;
+        }
+    }
+
+    /** To-one relationship, resolved on first access. */
+    @Generated
+    public CtlTablet getCtlTablet() {
+        long __key = this.idTablet;
+        if (ctlTablet__resolvedKey == null || !ctlTablet__resolvedKey.equals(__key)) {
+            __throwIfDetached();
+            CtlTabletDao targetDao = daoSession.getCtlTabletDao();
+            CtlTablet ctlTabletNew = targetDao.load(__key);
+            synchronized (this) {
+                ctlTablet = ctlTabletNew;
+            	ctlTablet__resolvedKey = __key;
+            }
+        }
+        return ctlTablet;
+    }
+
+    @Generated
+    public void setCtlTablet(CtlTablet ctlTablet) {
+        if (ctlTablet == null) {
+            throw new DaoException("To-one property 'idTablet' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.ctlTablet = ctlTablet;
+            idTablet = ctlTablet.getId();
+            ctlTablet__resolvedKey = idTablet;
         }
     }
 

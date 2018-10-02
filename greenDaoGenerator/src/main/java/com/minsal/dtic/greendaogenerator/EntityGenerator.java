@@ -195,9 +195,11 @@ public class EntityGenerator {
         ctlPlCriadero.addLongProperty("idUsarioReg").notNull();
         ctlPlCriadero.addIntProperty("estado_sync").notNull();
         Property idSibasiCtlPlCriadero=ctlPlCriadero.addLongProperty("idSibasi").notNull().getProperty();
+        Property idTabletCtlPlCriadero=ctlPlCriadero.addLongProperty("idTablet").notNull().getProperty();
         Property idCaserioCtlPlCriadero=ctlPlCriadero.addLongProperty("idCaserio").notNull().getProperty();
         Property idUsuarioMod=ctlPlCriadero.addLongProperty("idUsuarioMod").notNull().getProperty();
         ctlPlCriadero.addToOne(ctlEstablecimiento,idSibasiCtlPlCriadero);
+        ctlPlCriadero.addToOne(ctlTablet,idTabletCtlPlCriadero);
         ctlPlCriadero.addToOne(ctlCaserio,idCaserioCtlPlCriadero);
         ctlPlCriadero.addToOne(fosUserUser,idUsuarioMod);
 
