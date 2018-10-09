@@ -24,17 +24,21 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlTablet;
+import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoMaster;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
+import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.utilidades.MetodosGlobales;
 
 import org.greenrobot.greendao.database.Database;
+import org.greenrobot.greendao.query.QueryBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,13 +60,13 @@ import okhttp3.RequestBody;
 public class SubirDatos extends AppCompatActivity {
     ImageView subirDatos, bajarDatos;
     private DaoSession daoSession;
-    TextView tvja,tvPesquisa,tvCriaderos;
+    TextView tvCapturas,tvPesquisa,tvCriaderos, tvCriaderosUpdate,tvSeguimientos;
     private SharedPreferences pref;
     String username, password;
     String token;
     long idTablet;
     long idSibasi;
-    String idUltimoReg;
+    int idUltimoReg;
 
 
     @Override
@@ -72,9 +76,12 @@ public class SubirDatos extends AppCompatActivity {
         daoSession = ((MyMalaria) getApplicationContext()).getDaoSession();
         subirDatos = (ImageView) findViewById(R.id.subirDatos);
         bajarDatos = (ImageView) findViewById(R.id.imBajar);
-        tvja = (TextView) findViewById(R.id.tvja);
+        tvCapturas = (TextView) findViewById(R.id.tvCapturas);
         tvPesquisa = (TextView) findViewById(R.id.tvPesquisa);
         tvCriaderos = (TextView) findViewById(R.id.tvCriaderos);
+        tvSeguimientos = (TextView) findViewById(R.id.tvSeguimientos);
+        tvCriaderosUpdate = (TextView) findViewById(R.id.tvCriaderosUpdate);
+
         pref = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         username = pref.getString("userRem", "");
         password = pref.getString("passRem", "");
@@ -86,7 +93,7 @@ public class SubirDatos extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     float carga =calculoBateria(getApplicationContext());
-                    if (carga<0.50){
+                    if (carga<0.10){ //50% solo tiene 10 para probarla
                         Toast.makeText(getApplicationContext(),"El estado de carga es menor al 50%, Por favor conecte el dispositivo",Toast.LENGTH_LONG).show();
                     }else {
                         checkinServer("subir");
@@ -96,6 +103,7 @@ public class SubirDatos extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+
             }
         });
         bajarDatos.setOnClickListener(new View.OnClickListener() {
@@ -103,12 +111,11 @@ public class SubirDatos extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     float carga =calculoBateria(getApplicationContext());
-                    if (carga<0.50){
+                    if (carga<0.10){
                         Toast.makeText(getApplicationContext(),"El estado de carga es menor al 50%, Por favor conecte el dispositivo",Toast.LENGTH_LONG).show();
                     }else {
                         checkinServerSubir();
                     }
-
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -168,7 +175,7 @@ public class SubirDatos extends AppCompatActivity {
             joCriaderoUpdate.put("longitud",c.getLongitud());
             joCriaderoUpdate.put("latitud",c.getLatitud());
             joCriaderoUpdate.put("idUsuarioMod",c.getIdUsuarioMod());
-            joCriaderoUpdate.put("idTablet",c.getIdTablet());
+            joCriaderoUpdate.put("idTablet",idTablet);
             joCriaderoUpdate.put("fechaHoraMod",date);
             jaUpdate.put(joCriaderoUpdate);
         }
@@ -247,8 +254,7 @@ public class SubirDatos extends AppCompatActivity {
                 PlCapturaAnophelesDao capDao = daoSession.getPlCapturaAnophelesDao();
                 PlCapturaAnopheles capUpdate = capDao.loadByRowId(Long.parseLong(id));
                 capUpdate.setEstado_sync(0);
-                capDao.update(capUpdate);
-            }
+                capDao.update(capUpdate);            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -262,6 +268,7 @@ public class SubirDatos extends AppCompatActivity {
                         String id = String.valueOf(jaPesquisasIserted.get(i));
                         PlPesquisaLarvariaDao pesDao = daoSession.getPlPesquisaLarvariaDao();
                         PlPesquisaLarvaria pesUpdate = pesDao.loadByRowId(Long.parseLong(id));
+                        pesUpdate.setEstado_sync(0);
                         pesDao.update(pesUpdate);
                     }
                 }
@@ -296,6 +303,25 @@ public class SubirDatos extends AppCompatActivity {
         }
     }
 
+    public void updateCriaderosUpdate(JSONObject jsonObject){
+        try {
+            JSONArray jaCriaderosUpdate = jsonObject.getJSONArray("ids");
+            int total = jaCriaderosUpdate.length();
+            if (total>0){
+                for (int i = 0; i < jaCriaderosUpdate.length(); i++) {
+                    String id = String.valueOf(jaCriaderosUpdate.get(i));
+                    CtlPlCriaderoDao uptCriaDao = daoSession.getCtlPlCriaderoDao();
+                    CtlPlCriadero criaUpt = uptCriaDao.loadByRowId(Long.parseLong(id));
+                    criaUpt.setEstado_sync(0);
+                    uptCriaDao.update(criaUpt);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /**
      *peticion de token al servidor,si la respuesta es corresta iniciara los metodos que suben los datos
      */
@@ -312,7 +338,7 @@ public class SubirDatos extends AppCompatActivity {
             int countCridero = getInsetCriaderos().length();
             if (countCapturas>0 || countPesquisas>0 || countCriaderosUpdate>0 || countCridero>0){
                 tvPesquisa.setText(String.format("Pesquisas lista para sincronizar: %d", countPesquisas));
-                tvja.setText(String.format("Capturas lista para sincronizar: %d", countCapturas));
+                tvCapturas.setText(String.format("Capturas lista para sincronizar: %d", countCapturas));
                 String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -321,12 +347,12 @@ public class SubirDatos extends AppCompatActivity {
                             public void onResponse(String response) {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
-                                    token = jsonObject.getString("token");
+                                 String token1 = jsonObject.getString("token");
                                     if (accion.equals("subir")){
-                                        sendCapturas(token);
-                                        sendDataPesquisa(token);
-                                        sendCriaderosUpdate(token);
-                                        sendCriaderos(token);
+                                        sendCapturas(token1);
+                                        sendDataPesquisa(token1);
+                                        sendCriaderosUpdate(token1);
+                                        sendCriaderos(token1);
                                     }else{
                                         Toast.makeText(getApplicationContext(), "autorizado para bajar", Toast.LENGTH_LONG).show();
                                     }
@@ -407,6 +433,9 @@ public class SubirDatos extends AppCompatActivity {
 
 
 
+
+
+
     /**
      * se inicia prubas conj libreira oktthp para subir datos
      **/
@@ -433,23 +462,21 @@ public class SubirDatos extends AppCompatActivity {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                   tvja.setText("Error:"+String.valueOf(e));
+                    tvCapturas.setText("Error:"+String.valueOf(e));
                 }
                 @Override
                 public void onResponse(Call call, final okhttp3.Response response) throws IOException {
                     if (response.isSuccessful()) {
-
-                        final String res = response.body().string();
+                       final String respuestaCapturas = response.body().string();
                         SubirDatos.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    JSONArray respuesta = new JSONArray(res);
+                                    JSONArray respuesta = new JSONArray(respuestaCapturas);
                                     JSONObject jores = respuesta.getJSONObject(1);
                                     updateLocalCapturas(jores);
-                                    tvja.setText("Capturas Anopheles ingresadas con éxito");
+                                    tvCapturas.setText("Capturas Anopheles ingresadas con éxito");
 
-                                   // Log.i("***okhttr succ**", String.valueOf(jores.getJSONArray("ids")));
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -483,13 +510,13 @@ public class SubirDatos extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, okhttp3.Response response) throws IOException {
                     if (response.isSuccessful()) {
-                        final String res2 = response.body().string();
+                        final String respuestaPesquiza = response.body().string();
                         SubirDatos.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 JSONArray respuesta = null;
                                 try {
-                                    respuesta = new JSONArray(res2);
+                                    respuesta = new JSONArray(respuestaPesquiza);
                                     JSONObject jores = respuesta.getJSONObject(1);
                                     updateLocalPesquisas(jores);
                                     tvPesquisa.setText("Pesquisas Ingresadas con Exito");
@@ -519,18 +546,18 @@ public class SubirDatos extends AppCompatActivity {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    tvja.setText("Error:"+String.valueOf(e));
+                    tvCriaderos.setText("Error:"+String.valueOf(e));
                 }
                 @Override
                 public void onResponse(Call call, final okhttp3.Response response) throws IOException {
                     if (response.isSuccessful()) {
 
-                        final String res3 = response.body().string();
+                        final String resCriaderos = response.body().string();
                         SubirDatos.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    JSONArray respuesta = new JSONArray(res3);
+                                    JSONArray respuesta = new JSONArray(resCriaderos);
                                     JSONObject jores = respuesta.getJSONObject(1);
                                     updateLocalcriaderos(jores);
 
@@ -551,7 +578,6 @@ public class SubirDatos extends AppCompatActivity {
 
     private void sendCriaderosUpdate(String token) throws JSONException {
         JSONArray json = getUpdateCriaderos();
-        int cont = json.length();
         String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
@@ -568,15 +594,15 @@ public class SubirDatos extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, okhttp3.Response response) throws IOException {
                     if (response.isSuccessful()) {
-                        final String res2 = response.body().string();
+                        final String respuestaUpdateCri = response.body().string();
                         SubirDatos.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 JSONArray respuesta = null;
                                 try {
-                                    respuesta = new JSONArray(res2);
+                                    respuesta = new JSONArray(respuestaUpdateCri);
                                     JSONObject jores = respuesta.getJSONObject(1);
-
+                                    updateCriaderosUpdate(jores);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -600,8 +626,9 @@ public class SubirDatos extends AppCompatActivity {
 
     }
     private void bajarBitacora(String tkn){
+        idUltimoReg = ultimoRegistroBajado();
         String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/" +
-                "api/catalogos?accion=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg="+idUltimoReg;
+                "api/bitacora?accion=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg="+idUltimoReg;
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .header("Authorization", "Bearer " + tkn)
@@ -615,14 +642,37 @@ public class SubirDatos extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, okhttp3.Response response) throws IOException {
                     if (response.isSuccessful()) {
-                        final String respuesta = response.body().string();
+                        final String respuestaBajar = response.body().string();
                         SubirDatos.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    JSONArray jaRespuesta = new JSONArray(respuesta);
-                                    Log.i("******",jaRespuesta.toString());
+                                    bajarDatos.setEnabled(false);
+                                    int veces=0;
+                                    JSONArray jaRespuesta = new JSONArray(respuestaBajar);
+                                    JSONArray jaUpdates = jaRespuesta.getJSONArray(1);
+                                    if (jaUpdates.length()>0) {
+                                        for (int i = 0; i < jaUpdates.length(); i++) {
+                                            JSONObject obj = jaUpdates.getJSONObject(i);
+                                            String accion = obj.getString("accion");
+                                            if (accion.equals("insert")){
+                                                JSONObject sentencia = obj.getJSONObject("sentencia");
+                                                int idBajado = obj.getInt("idBitacora");
+                                                saveCambiosCriadero(sentencia,idBajado);
+                                            }else{
+                                                JSONArray sentencia = obj.getJSONArray("sentencia");
+                                                saveCambiosUpdate(sentencia);
+                                            }
 
+                                           veces++;
+                                        }
+                                        Toast.makeText(getApplicationContext(),"Lo cambios se bajaron con exito",Toast.LENGTH_LONG).show();
+                                    }
+                                        else{
+                                            Log.i("******","no hay cambnios");
+                                        Toast.makeText(getApplicationContext(),"Nohay Cambios pendientes para bajar",Toast.LENGTH_LONG).show();
+                                        }
+                                    Log.i("******",String.valueOf(veces));
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -636,9 +686,73 @@ public class SubirDatos extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
-    } public int ultimoRegistroBajado(){
+    }
+    public int ultimoRegistroBajado(){
         int registro=0;
+
+            List<CtlTablet> ids = null;
+            CtlTabletDao tbDao = daoSession.getCtlTabletDao();
+            QueryBuilder<CtlTablet> qb = tbDao.queryBuilder();
+            qb.where(CtlTabletDao.Properties.Id.isNotNull()).orderDesc().limit(1);
+            ids = qb.list();
+            for (CtlTablet f : ids) {
+                if (f.getUltimoRegBajado()!= null){
+                    registro = f.getUltimoRegBajado();
+                }
+        }
         return  registro;
+    }
+    public void saveCambiosCriadero(JSONObject jaCambios,int idbajado){
+        try {
+            long id = jaCambios.getLong("idGenerado");
+            long idCaserio = jaCambios.getLong("idCaserio");
+            int tipo = jaCambios.getInt("idTipoCriadero");
+            long usuarioreg = jaCambios.getLong("idUsuarioReg");
+            String nombre = jaCambios.getString("nombre");
+            String descripcion = jaCambios.getString("descripcion");
+            String latitud = jaCambios.getString("latitud");
+            String longitud = jaCambios.getString("longitud");
+            int log_cria = jaCambios.getInt("longitudCriadero");
+            int ancho = jaCambios.getInt("anchoCriadero");
+            int estado = jaCambios.getInt("idEstadoCriadero");
+            int sibasi = jaCambios.getInt("idSibasi");
+            CtlPlCriaderoDao criaDao = daoSession.getCtlPlCriaderoDao();
+            CtlPlCriadero cria = new CtlPlCriadero();
+            cria.setId(id);
+            cria.setIdCaserio(idCaserio);
+            cria.setIdTipoCriadero(tipo);
+            cria.setIdUsarioReg(usuarioreg);
+            cria.setNombre(nombre);
+            cria.setDescripcion(descripcion);
+            if (!latitud.equals("null") && !longitud.equals("null")){
+                cria.setLatitud(latitud);
+                cria.setLongitud(longitud);
+            }
+            cria.setLongitudCriadero(log_cria);
+            cria.setAnchoCriadero(ancho);
+            cria.setIdSibasi(sibasi);
+            cria.setIdEstadoCriadero(estado);
+            cria.setEstado_sync(0);
+            criaDao.insert(cria);
+            CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+            CtlTablet  tab = tabDao.loadByRowId(idTablet);
+            tab.setUltimoRegBajado(idbajado);
+            tabDao.update(tab);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    /***este metodo guarda las actualizaciones que se le hacen a un criadero en otras tablets **/
+    public void saveCambiosUpdate(JSONArray jsonArray){
+        try {
+        for (int i = 0; i <jsonArray.length() ; i++) {
+                String id = jsonArray.getString(i);
+                Log.i("************",id);
+        }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

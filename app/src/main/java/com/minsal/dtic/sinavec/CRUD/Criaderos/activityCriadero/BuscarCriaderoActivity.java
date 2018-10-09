@@ -322,7 +322,7 @@ public class BuscarCriaderoActivity extends AppCompatActivity{
                                 TableRow.LayoutParams.WRAP_CONTENT));
                         tv.setPadding(15, 5, 10, 5);
                     }else{
-                        tv.setLayoutParams(new TableRow.LayoutParams(400,
+                        tv.setLayoutParams(new TableRow.LayoutParams(300, // antes tenia 400 se cambio por la tablet sansung*
                                 TableRow.LayoutParams.WRAP_CONTENT));
                         tv.setPadding(15, 5, 10, 5);
                     }

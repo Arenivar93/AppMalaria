@@ -78,7 +78,7 @@ public class CtlPlCriaderoDao extends AbstractDao<CtlPlCriadero, Long> {
                 "\"ID_CASERIO\" INTEGER NOT NULL ," + // 15: idCaserio
                 "\"ID_USUARIO_MOD\" INTEGER,"+"FOREIGN KEY(\"ID_SIBASI\")" +
                 " REFERENCES CTL_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_CASERIO\")" +
-                " REFERENCES CTL_CASERIO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_USUARIO_MOD\")" +
+                " REFERENCES CTL_CASERIO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_USARIO_REG\")" +
                 " REFERENCES FOS_USER_USER(\"ID\") ON DELETE CASCADE );"); // 14: idUsuarioMod
     }
 

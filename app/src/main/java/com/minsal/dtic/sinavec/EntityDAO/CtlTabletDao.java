@@ -28,7 +28,8 @@ public class CtlTabletDao extends AbstractDao<CtlTablet, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "ID");
         public final static Property Codigo = new Property(1, String.class, "codigo", false, "CODIGO");
         public final static Property Serie = new Property(2, String.class, "serie", false, "SERIE");
-        public final static Property IdSibasi = new Property(3, long.class, "idSibasi", false, "ID_SIBASI");
+        public final static Property UltimoRegBajado = new Property(3, Integer.class, "ultimoRegBajado", false, "ULTIMO_REG_BAJADO");
+        public final static Property IdSibasi = new Property(4, long.class, "idSibasi", false, "ID_SIBASI");
     }
 
     private DaoSession daoSession;
@@ -50,8 +51,8 @@ public class CtlTabletDao extends AbstractDao<CtlTablet, Long> {
                 "\"ID\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"CODIGO\" TEXT," + // 1: codigo
                 "\"SERIE\" TEXT," + // 2: serie
-                "\"ID_SIBASI\" INTEGER NOT NULL ,"+"FOREIGN KEY(\"ID_SIBASI\")" +
-                " REFERENCES CTL_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE );"); // 3: idSibasi
+                "\"ULTIMO_REG_BAJADO\" INTEGER," + // 3: ultimoRegBajado
+                "\"ID_SIBASI\" INTEGER NOT NULL );"); // 4: idSibasi
     }
 
     /** Drops the underlying database table. */
@@ -78,7 +79,12 @@ public class CtlTabletDao extends AbstractDao<CtlTablet, Long> {
         if (serie != null) {
             stmt.bindString(3, serie);
         }
-        stmt.bindLong(4, entity.getIdSibasi());
+ 
+        Integer ultimoRegBajado = entity.getUltimoRegBajado();
+        if (ultimoRegBajado != null) {
+            stmt.bindLong(4, ultimoRegBajado);
+        }
+        stmt.bindLong(5, entity.getIdSibasi());
     }
 
     @Override
@@ -99,7 +105,12 @@ public class CtlTabletDao extends AbstractDao<CtlTablet, Long> {
         if (serie != null) {
             stmt.bindString(3, serie);
         }
-        stmt.bindLong(4, entity.getIdSibasi());
+ 
+        Integer ultimoRegBajado = entity.getUltimoRegBajado();
+        if (ultimoRegBajado != null) {
+            stmt.bindLong(4, ultimoRegBajado);
+        }
+        stmt.bindLong(5, entity.getIdSibasi());
     }
 
     @Override
@@ -119,7 +130,8 @@ public class CtlTabletDao extends AbstractDao<CtlTablet, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // codigo
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // serie
-            cursor.getLong(offset + 3) // idSibasi
+            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // ultimoRegBajado
+            cursor.getLong(offset + 4) // idSibasi
         );
         return entity;
     }
@@ -129,7 +141,8 @@ public class CtlTabletDao extends AbstractDao<CtlTablet, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setCodigo(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setSerie(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setIdSibasi(cursor.getLong(offset + 3));
+        entity.setUltimoRegBajado(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
+        entity.setIdSibasi(cursor.getLong(offset + 4));
      }
     
     @Override

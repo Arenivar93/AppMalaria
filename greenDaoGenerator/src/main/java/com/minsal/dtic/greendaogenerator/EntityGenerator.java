@@ -166,6 +166,7 @@ public class EntityGenerator {
         ctlTablet.addLongProperty("id").primaryKey();
         ctlTablet.addStringProperty("codigo");
         ctlTablet.addStringProperty("serie");
+        ctlTablet.addIntProperty("ultimoRegBajado");
         Property idSibasiCtlTablet=ctlTablet.addLongProperty("idSibasi").notNull().getProperty();
         ctlTablet.addToOne(ctlEstablecimiento,idSibasiCtlTablet);
 
@@ -318,7 +319,7 @@ public class EntityGenerator {
         }
     }
 
-    private static void addTables(final Schema schema) {
+    /*private static void addTables(final Schema schema) {
         addUserEntities(schema);
     }
 
@@ -331,7 +332,9 @@ public class EntityGenerator {
         user.addStringProperty("first_name");
         user.addStringProperty("email");
         return user;
-    }
+    }*/
 
 }
+
+
 

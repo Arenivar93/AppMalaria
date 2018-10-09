@@ -3,6 +3,7 @@ package com.minsal.dtic.sinavec.Sincronizar;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -75,27 +77,38 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class SettingActivity extends AppCompatActivity {
     Button btnSetting;
     private DaoSession daoSession;
     ProgressBar pbSetting;
+    private SharedPreferences pref;
+    String username, password;
     public static final int GET_IMEI_CODE =100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        pref = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         pbSetting = (ProgressBar) findViewById(R.id.pbSetting);
         btnSetting = (Button) findViewById(R.id.btnConfigurar);
         daoSession = ((MyMalaria) getApplication()).getDaoSession();
+        username = "nirodriguez"; // no se pueden usar las sharedpreferences ya que es la primera vez que se utiliza la tabelt
+        password = "Fer$1304";
 
         //este evento debe ocurrir solo cuando se instala la aplicacioj por primera vez o por si se borra la base
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
-                usarVolley();
+                try {
+                    checkinServer();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -307,7 +320,7 @@ public class SettingActivity extends AppCompatActivity {
         cria.setIdCaserio(idCaserio);
         cria.setIdTipoCriadero(tipo);
         cria.setIdUsarioReg(usuarioreg);
-        if (usuarioMod >0){
+        if (usuarioMod > 0){
             cria.setIdUsuarioMod(usuarioMod);
         }
         cria.setNombre(nombre);
@@ -385,11 +398,60 @@ public class SettingActivity extends AppCompatActivity {
         cla.setIdEstablecimiento(idEstablecimiento);
         claDao.insert(cla);
     }
+    /**
+     *peticion de token al servidor,si la respuesta es corresta iniciara los metodos que suben los datos
+     */
+    public void checkinServer() throws JSONException {
+        boolean red = MetodosGlobales.compruebaConexion(getApplicationContext());
+        if (!red) {
+            Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
+
+        } else {
+            //antes de hacer una peticion vamos a comprobar que hay registros para enviar
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
+                RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    String token1 = jsonObject.getString("token");
+                                    usarVolley(token1);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(getApplicationContext(), "Error!!Por favor contacta al administrador" + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "Error!Por favor contacta al administrador" + String.valueOf(error), Toast.LENGTH_LONG).show();
+
+                    }
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> parameters = new HashMap<String, String>();
+                        parameters.put("Content-Type", "application/json");
+                        parameters.put("_username", username);
+                        parameters.put("_password", password);
+                        return parameters;
+                    }
+
+                };
+                cola.add(stringRequest);
+
+        }
+    }
 
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void usarVolley() {
+    public void usarVolley(final String tkn) {
         boolean red = MetodosGlobales.compruebaConexion(getApplicationContext());
         if (!red) {
             Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
@@ -397,7 +459,7 @@ public class SettingActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "Solicitando Datos al Servidor, espere...", Toast.LENGTH_SHORT).show();
            String imei = getIMEINumber();
-            String url = "http://10.168.10.80/tablets/catalogos.php?imei=" + imei;
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/catalogos?imei="+imei;
             RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
@@ -406,15 +468,11 @@ public class SettingActivity extends AppCompatActivity {
 
                             try {
                                 JSONObject jsonObject = new JSONObject(response);
-
                                 saveDowloadedCat e = new saveDowloadedCat();
-
                                 e.execute(jsonObject);
-
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 Toast.makeText(getApplicationContext(),"Error!!Por favor contacta al administrador"+e.getMessage(),Toast.LENGTH_LONG).show();
-
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -423,13 +481,19 @@ public class SettingActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Error!Por favor contacta al administrador"+String.valueOf(error),Toast.LENGTH_LONG).show();
 
                 }
-            });
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    // Basic Authentication
+                    //String auth = "Basic " + Base64.encodeToString(CONSUMER_KEY_AND_SECRET.getBytes(), Base64.NO_WRAP);
 
+                    headers.put("Authorization", "Bearer " + tkn);
+                    return headers;
+                }
+            };
             cola.add(stringRequest);
-
         }
-
-
     }
 
 
@@ -478,7 +542,6 @@ public class SettingActivity extends AppCompatActivity {
                     saveCoutry(joPais.getLong("id"), joPais.getString("nombre"), joPais.getInt("activo"));
                     num++;
                     publishProgress(num);
-
                 }
                 for (int j = 0; j < jaProcedencia.length(); j++) {
                     JSONObject joProcedencia = jaProcedencia.getJSONObject(j);

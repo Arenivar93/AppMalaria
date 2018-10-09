@@ -20,6 +20,7 @@ public class CtlTablet {
     private Long id;
     private String codigo;
     private String serie;
+    private Integer ultimoRegBajado;
     private long idSibasi;
 
     /** Used to resolve relations */
@@ -48,10 +49,11 @@ public class CtlTablet {
     }
 
     @Generated
-    public CtlTablet(Long id, String codigo, String serie, long idSibasi) {
+    public CtlTablet(Long id, String codigo, String serie, Integer ultimoRegBajado, long idSibasi) {
         this.id = id;
         this.codigo = codigo;
         this.serie = serie;
+        this.ultimoRegBajado = ultimoRegBajado;
         this.idSibasi = idSibasi;
     }
 
@@ -84,6 +86,14 @@ public class CtlTablet {
 
     public void setSerie(String serie) {
         this.serie = serie;
+    }
+
+    public Integer getUltimoRegBajado() {
+        return ultimoRegBajado;
+    }
+
+    public void setUltimoRegBajado(Integer ultimoRegBajado) {
+        this.ultimoRegBajado = ultimoRegBajado;
     }
 
     public long getIdSibasi() {
