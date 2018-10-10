@@ -84,6 +84,7 @@ import java.util.Map;
 public class SettingActivity extends AppCompatActivity {
     Button btnSetting;
     private DaoSession daoSession;
+    private static SettingActivity instance;
     ProgressBar pbSetting;
     private SharedPreferences pref;
     String username, password;
@@ -98,6 +99,7 @@ public class SettingActivity extends AppCompatActivity {
         daoSession = ((MyMalaria) getApplication()).getDaoSession();
         username = "nirodriguez"; // no se pueden usar las sharedpreferences ya que es la primera vez que se utiliza la tabelt
         password = "Fer$1304";
+        instance = this;
 
         //este evento debe ocurrir solo cuando se instala la aplicacioj por primera vez o por si se borra la base
         btnSetting.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +172,7 @@ public class SettingActivity extends AppCompatActivity {
         return IMEINumber;
     }*/
 
-    public void saveFosUserUser(long id, String firstname, String username, String lastname,
+    public  void saveFosUserUser(long id, String firstname, String username, String lastname,
                                 String password, String salt, int tipoEmpleado, int idSibasi) {
 
         FosUserUserDao fosUserUser = daoSession.getFosUserUserDao();
@@ -475,6 +477,7 @@ public class SettingActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),"Error!!Por favor contacta al administrador"+e.getMessage(),Toast.LENGTH_LONG).show();
                             }
                         }
+
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
@@ -728,8 +731,9 @@ public class SettingActivity extends AppCompatActivity {
 
             Toast.makeText(getBaseContext(), "La Tarea ha sido cancelada por el usuario", Toast.LENGTH_SHORT).show();
         }
-
-
+    }
+    public static SettingActivity getInstance() {
+        return instance;
     }
 
 

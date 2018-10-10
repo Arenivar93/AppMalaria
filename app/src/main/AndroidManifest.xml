@@ -158,7 +158,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Sincronizar.SubirDatos" />
+        <activity android:name=".Sincronizar.SubirDatos"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape"
+            >
+
+        </activity>
         <activity
             android:name=".CRUD.pesquisaLarvaria.DetalleSemanaActivity"
             android:parentActivityName=".CRUD.pesquisaLarvaria.ListPesquisaActivity">

@@ -35,6 +35,7 @@ import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
 import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
+import com.minsal.dtic.sinavec.adapters.AdapterCapturas;
 import com.minsal.dtic.sinavec.utilidades.MetodosGlobales;
 
 import org.greenrobot.greendao.database.Database;
@@ -44,8 +45,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,12 +61,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 
 public class SubirDatos extends AppCompatActivity {
-    ImageView subirDatos, bajarDatos;
     private DaoSession daoSession;
-    TextView tvCapturas,tvPesquisa,tvCriaderos, tvCriaderosUpdate,tvSeguimientos;
     private SharedPreferences pref;
+    ImageView subirDatos, bajarDatos;
+    TextView tvCapturas,tvPesquisa,tvCriaderos, tvCriaderosUpdate,tvSeguimientos;
     String username, password;
-    String token;
     long idTablet;
     long idSibasi;
     int idUltimoReg;
@@ -92,14 +94,14 @@ public class SubirDatos extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    float carga =calculoBateria(getApplicationContext());
-                    if (carga<0.10){ //50% solo tiene 10 para probarla
-                        Toast.makeText(getApplicationContext(),"El estado de carga es menor al 50%, Por favor conecte el dispositivo",Toast.LENGTH_LONG).show();
-                    }else {
+                    float carga = calculoBateria(getApplicationContext());
+                    if (carga < 0.10) { //50% solo tiene 10 para probarla
+                        Toast.makeText(getApplicationContext(), "El estado de carga es menor al 50%, Por favor conecte el dispositivo", Toast.LENGTH_LONG).show();
+                    } else {
                         checkinServer("subir");
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -114,22 +116,17 @@ public class SubirDatos extends AppCompatActivity {
                     if (carga<0.10){
                         Toast.makeText(getApplicationContext(),"El estado de carga es menor al 50%, Por favor conecte el dispositivo",Toast.LENGTH_LONG).show();
                     }else {
-                        checkinServerSubir();
+                        checkinServerBajar();
                     }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-
-
-
             }
         });
     }
     /**
      *Metodo para obtener los datos que se subiran al servidor
      */
-
-
     public JSONArray getInsertCapturas() throws JSONException {
         JSONArray joTotal = new JSONArray();
         List<PlCapturaAnopheles> capturas;
@@ -163,7 +160,7 @@ public class SubirDatos extends AppCompatActivity {
     }
     public JSONArray getUpdateCriaderos() throws JSONException {
         JSONArray jaUpdate = new JSONArray();
-        List<CtlPlCriadero> criaderos = new ArrayList<CtlPlCriadero>();
+        List<CtlPlCriadero> criaderos;
         CtlPlCriaderoDao criaderoDao = daoSession.getCtlPlCriaderoDao();
         criaderos = criaderoDao.queryBuilder().where(CtlPlCriaderoDao.Properties.Estado_sync.eq(2)).list();
         SimpleDateFormat dateFormat;
@@ -319,7 +316,6 @@ public class SubirDatos extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -329,7 +325,6 @@ public class SubirDatos extends AppCompatActivity {
         boolean red = MetodosGlobales.compruebaConexion(getApplicationContext());
         if (!red) {
             Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
-
         } else {
             //antes de hacer una peticion vamos a comprobar que hay registros para enviar
             int countCapturas = getInsertCapturas().length();
@@ -356,7 +351,6 @@ public class SubirDatos extends AppCompatActivity {
                                     }else{
                                         Toast.makeText(getApplicationContext(), "autorizado para bajar", Toast.LENGTH_LONG).show();
                                     }
-
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -387,7 +381,7 @@ public class SubirDatos extends AppCompatActivity {
             }
         }
     }
-    public void checkinServerSubir() throws JSONException {
+    public void checkinServerBajar() throws JSONException {
         boolean red = MetodosGlobales.compruebaConexion(getApplicationContext());
         if (!red) {
             Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
@@ -424,23 +418,14 @@ public class SubirDatos extends AppCompatActivity {
                         parameters.put("_password", password);
                         return parameters;
                     }
-
                 };
                 cola.add(stringRequest);
 
         }
     }
-
-
-
-
-
-
     /**
      * se inicia prubas conj libreira oktthp para subir datos
      **/
-
-
     OkHttpClient client = new OkHttpClient().newBuilder()
             .connectTimeout(30,TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
@@ -575,7 +560,6 @@ public class SubirDatos extends AppCompatActivity {
         }
     }
 
-
     private void sendCriaderosUpdate(String token) throws JSONException {
         JSONArray json = getUpdateCriaderos();
         String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
@@ -648,32 +632,8 @@ public class SubirDatos extends AppCompatActivity {
                             public void run() {
                                 try {
                                     bajarDatos.setEnabled(false);
-                                    int veces=0;
-                                    JSONArray jaRespuesta = new JSONArray(respuestaBajar);
-                                    JSONArray jaUpdates = jaRespuesta.getJSONArray(1);
-                                    if (jaUpdates.length()>0) {
-                                        for (int i = 0; i < jaUpdates.length(); i++) {
-                                            JSONObject obj = jaUpdates.getJSONObject(i);
-                                            String accion = obj.getString("accion");
-                                            if (accion.equals("insert")){
-                                                JSONObject sentencia = obj.getJSONObject("sentencia");
-                                                int idBajado = obj.getInt("idBitacora");
-                                                saveCambiosCriadero(sentencia,idBajado);
-                                            }else{
-                                                JSONArray sentencia = obj.getJSONArray("sentencia");
-                                                saveCambiosUpdate(sentencia);
-                                            }
-
-                                           veces++;
-                                        }
-                                        Toast.makeText(getApplicationContext(),"Lo cambios se bajaron con exito",Toast.LENGTH_LONG).show();
-                                    }
-                                        else{
-                                            Log.i("******","no hay cambnios");
-                                        Toast.makeText(getApplicationContext(),"Nohay Cambios pendientes para bajar",Toast.LENGTH_LONG).show();
-                                        }
-                                    Log.i("******",String.valueOf(veces));
-
+                                    JSONObject  jsTotal = new JSONObject(respuestaBajar);
+                                   saveCambiosBitacora(jsTotal);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -702,56 +662,99 @@ public class SubirDatos extends AppCompatActivity {
         }
         return  registro;
     }
-    public void saveCambiosCriadero(JSONObject jaCambios,int idbajado){
+
+    public void saveCambiosBitacora(JSONObject jsTotal) {
         try {
-            long id = jaCambios.getLong("idGenerado");
-            long idCaserio = jaCambios.getLong("idCaserio");
-            int tipo = jaCambios.getInt("idTipoCriadero");
-            long usuarioreg = jaCambios.getLong("idUsuarioReg");
-            String nombre = jaCambios.getString("nombre");
-            String descripcion = jaCambios.getString("descripcion");
-            String latitud = jaCambios.getString("latitud");
-            String longitud = jaCambios.getString("longitud");
-            int log_cria = jaCambios.getInt("longitudCriadero");
-            int ancho = jaCambios.getInt("anchoCriadero");
-            int estado = jaCambios.getInt("idEstadoCriadero");
-            int sibasi = jaCambios.getInt("idSibasi");
-            CtlPlCriaderoDao criaDao = daoSession.getCtlPlCriaderoDao();
-            CtlPlCriadero cria = new CtlPlCriadero();
-            cria.setId(id);
-            cria.setIdCaserio(idCaserio);
-            cria.setIdTipoCriadero(tipo);
-            cria.setIdUsarioReg(usuarioreg);
-            cria.setNombre(nombre);
-            cria.setDescripcion(descripcion);
-            if (!latitud.equals("null") && !longitud.equals("null")){
-                cria.setLatitud(latitud);
-                cria.setLongitud(longitud);
+            JSONArray jaInsertCriadero = jsTotal.getJSONArray("insertCriadero");
+            JSONArray jaUpdateCriadero = jsTotal.getJSONArray("updateCriadero");
+            if(jaInsertCriadero.length()>0){
+                for (int i = 0; i < jaInsertCriadero.length(); i++) {
+                    JSONObject fila = jaInsertCriadero.getJSONObject(i);
+                    int regBajado = fila.getInt("id");
+                    JSONObject sentencia = fila.getJSONObject("sentencia");
+                    long id = sentencia.getLong("idGenerado");
+                    long idCaserio = sentencia.getLong("idCaserio");
+                    int tipo = sentencia.getInt("idTipoCriadero");
+                    int estado = sentencia.getInt("idEstadoCriadero");
+                    String nombre = sentencia.getString("nombre");
+                    String descripcion = sentencia.getString("descripcion");
+                    String latitud = sentencia.getString("latitud");
+                    String longitud = sentencia.getString("longitud");
+                    long idSibasi = sentencia.getLong("idSibasi");
+                    long usuarioReg = sentencia.getLong("idUsuarioReg");
+                    String fechaReg = sentencia.getString("fechaHoraReg");
+                    int ancho = sentencia.getInt("anchoCriadero");
+                    int largo = sentencia.getInt("longitudCriadero");
+                    saveCriadero(id, idCaserio, tipo, usuarioReg,
+                            0, nombre, descripcion, latitud, longitud, largo, ancho // el usuario mod es obligatorio en el metodo pero no lo toma en cuenta si es 0
+                            , fechaReg, fechaReg, idSibasi, estado);
+                    CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+                    CtlTablet tab = tabDao.loadByRowId(idTablet);
+                    tab.setUltimoRegBajado(regBajado);
+                    tabDao.update(tab);
+                }
+                tvCriaderos.setText(String.format("Se Descargaron %s nuevos", String.valueOf(jaInsertCriadero.length())));
+
+            }else if(jaUpdateCriadero.length()>0){
+                JSONArray sentencias;
+                JSONObject total = jaUpdateCriadero.getJSONObject(0);
+                int regBajado = total.getInt("id");
+                 sentencias = total.getJSONArray("sentencia");
+                for (int i = 0; i <sentencias.length() ; i++) {
+                    JSONObject individual = sentencias.getJSONObject(i);
+                    String fecha = individual.getString("fechaHoraMod");
+                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = format.parse(fecha);
+                    saveCriaderoUpdate(individual.getLong("id"),individual.getString("latitud"),
+                            individual.getString("longitud"),individual.getLong("idUsuarioMod"),date);
+
+                }
+                CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+                CtlTablet tab = tabDao.loadByRowId(idTablet);
+                tab.setUltimoRegBajado(regBajado);
+                tabDao.update(tab);
+
+                tvCriaderosUpdate.setText(String.format("Se Actualizaron %s Criaderos", String.valueOf(sentencias.length())));
+
+            }else {
+                Toast.makeText(getApplicationContext(),"No hay registros pendientes para descargar",Toast.LENGTH_LONG).show();
             }
-            cria.setLongitudCriadero(log_cria);
-            cria.setAnchoCriadero(ancho);
-            cria.setIdSibasi(sibasi);
-            cria.setIdEstadoCriadero(estado);
-            cria.setEstado_sync(0);
-            criaDao.insert(cria);
-            CtlTabletDao tabDao = daoSession.getCtlTabletDao();
-            CtlTablet  tab = tabDao.loadByRowId(idTablet);
-            tab.setUltimoRegBajado(idbajado);
-            tabDao.update(tab);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    /***este metodo guarda las actualizaciones que se le hacen a un criadero en otras tablets **/
-    public void saveCambiosUpdate(JSONArray jsonArray){
-        try {
-        for (int i = 0; i <jsonArray.length() ; i++) {
-                String id = jsonArray.getString(i);
-                Log.i("************",id);
+
+    public void saveCriadero(long id, long idCaserio, int tipo, long usuarioreg, int usuarioMod,
+                             String nombre, String descripcion, String latitud, String longitud, int log_cria,
+                             int ancho, String fechaReg, String fechaMod, long idSibasi, int estado) {
+        CtlPlCriaderoDao criaDao = daoSession.getCtlPlCriaderoDao();
+        CtlPlCriadero cria = new CtlPlCriadero();
+        cria.setId(id);
+        cria.setIdCaserio(idCaserio);
+        cria.setIdTipoCriadero(tipo);
+        cria.setIdUsarioReg(usuarioreg);
+        if (usuarioMod > 0) {
+            cria.setIdUsuarioMod(usuarioMod);
         }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        cria.setNombre(nombre);
+        cria.setDescripcion(descripcion);
+        if (!latitud.equals("null") && !longitud.equals("null")) {
+            cria.setLatitud(latitud);
+            cria.setLongitud(longitud);
         }
+        cria.setLongitudCriadero(log_cria);
+        cria.setAnchoCriadero(ancho);
+        cria.setIdSibasi(idSibasi);
+        cria.setIdEstadoCriadero(estado);
+        cria.setEstado_sync(0);
+        criaDao.insert(cria);
+    }
+    public void saveCriaderoUpdate(long id, String latitud, String longitud,long usuarioMod,Date fechaMod){
+        CtlPlCriadero criadero=daoSession.getCtlPlCriaderoDao().loadByRowId(id);
+        criadero.setLongitud(longitud);
+        criadero.setLatitud(latitud);
+        criadero.setFechaHoraMod(fechaMod);
+        criadero.setIdUsuarioMod(usuarioMod);
 
     }
 
