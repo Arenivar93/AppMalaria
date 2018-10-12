@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.minsal.dtic.sinavec.CRUD.GotaGruesaActivity;
 import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles;
 import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.ListCapturaActivity;
 import com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria.ListPesquisaActivity;
@@ -55,7 +56,7 @@ public class MainFragment extends Fragment{
         gotaCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),CapturaAnopheles.class);
+                Intent intent=new Intent(getActivity(),GotaGruesaActivity.class);
                 startActivity(intent);
                 Toast.makeText(getContext(),"Gota Gruesa",Toast.LENGTH_SHORT).show();
             }

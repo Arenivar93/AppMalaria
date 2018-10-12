@@ -62,10 +62,8 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
-
             <intent-filter>
                 <action android:name="android.intent.action.BuscarCriaderoSinActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -158,19 +156,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Sincronizar.SubirDatos"
+        <activity
+            android:name=".Sincronizar.SubirDatos"
+            android:label="Sincronizar Datos"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="landscape"
-            >
-
-        </activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".CRUD.pesquisaLarvaria.DetalleSemanaActivity"
             android:parentActivityName=".CRUD.pesquisaLarvaria.ListPesquisaActivity">
             <meta-data
                 android:name="androd.support.PARENT_ACTIVITY"
                 android:value=".CRUD.pesquisaLarvaria.ListPesquisa" />
-
             <intent-filter>
                 <action android:name="android.intent.action.DetalleSemanaActivity" />
 
@@ -179,11 +175,26 @@
         </activity>
         <activity
             android:name=".CRUD.pesquisaLarvaria.EditPesquisaActivity"
+            android:label="Editar Captura Anopheles"
             android:parentActivityName=".CRUD.pesquisaLarvaria.ListPesquisaActivity" />
         <activity android:name=".CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity" />
         <activity android:name=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin" />
         <activity android:name=".CRUD.seguimientoBotiquin.DetalleSeguimientoSemana" />
-        <activity android:name=".CRUD.seguimientoBotiquin.EditSeguimiento"></activity>
+        <activity android:name=".CRUD.seguimientoBotiquin.EditSeguimiento" />
+        <activity android:name=".CRUD.GotaGruesaActivity" />
+
+        <activity android:name=".CRUD.capturaAnopheles.DetalleCapturaSemanaActivity"
+            android:label="Detalle de Semana"
+            android:parentActivityName=".CRUD.capturaAnopheles.ListCapturaActivity">
+            <meta-data
+                android:name="androd.support.PARENT_ACTIVITY"
+                android:value=".CRUD.capturaAnopheles.ListCapturaActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.DetalleCapturaSemanaActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

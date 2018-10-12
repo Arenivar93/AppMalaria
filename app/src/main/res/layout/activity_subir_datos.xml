@@ -14,17 +14,31 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="90dp">
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="105dp"
+                android:layout_weight="1"
+                android:text="Bienvenido al modulo de sincronizacion:  Recuerda que para subir datos debes estar conectado a internet y tener mas de 40% de Batería. \n Primero Sube tus datos y Luego Presiona en Recibir Datos."
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="245dp"
             android:layout_weight="1"
             android:gravity="center">
 
             <ImageView
                 android:id="@+id/subirDatos"
-                android:layout_width="100dp"
+                android:layout_width="130dp"
                 android:layout_height="100dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:srcCompat="@drawable/subir_datos" />
+                app:srcCompat="@drawable/enviar_datos" />
 
             <View
                 android:layout_width="50dp"
@@ -34,49 +48,50 @@
 
             <ImageView
                 android:id="@+id/imBajar"
-                android:layout_width="100dp"
+                android:layout_width="130dp"
                 android:layout_height="100dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:srcCompat="@drawable/actualizar" />
+                app:srcCompat="@drawable/recibir_datos" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="305dp"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:layout_height="233dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/tvPesquisa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
             <TextView
                 android:id="@+id/tvCapturas"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
+
             <TextView
                 android:id="@+id/tvCriaderos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
                 android:text="" />
+
             <TextView
                 android:id="@+id/tvCriaderosUpdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
                 android:text="" />
+
             <TextView
                 android:id="@+id/tvSeguimientos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
                 android:text="" />
-
-
-
-
 
 
         </LinearLayout>

@@ -127,10 +127,10 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
         if (fechaHoraMod != null) {
             stmt.bindLong(9, fechaHoraMod.getTime());
         }
- 
-        java.util.Date fecha = entity.getFecha();
+
+        String fecha = entity.getFecha();
         if (fecha != null) {
-            stmt.bindLong(10, fecha.getTime());
+            stmt.bindString(10, fecha);
         }
  
         java.util.Date fechaHoraReg = entity.getFechaHoraReg();
@@ -181,10 +181,10 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
         if (fechaHoraMod != null) {
             stmt.bindLong(9, fechaHoraMod.getTime());
         }
- 
-        java.util.Date fecha = entity.getFecha();
+
+        String fecha = entity.getFecha();
         if (fecha != null) {
-            stmt.bindLong(10, fecha.getTime());
+            stmt.bindString(10, fecha);
         }
  
         java.util.Date fechaHoraReg = entity.getFechaHoraReg();
@@ -230,7 +230,7 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
             cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // componenteInspeccionado
             cursor.getInt(offset + 7), // tiempoColecta
             cursor.isNull(offset + 8) ? null : new java.util.Date(cursor.getLong(offset + 8)), // fechaHoraMod
-            cursor.isNull(offset + 9) ? null : new java.util.Date(cursor.getLong(offset + 9)), // fecha
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // fecha
             cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)), // fechaHoraReg
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // propietario
             cursor.getInt(offset + 12), // idSemanaEpidemiologica
@@ -257,7 +257,7 @@ public class PlCapturaAnophelesDao extends AbstractDao<PlCapturaAnopheles, Long>
         entity.setComponenteInspeccionado(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
         entity.setTiempoColecta(cursor.getInt(offset + 7));
         entity.setFechaHoraMod(cursor.isNull(offset + 8) ? null : new java.util.Date(cursor.getLong(offset + 8)));
-        entity.setFecha(cursor.isNull(offset + 9) ? null : new java.util.Date(cursor.getLong(offset + 9)));
+        entity.setFecha(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setFechaHoraReg(cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)));
         entity.setPropietario(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setIdSemanaEpidemiologica(cursor.getInt(offset + 12));

@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     public static int depto;
     private DaoSession daoSession;
     static final int GET_IMEI = 100;
+   // public static final String imeiq= "357544060176506";
     //  TextView tvUser;
 
 

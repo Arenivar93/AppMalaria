@@ -88,6 +88,7 @@ public class SettingActivity extends AppCompatActivity {
     ProgressBar pbSetting;
     private SharedPreferences pref;
     String username, password;
+    //public static final String imeiq= "357544060176506";
     public static final int GET_IMEI_CODE =100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -410,7 +411,7 @@ public class SettingActivity extends AppCompatActivity {
 
         } else {
             //antes de hacer una peticion vamos a comprobar que hay registros para enviar
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
@@ -461,7 +462,7 @@ public class SettingActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "Solicitando Datos al Servidor, espere...", Toast.LENGTH_SHORT).show();
            String imei = getIMEINumber();
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/catalogos?imei="+imei;
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/catalogos?imei="+imei;
             RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
@@ -722,6 +723,8 @@ public class SettingActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
                 finish();
+            }else{
+                Toast.makeText(getBaseContext(), "Ha ocurrido un error, Desintala la App e intenta de nuevo", Toast.LENGTH_SHORT).show();
             }
         }
 

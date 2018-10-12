@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -227,6 +228,7 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
                 seg.setFechaRegistro(fec);
                 seg.setIdSibasi(idSibasi);
                 seg.setIdUsuarioReg(idUsuario);
+                seg.setIdUsuarioMod((int) idUsuario);// el usuario mod esta como not null en la base local
                 seg.setIdTablet(idTablet);
                 seg.setEstado_sync(1);
                 seg.setIdEstadoFormulario(2);
@@ -241,6 +243,7 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
                 }else{
                     seg.setEnRiesgo(0);
                 }
+
                 segDao.insert(seg);
 
             customToadSuccess(getApplicationContext(),"Seguimiento de Botiquin registrado con éxito");

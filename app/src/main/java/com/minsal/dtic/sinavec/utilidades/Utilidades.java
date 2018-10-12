@@ -1,9 +1,7 @@
 package com.minsal.dtic.sinavec.utilidades;
 
 import android.database.Cursor;
-import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCantonDao;
@@ -35,7 +33,6 @@ import com.minsal.dtic.sinavec.EntityDAO.PlTipoCapturaDao;
 
 import org.greenrobot.greendao.query.Join;
 import org.greenrobot.greendao.query.QueryBuilder;
-import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -342,11 +339,32 @@ public class Utilidades {
         return coordenadas;
     }
 
-    public List<PlCapturaAnopheles> loadListcapturas() {
+    public List<PlCapturaAnopheles> loadListcapturas(int idSemana) {
+
         PlCapturaAnophelesDao capDao = daoSession.getPlCapturaAnophelesDao();
         capturas = new ArrayList<PlCapturaAnopheles>();
-        capturas = capDao.loadAll();
+        QueryBuilder<PlCapturaAnopheles> qb = capDao.queryBuilder().where(PlCapturaAnophelesDao.Properties.IdSemanaEpidemiologica.eq(idSemana));
+        capturas = qb.list();
         return capturas;
+    }
+
+    public ArrayList<String> loadListcapturasBySem() {
+        ArrayList<String> capturasBySem = new ArrayList<String>();
+        float indice;
+        Cursor c = daoSession.getDatabase().rawQuery("SELECT strftime('%Y', fecha) AS anio," +
+                " id_semana_epidemiologica, SUM(total_mosquitos),SUM(total_anopheles)," +
+                "COUNT(id) FROM PL_CAPTURA_ANOPHELES" +
+                " GROUP BY id_semana_epidemiologica, anio", null);
+        if (c.moveToFirst()) {
+            do {
+                if (c.getInt(2)>0){
+                    indice = (float) c.getInt(3)/ c.getInt(2);
+                }else{indice=0;}
+                capturasBySem.add(c.getString(0) + "-" + c.getInt(1) + "-" + c.getInt(2)+"-"+c.getInt(3)+"-"+c.getInt(4)+"-"+indice);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return capturasBySem;
     }
 
     public ArrayList<String> getListaCapturas(List<PlCapturaAnopheles> capturas) {

@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -95,8 +96,8 @@ public class SubirDatos extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     float carga = calculoBateria(getApplicationContext());
-                    if (carga < 0.10) { //50% solo tiene 10 para probarla
-                        Toast.makeText(getApplicationContext(), "El estado de carga es menor al 50%, Por favor conecte el dispositivo", Toast.LENGTH_LONG).show();
+                    if (carga < 0.40) { //50% solo tiene 10 para probarla
+                        Toast.makeText(getApplicationContext(), "El estado de carga es menor al 40%, Por favor conecte el dispositivo", Toast.LENGTH_LONG).show();
                     } else {
                         checkinServer("subir");
                     }
@@ -113,8 +114,8 @@ public class SubirDatos extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     float carga =calculoBateria(getApplicationContext());
-                    if (carga<0.10){
-                        Toast.makeText(getApplicationContext(),"El estado de carga es menor al 50%, Por favor conecte el dispositivo",Toast.LENGTH_LONG).show();
+                    if (carga<0.40){
+                        Toast.makeText(getApplicationContext(),"El estado de carga es menor al 40%, Por favor conecte el dispositivo",Toast.LENGTH_LONG).show();
                     }else {
                         checkinServerBajar();
                     }
@@ -246,14 +247,19 @@ public class SubirDatos extends AppCompatActivity {
     public void updateLocalCapturas(JSONObject joCapturas) {
         try {
             JSONArray jaCapturasIserted = joCapturas.getJSONArray("ids");
-            for (int i = 0; i < jaCapturasIserted.length(); i++) {
-                String id = String.valueOf(jaCapturasIserted.get(i));
-                PlCapturaAnophelesDao capDao = daoSession.getPlCapturaAnophelesDao();
-                PlCapturaAnopheles capUpdate = capDao.loadByRowId(Long.parseLong(id));
-                capUpdate.setEstado_sync(0);
-                capDao.update(capUpdate);            }
+            if (jaCapturasIserted.length()>0) {
+                for (int i = 0; i < jaCapturasIserted.length(); i++) {
+                    String id = String.valueOf(jaCapturasIserted.get(i));
+                    PlCapturaAnophelesDao capDao = daoSession.getPlCapturaAnophelesDao();
+                    PlCapturaAnopheles capUpdate = capDao.loadByRowId(Long.parseLong(id));
+                    capUpdate.setEstado_sync(0);
+                    capDao.update(capUpdate);
+                }
+                tvCapturas.setText("Capturas Anopheles ingresadas con éxito");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(),"Error: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
     }
     public void updateLocalPesquisas(JSONObject joPesquisas) {
@@ -268,9 +274,11 @@ public class SubirDatos extends AppCompatActivity {
                         pesUpdate.setEstado_sync(0);
                         pesDao.update(pesUpdate);
                     }
+                    tvPesquisa.setText("Pesquisas Ingresadas con Exito");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(getApplicationContext(),"Error: "+e.getMessage(),Toast.LENGTH_LONG).show();
             }
     }
 
@@ -293,10 +301,12 @@ public class SubirDatos extends AppCompatActivity {
                     String sql = "UPDATE CTL_PL_CRIADERO SET ID ="+idGenerado+", ESTADO_SYNC = 0    WHERE ID ="+id+"";
                     db.execSQL(sql);
                 }
-                db.close();            }
+                db.close();
+                tvCriaderos.setText("Se subieron "+String.valueOf(jaIdGenerado.length())+" nuevos criaderos");
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(),String.valueOf(e.getMessage()),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
         }
     }
 
@@ -312,9 +322,11 @@ public class SubirDatos extends AppCompatActivity {
                     criaUpt.setEstado_sync(0);
                     uptCriaDao.update(criaUpt);
                 }
+                tvCriaderosUpdate.setText("se subieron "+String.valueOf(jaCriaderosUpdate.length())+" actualizaciones de criaderos");
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(),String.valueOf(e.getMessage()),Toast.LENGTH_LONG).show();
         }
     }
 
@@ -334,7 +346,9 @@ public class SubirDatos extends AppCompatActivity {
             if (countCapturas>0 || countPesquisas>0 || countCriaderosUpdate>0 || countCridero>0){
                 tvPesquisa.setText(String.format("Pesquisas lista para sincronizar: %d", countPesquisas));
                 tvCapturas.setText(String.format("Capturas lista para sincronizar: %d", countCapturas));
-                String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
+                tvCriaderosUpdate.setText(String.format("Criaderos actualizados para sincronizar: %d ",countCriaderosUpdate));
+                tvCriaderos.setText(String.format("Criaderos nuevos para sincronizar: %d ",countCridero));
+                String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
@@ -387,13 +401,13 @@ public class SubirDatos extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
 
         } else {
-                String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
+                String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                JSONObject jsonObject = null;
+                                JSONObject jsonObject;
                                 try {
                                     jsonObject = new JSONObject(response);
                                     String tokenSubir = jsonObject.getString("token");
@@ -436,7 +450,7 @@ public class SubirDatos extends AppCompatActivity {
             = MediaType.parse("application/json; charset=utf-8");
     private void sendCapturas(String tkn) throws JSONException {
         JSONArray json = getInsertCapturas();
-        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/entomologicas";
+        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/capturas";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -460,11 +474,12 @@ public class SubirDatos extends AppCompatActivity {
                                     JSONArray respuesta = new JSONArray(respuestaCapturas);
                                     JSONObject jores = respuesta.getJSONObject(1);
                                     updateLocalCapturas(jores);
-                                    tvCapturas.setText("Capturas Anopheles ingresadas con éxito");
+
 
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -479,7 +494,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendDataPesquisa(String token) throws JSONException {
         JSONArray json = getInsertPesquisas();
         int cont = json.length();
-        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/pesquisas";
+        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/pesquisas";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -504,7 +519,7 @@ public class SubirDatos extends AppCompatActivity {
                                     respuesta = new JSONArray(respuestaPesquiza);
                                     JSONObject jores = respuesta.getJSONObject(1);
                                     updateLocalPesquisas(jores);
-                                    tvPesquisa.setText("Pesquisas Ingresadas con Exito");
+
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -520,7 +535,7 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void sendCriaderos(String tkn) throws JSONException {
         JSONArray json = getInsetCriaderos();
-        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
+        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/criaderos";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -562,7 +577,7 @@ public class SubirDatos extends AppCompatActivity {
 
     private void sendCriaderosUpdate(String token) throws JSONException {
         JSONArray json = getUpdateCriaderos();
-        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
+        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/criaderos";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -595,7 +610,6 @@ public class SubirDatos extends AppCompatActivity {
                     }
                 }
             });
-
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -611,8 +625,7 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void bajarBitacora(String tkn){
         idUltimoReg = ultimoRegistroBajado();
-        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/" +
-                "api/bitacora?accion=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg="+idUltimoReg;
+        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/bitacora?accion=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg="+idUltimoReg;
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .header("Authorization", "Bearer " + tkn)

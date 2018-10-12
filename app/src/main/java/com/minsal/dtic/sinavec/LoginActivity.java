@@ -40,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences prefs;
     MetodosGlobales metodoGlobal;
     DaoSession daoSession;
+    
 
     // final static int idDepartamento=0;
 

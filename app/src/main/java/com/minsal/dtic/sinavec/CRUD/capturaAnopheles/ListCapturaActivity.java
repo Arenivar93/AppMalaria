@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.MainActivity;
@@ -35,7 +37,7 @@ public class ListCapturaActivity extends AppCompatActivity {
         if (actionBar!=null){actionBar.setDisplayHomeAsUpEnabled(true);}
         daoSession      =((MyMalaria)getApplicationContext()).getDaoSession();
         u.fragment = 0;
-        final ArrayList<String> capturasSemana = listaAdapter();
+        final ArrayList<String> capturasSemana = listaAdapterBySem();
         AdapterCapturas adapter =new AdapterCapturas(this,capturasSemana);
         lvCaptura.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -53,31 +55,24 @@ public class ListCapturaActivity extends AppCompatActivity {
         lvCaptura.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                long id =  capturasAnopheles.get(position).getId();
-                Intent nuevo = new Intent(getApplicationContext(), CapturaAnopheles.class);
+                String fila =  capturasSemana.get(position);
+                String semana_g= fila.substring(5,7); //semana_g probablelemte trae un gion si es menor a 10
+                String id_semana= semana_g.replace("-","");
+                Toast.makeText(getApplicationContext(),id_semana,Toast.LENGTH_LONG).show();
+               Intent nuevo = new Intent(getApplicationContext(), DetalleCapturaSemanaActivity.class);
                 nuevo.putExtra("accion","edit");
-                nuevo.putExtra("id",id);
+                nuevo.putExtra("id_semana",id_semana);
                 startActivity(nuevo);
-                //finish();
+                finish();
             }
         });
     }
-    public ArrayList<String> listaAdapter(){
+    public ArrayList<String> listaAdapterBySem(){
         Utilidades u = new Utilidades(daoSession);
-        capturasAnopheles = u.loadListcapturas();
-        ArrayList<String> lista = new ArrayList<String>();
-        List<PlCapturaAnopheles> objList = capturasAnopheles;
-        for (PlCapturaAnopheles p: objList){
-            lista.add(p.getCtlCaserio().getCtlCanton().getCtlMunicipio().getNombre()
-                      +"-"+p.getCtlCaserio().getCtlCanton().getNombre()
-                      +"-"+p.getCtlCaserio().getNombre()
-                      +"-"+p.getPropietario()
-                      +"-"+p.getTotalMosquitos()
-                      +"-"+p.getTotalAnopheles()
-                      +"-"+p.getIdSemanaEpidemiologica()) ;
-        }
+        ArrayList<String> lista= u.loadListcapturasBySem();
         return lista;
     }
+
     @Override
     public void onBackPressed() {
         Intent m =new Intent(getApplicationContext(),MainActivity.class);

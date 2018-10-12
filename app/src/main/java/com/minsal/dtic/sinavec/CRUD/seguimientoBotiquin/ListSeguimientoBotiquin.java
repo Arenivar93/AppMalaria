@@ -16,6 +16,7 @@ import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.adapters.AdapterCapturas;
+import com.minsal.dtic.sinavec.adapters.AdapterCustom;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class ListSeguimientoBotiquin extends AppCompatActivity {
         daoSession =((MyMalaria)getApplicationContext()).getDaoSession();
         u.fragment = 0;
         final ArrayList<String> seguimientoList = listaAdapter();
-        AdapterCapturas adapter =new AdapterCapturas(this,seguimientoList);
+        AdapterCustom adapter =new AdapterCustom(this,seguimientoList);
         lvSeguimiento.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 

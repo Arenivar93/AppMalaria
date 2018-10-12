@@ -26,7 +26,7 @@ public class PlCapturaAnopheles {
     private Integer componenteInspeccionado;
     private int tiempoColecta;
     private java.util.Date fechaHoraMod;
-    private java.util.Date fecha;
+    private String fecha;
     private java.util.Date fechaHoraReg;
     private String propietario;
     private int idSemanaEpidemiologica;
@@ -95,7 +95,7 @@ public class PlCapturaAnopheles {
     }
 
     @Generated
-    public PlCapturaAnopheles(Long id, int idEstado, int totalMosquitos, int totalAnopheles, int casaPositiva, Integer casaInspeccionada, Integer componenteInspeccionado, int tiempoColecta, java.util.Date fechaHoraMod, java.util.Date fecha, java.util.Date fechaHoraReg, String propietario, int idSemanaEpidemiologica, long idUsuarioMod, int estado_sync, long idSibasi, long idTablet, long idCaserio, long idUsuarioReg, long idTipoCaptura, long idTipoActividad) {
+    public PlCapturaAnopheles(Long id, int idEstado, int totalMosquitos, int totalAnopheles, int casaPositiva, Integer casaInspeccionada, Integer componenteInspeccionado, int tiempoColecta, java.util.Date fechaHoraMod, String fecha, java.util.Date fechaHoraReg, String propietario, int idSemanaEpidemiologica, long idUsuarioMod, int estado_sync, long idSibasi, long idTablet, long idCaserio, long idUsuarioReg, long idTipoCaptura, long idTipoActividad) {
         this.id = id;
         this.idEstado = idEstado;
         this.totalMosquitos = totalMosquitos;
@@ -198,11 +198,11 @@ public class PlCapturaAnopheles {
         this.fechaHoraMod = fechaHoraMod;
     }
 
-    public java.util.Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(java.util.Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 

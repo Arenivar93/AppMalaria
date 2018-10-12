@@ -46,7 +46,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="0dp"
                     android:background="@color/lighgray" />
 
                 <TextView
@@ -76,7 +76,7 @@
 
                 <ImageView
                     android:layout_width="137dp"
-                    android:layout_height="136dp"
+                    android:layout_height="124dp"
                     android:padding="0dp"
                     android:src="@drawable/zancudo_cap2" />
 
@@ -131,31 +131,30 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="88dp"
-                    android:layout_height="87dp"
-                    android:background="@drawable/circlebackgroundblue"
+                    android:layout_width="180dp"
+                    android:layout_height="119dp"
                     android:padding="10dp"
-                    android:src="@drawable/ic_criadero" />
+                    android:src="@drawable/redpesca2" />
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="5dp"
                     android:text="Pesquisa Larvaria"
                     android:textStyle="bold" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="0dp"
                     android:background="@color/lighgray" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Registro de captura de anopheles"
+                    android:padding="0dp"
+                    android:text="Registro de Pesquisa Larvaria"
                     android:textColor="@color/darkgrey"
                     android:textSize="7dp" />
             </LinearLayout>
@@ -177,7 +176,7 @@
 
                 <ImageView
                     android:layout_width="123dp"
-                    android:layout_height="124dp"
+                    android:layout_height="123dp"
                     android:padding="0dp"
                     android:src="@drawable/botiquin_mal" />
 

@@ -51,15 +51,15 @@ public class AdapterSemanaPesquisa extends BaseAdapter {
         TextView tv1, tv2, tv3,tv4,tv5,tv6,tv7;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View v = inflater.inflate(R.layout.list_custom_capturas, viewGroup, false);
+        View v = inflater.inflate(R.layout.list_custom_adapter, viewGroup, false);
 
-        tv1 = (TextView) v.findViewById(R.id.tvCap1);
-        tv2 = (TextView) v.findViewById(R.id.tvCap2);
-        tv3 = (TextView) v.findViewById(R.id.tvCap3);
-        tv4 = (TextView) v.findViewById(R.id.tvCap4);
-        tv5 = (TextView) v.findViewById(R.id.tvCap5);
-        tv6 = (TextView) v.findViewById(R.id.tvCap6);
-        tv7= (TextView) v.findViewById(R.id.tvCapt7);
+        tv1 = (TextView) v.findViewById(R.id.tvAda1);
+        tv2 = (TextView) v.findViewById(R.id.tvAda2);
+        tv3 = (TextView) v.findViewById(R.id.tvAda3);
+        tv4 = (TextView) v.findViewById(R.id.tvAda4);
+        tv5 = (TextView) v.findViewById(R.id.tvAda5);
+        tv6 = (TextView) v.findViewById(R.id.tvAda6);
+        tv7= (TextView) v.findViewById(R.id.tvAda7);
         String str = capturas.get(position);
         String[] tvs = str.split("-");
         tv1.setText(tvs[0]);

@@ -10,15 +10,15 @@
             android:title="Inicio" />
         <item
             android:id="@+id/gotas"
-            android:icon="@drawable/ic_febril"
+            android:icon="@drawable/gota_gruesa"
             android:title="Gotas Gruesas" />
         <item
             android:id="@+id/colvol"
-            android:icon="@drawable/ic_colvol"
+            android:icon="@drawable/colvol"
             android:title="Colvol" />
         <item
             android:id="@+id/criadero"
-            android:icon="@drawable/ic_colvol"
+            android:icon="@drawable/criadero"
             android:title="Criaderos" />
         <item
             android:id="@+id/salir"

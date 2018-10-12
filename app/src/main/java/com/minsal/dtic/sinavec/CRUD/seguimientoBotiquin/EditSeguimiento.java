@@ -28,6 +28,10 @@ import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquinDao;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class EditSeguimiento extends AppCompatActivity {
     Object id_seguimiento;
     Object id_semana;
@@ -146,6 +150,10 @@ public class EditSeguimiento extends AppCompatActivity {
     }
 
     public void updateSeguimiento(String accion,int riesgo,int muestras,int personas){
+        long idUsuario = pref.getLong("idUser",0);
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = format1.format(c.getTime());
         PlSeguimientoBotiquinDao segDao = daoSession.getPlSeguimientoBotiquinDao();
         if (accion.equals("visitar")){
             segEdit.setVisitado(1);
@@ -157,8 +165,10 @@ public class EditSeguimiento extends AppCompatActivity {
         }else{
             segEdit.setEnRiesgo(0);
         }
+        segEdit.setFechaHoraMod(date);
+        segEdit.setIdUsuarioMod((int) idUsuario);
         segEdit.setNumeroMuestra(muestras);
-        segEdit.setNumeroPersonaDivulgo(personas);//falta agregar usuario y fecha modifico
+        segEdit.setNumeroPersonaDivulgo(personas);
         segDao.update(segEdit);
 
     }

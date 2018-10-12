@@ -1,7 +1,6 @@
 package com.minsal.dtic.sinavec.adapters;
 
 import android.content.Context;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,24 +13,24 @@ import com.minsal.dtic.sinavec.R;
 
 import java.util.ArrayList;
 
-public class AdapterSeguimiento extends BaseAdapter {
+public class AdapterCustom extends BaseAdapter {
     Context context;
-   // ArrayList<String> seguimientos;
+   // ArrayList<String> capturas;
     DaoSession daoSession;
-    ArrayList<String> listaseguimientos;
-    ArrayList<String> seguimientos;
+    ArrayList<String> listaCapturas;
+    ArrayList<String> lista;
     PlCapturaAnophelesDao capDao;
 
-    public AdapterSeguimiento(Context context, ArrayList<String> seguimientos) {
+    public AdapterCustom(Context context, ArrayList<String> lista) {
         this.context = context;
-        this.seguimientos = seguimientos;
+        this.lista = lista;
 
     }
 
 
     @Override
     public int getCount() {
-        return seguimientos.size();
+        return lista.size();
     }
 
     @Override
@@ -46,9 +45,7 @@ public class AdapterSeguimiento extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-        String pa ="";
-
-        TextView tv1, tv2, tv3,tv4,tv5,tv6,tv7,tvId;
+        TextView tv1, tv2, tv3,tv4,tv5,tv6,tv7;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View v = inflater.inflate(R.layout.list_custom_adapter, viewGroup, false);
@@ -60,25 +57,22 @@ public class AdapterSeguimiento extends BaseAdapter {
         tv5 = (TextView) v.findViewById(R.id.tvAda5);
         tv6 = (TextView) v.findViewById(R.id.tvAda6);
         tv7= (TextView) v.findViewById(R.id.tvAda7);
-        tvId= (TextView) v.findViewById(R.id.tvAdaId);
-        String str = seguimientos.get(position);
-        String[] tvs = str.split("/");
-        tv1.setText(tvs[2]);
+        String str = lista.get(position);
+        String[] tvs = str.split("-");
+        tv1.setText(tvs[0]);
         tv2.setText(tvs[1]);
-        tv3.setText(tvs[3]);
-        tv4.setText(tvs[4]);
-        tv4.setGravity(Gravity.CENTER);
-        tv5.setText(tvs[5]);
-        tv5.setGravity(Gravity.CENTER);
-        tv6.setText(tvs[6]);
-        tv6.setGravity(Gravity.CENTER);
-        tv7.setText(tvs[7]);
-        tvId.setText(tvs[0]);
+        tv3.setText(tvs[2]);
+        tv4.setText(tvs[3]);
+        tv5.setText(tvs[4]);
+        tv6.setText(tvs[5]);
+        if (tvs.length>6){
+            tv7.setText(tvs[6]);
+        }
         return v;
     }
 
     public ArrayList<String> getData() {
-        return seguimientos;
+        return lista;
     }
 
 
