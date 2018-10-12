@@ -132,6 +132,7 @@ public class MapaColvolActivity extends AppCompatActivity implements OnMapReadyC
                 if(!latitudColvol.getText().toString().isEmpty() && !longitudColvol.getText().toString().isEmpty()){
                     colvol.setLatitud(latitudColvol.getText().toString());
                     colvol.setLongitud(longitudColvol.getText().toString());
+                    colvol.setEstado_sync(2);
                     colvolDao.update(colvol);
                     Intent geolocalizarColvol=new Intent(com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol.MapaColvolActivity.this, BuscarColvolActivity.class);
                     Bundle miBundle=new Bundle();

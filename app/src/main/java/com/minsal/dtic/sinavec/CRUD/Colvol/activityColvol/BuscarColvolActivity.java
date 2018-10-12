@@ -306,11 +306,11 @@ public class BuscarColvolActivity extends AppCompatActivity {
                                 TableRow.LayoutParams.WRAP_CONTENT));
                         tv.setPadding(15, 5, 10, 5);
                     }else if(j==1){
-                        tv.setLayoutParams(new TableRow.LayoutParams(500,
+                        tv.setLayoutParams(new TableRow.LayoutParams(300,
                                 TableRow.LayoutParams.WRAP_CONTENT));
                         tv.setPadding(15, 5, 10, 5);
                     }else{
-                        tv.setLayoutParams(new TableRow.LayoutParams(350,
+                        tv.setLayoutParams(new TableRow.LayoutParams(300,
                                 TableRow.LayoutParams.WRAP_CONTENT));
                         tv.setPadding(15, 5, 10, 5);
                     }

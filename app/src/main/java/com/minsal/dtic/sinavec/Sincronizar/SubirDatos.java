@@ -30,6 +30,8 @@ import com.minsal.dtic.sinavec.EntityDAO.DaoMaster;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
 import com.minsal.dtic.sinavec.MainActivity;
@@ -66,6 +68,7 @@ public class SubirDatos extends AppCompatActivity {
     private SharedPreferences pref;
     ImageView subirDatos, bajarDatos;
     TextView tvCapturas,tvPesquisa,tvCriaderos, tvCriaderosUpdate,tvSeguimientos;
+    TextView tvColvol,tvColvolUpdate;
     String username, password;
     long idTablet;
     long idSibasi;
@@ -82,6 +85,8 @@ public class SubirDatos extends AppCompatActivity {
         tvCapturas = (TextView) findViewById(R.id.tvCapturas);
         tvPesquisa = (TextView) findViewById(R.id.tvPesquisa);
         tvCriaderos = (TextView) findViewById(R.id.tvCriaderos);
+        tvColvolUpdate = (TextView)findViewById(R.id.tvColvolUpdate);
+        tvColvol = (TextView)findViewById(R.id.tvColvolInsert);
         tvSeguimientos = (TextView) findViewById(R.id.tvSeguimientos);
         tvCriaderosUpdate = (TextView) findViewById(R.id.tvCriaderosUpdate);
 
@@ -240,6 +245,29 @@ public class SubirDatos extends AppCompatActivity {
         }
         return jacriaderos;
     }
+    public JSONArray getUpdateColvol()  {
+        JSONArray jaUpdate = new JSONArray();
+        try {
+            List<PlColvol> colvols;
+            PlColvolDao colDao = daoSession.getPlColvolDao();
+            colvols = colDao.queryBuilder().where(PlColvolDao.Properties.Estado_sync.eq(2)).list();
+            SimpleDateFormat dateFormat;
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (PlColvol c : colvols) {
+                JSONObject joColvolUpdate = new JSONObject();
+                joColvolUpdate.put("id",c.getId());
+                joColvolUpdate.put("longitud",c.getLongitud());
+                joColvolUpdate.put("latitud",c.getLatitud());
+                joColvolUpdate.put("idTablet",idTablet);
+                jaUpdate.put(joColvolUpdate);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return jaUpdate;
+    }
 
     /***
      * Metodos para actualizar los registros locales una ves se hayan subido
@@ -333,67 +361,76 @@ public class SubirDatos extends AppCompatActivity {
     /**
      *peticion de token al servidor,si la respuesta es corresta iniciara los metodos que suben los datos
      */
-    public void checkinServer(final String accion) throws JSONException {
-        boolean red = MetodosGlobales.compruebaConexion(getApplicationContext());
-        if (!red) {
-            Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
-        } else {
-            //antes de hacer una peticion vamos a comprobar que hay registros para enviar
-            int countCapturas = getInsertCapturas().length();
-            int countPesquisas = getInsertPesquisas().length();
-            int countCriaderosUpdate = getUpdateCriaderos().length();
-            int countCridero = getInsetCriaderos().length();
-            if (countCapturas>0 || countPesquisas>0 || countCriaderosUpdate>0 || countCridero>0){
-                tvPesquisa.setText(String.format("Pesquisas lista para sincronizar: %d", countPesquisas));
-                tvCapturas.setText(String.format("Capturas lista para sincronizar: %d", countCapturas));
-                tvCriaderosUpdate.setText(String.format("Criaderos actualizados para sincronizar: %d ",countCriaderosUpdate));
-                tvCriaderos.setText(String.format("Criaderos nuevos para sincronizar: %d ",countCridero));
-                String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
-                RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                 String token1 = jsonObject.getString("token");
-                                    if (accion.equals("subir")){
-                                        sendCapturas(token1);
-                                        sendDataPesquisa(token1);
-                                        sendCriaderosUpdate(token1);
-                                        sendCriaderos(token1);
-                                    }else{
-                                        Toast.makeText(getApplicationContext(), "autorizado para bajar", Toast.LENGTH_LONG).show();
+    public void checkinServer(final String accion) {
+        try {
+            boolean red = MetodosGlobales.compruebaConexion(getApplicationContext());
+            if (!red) {
+                Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
+            } else {
+                //antes de hacer una peticion vamos a comprobar que hay registros para enviar
+                int countCapturas = getInsertCapturas().length();
+                int countPesquisas = getInsertPesquisas().length();
+                int countCriaderosUpdate = getUpdateCriaderos().length();
+                int countCridero = getInsetCriaderos().length();
+                int counColvolUpdate = getUpdateColvol().length();
+                if (countCapturas>0 || countPesquisas>0 || countCriaderosUpdate>0 || countCridero>0 || counColvolUpdate>0){
+                    tvPesquisa.setText(String.format("Pesquisas lista para sincronizar: %d", countPesquisas));
+                    tvCapturas.setText(String.format("Capturas lista para sincronizar: %d", countCapturas));
+                    tvCriaderosUpdate.setText(String.format("Criaderos actualizados para sincronizar: %d ",countCriaderosUpdate));
+                    tvCriaderos.setText(String.format("Criaderos nuevos para sincronizar: %d ",countCridero));
+                    tvColvol.setText(String.format("ColVol actualizados para sincronizar: %d ",counColvolUpdate));
+                    String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
+                    RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        String token1 = jsonObject.getString("token");
+                                        if (accion.equals("subir")){
+                                            sendCapturas(token1);
+                                            sendDataPesquisa(token1);
+                                            sendCriaderosUpdate(token1);
+                                            sendCriaderos(token1);
+                                            sendColvolUpdate(token1);
+                                        }else{
+                                            Toast.makeText(getApplicationContext(), "autorizado para bajar", Toast.LENGTH_LONG).show();
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getApplicationContext(), "Error!!Por favor contacta al administrador" + e.getMessage(), Toast.LENGTH_LONG).show();
+
                                     }
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getApplicationContext(), "Error!!Por favor contacta al administrador" + e.getMessage(), Toast.LENGTH_LONG).show();
-
                                 }
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), "Error!Por favor contacta al administrador" + String.valueOf(error), Toast.LENGTH_LONG).show();
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), "Error!Por favor contacta al administrador" + String.valueOf(error), Toast.LENGTH_LONG).show();
 
-                    }
-                }) {
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> parameters = new HashMap<String, String>();
-                        parameters.put("Content-Type", "application/json");
-                        parameters.put("_username", username);
-                        parameters.put("_password", password);
-                        return parameters;
-                    }
+                        }
+                    }) {
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> parameters = new HashMap<String, String>();
+                            parameters.put("Content-Type", "application/json");
+                            parameters.put("_username", username);
+                            parameters.put("_password", password);
+                            return parameters;
+                        }
 
-                };
-                cola.add(stringRequest);
-            }else{
-             Toast.makeText(getApplicationContext(),"No hay registros pendiente de sincronizacion",Toast.LENGTH_LONG).show();
+                    };
+                    cola.add(stringRequest);
+                }else{
+                    Toast.makeText(getApplicationContext(),"No hay registros pendiente de sincronizacion",Toast.LENGTH_LONG).show();
+                }
             }
+
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(),"Error:"+e.getMessage(),Toast.LENGTH_LONG).show();
         }
+
     }
     public void checkinServerBajar() throws JSONException {
         boolean red = MetodosGlobales.compruebaConexion(getApplicationContext());
@@ -450,88 +487,95 @@ public class SubirDatos extends AppCompatActivity {
             = MediaType.parse("application/json; charset=utf-8");
     private void sendCapturas(String tkn) throws JSONException {
         JSONArray json = getInsertCapturas();
-        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/capturas";
-        RequestBody body = RequestBody.create(JSON, json.toString());
-        final okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(url)
-                .post(body)
-                .header("Authorization", "Bearer " + tkn)
-                .build();
-        try {
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    tvCapturas.setText("Error:"+String.valueOf(e));
-                }
-                @Override
-                public void onResponse(Call call, final okhttp3.Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                       final String respuestaCapturas = response.body().string();
-                        SubirDatos.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    JSONArray respuesta = new JSONArray(respuestaCapturas);
-                                    JSONObject jores = respuesta.getJSONObject(1);
-                                    updateLocalCapturas(jores);
-
-
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+        if (json.length()>0){
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/capturas";
+            RequestBody body = RequestBody.create(JSON, json.toString());
+            final okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .header("Authorization", "Bearer " + tkn)
+                    .build();
+            try {
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        tvCapturas.setText("Error:"+String.valueOf(e));
                     }
-                }
-            });
+                    @Override
+                    public void onResponse(Call call, final okhttp3.Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            final String respuestaCapturas = response.body().string();
+                            SubirDatos.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONArray respuesta = new JSONArray(respuestaCapturas);
+                                        JSONObject jores = respuesta.getJSONObject(1);
+                                        updateLocalCapturas(jores);
 
-        }catch (Exception e){
-            e.printStackTrace();
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
+
     }
     private void sendDataPesquisa(String token) throws JSONException {
         JSONArray json = getInsertPesquisas();
-        int cont = json.length();
-        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/pesquisas";
-        RequestBody body = RequestBody.create(JSON, json.toString());
-        final okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(url)
-                .post(body)
-                .header("Authorization", "Bearer " + token)
-                .build();
-        try {
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                   tvPesquisa.setText(String.valueOf(e));
-                }
-                @Override
-                public void onResponse(Call call, okhttp3.Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        final String respuestaPesquiza = response.body().string();
-                        SubirDatos.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                JSONArray respuesta = null;
-                                try {
-                                    respuesta = new JSONArray(respuestaPesquiza);
-                                    JSONObject jores = respuesta.getJSONObject(1);
-                                    updateLocalPesquisas(jores);
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
+        if (json.length()>0){
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/pesquisas";
+            RequestBody body = RequestBody.create(JSON, json.toString());
+            final okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .header("Authorization", "Bearer " + token)
+                    .build();
+            try {
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        tvPesquisa.setText(String.valueOf(e));
                     }
-                }
-            });
+                    @Override
+                    public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            final String respuestaPesquiza = response.body().string();
+                            SubirDatos.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    JSONArray respuesta = null;
+                                    try {
+                                        respuesta = new JSONArray(respuestaPesquiza);
+                                        JSONObject jores = respuesta.getJSONObject(1);
+                                        updateLocalPesquisas(jores);
 
-        }catch (Exception e){
-            e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
+
+
     }
     private void sendCriaderos(String tkn) throws JSONException {
         JSONArray json = getInsetCriaderos();
@@ -577,42 +621,88 @@ public class SubirDatos extends AppCompatActivity {
 
     private void sendCriaderosUpdate(String token) throws JSONException {
         JSONArray json = getUpdateCriaderos();
-        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/criaderos";
-        RequestBody body = RequestBody.create(JSON, json.toString());
-        final okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(url)
-                .put(body)
-                .header("Authorization", "Bearer " + token)
-                .build();
-        try {
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    tvPesquisa.setText(String.valueOf(e));
-                }
-                @Override
-                public void onResponse(Call call, okhttp3.Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        final String respuestaUpdateCri = response.body().string();
-                        SubirDatos.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                JSONArray respuesta = null;
-                                try {
-                                    respuesta = new JSONArray(respuestaUpdateCri);
-                                    JSONObject jores = respuesta.getJSONObject(1);
-                                    updateCriaderosUpdate(jores);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
+        if (json.length()>0){
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/criaderos";
+            RequestBody body = RequestBody.create(JSON, json.toString());
+            final okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .put(body)
+                    .header("Authorization", "Bearer " + token)
+                    .build();
+            try {
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        tvPesquisa.setText(String.valueOf(e));
                     }
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
+                    @Override
+                    public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            final String respuestaUpdateCri = response.body().string();
+                            SubirDatos.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    JSONArray respuesta = null;
+                                    try {
+                                        respuesta = new JSONArray(respuestaUpdateCri);
+                                        JSONObject jores = respuesta.getJSONObject(1);
+                                        updateCriaderosUpdate(jores);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
+
+    }
+    private void sendColvolUpdate(String token) throws JSONException {
+        JSONArray json = getUpdateColvol();
+        if (json.length()>0){
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/colvol";
+            RequestBody body = RequestBody.create(JSON, json.toString());
+            final okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .put(body)
+                    .header("Authorization", "Bearer " + token)
+                    .build();
+            try {
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                    }
+                    @Override
+                    public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            final String respuestaUpdateCri = response.body().string();
+                            SubirDatos.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    JSONArray respuesta = null;
+                                    try {
+                                        respuesta = new JSONArray(respuestaUpdateCri);
+                                        JSONObject jores = respuesta.getJSONObject(1);
+                                        //updateCriaderosUpdate(jores);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
     }
     public float calculoBateria(Context context){
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);

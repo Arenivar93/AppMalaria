@@ -114,12 +114,14 @@
                 android:gravity="center_vertical|center">
                 <TableRow
                     android:background="@color/colorPrimary">
-                    <TextView android:text="N°"
-                        android:layout_width="40dp"
-                        android:paddingRight="10dp"
+
+                    <TextView
+                        android:layout_width="81dp"
                         android:paddingBottom="5dp"
+                        android:paddingRight="10dp"
                         android:paddingTop="5dp"
-                        android:textColor="@color/headtableLetra"/>
+                        android:text="N°"
+                        android:textColor="@color/headtableLetra" />
                     <TextView android:text="Nombre"
                         android:layout_width="250dp"
                         android:paddingLeft="15dp"
@@ -141,13 +143,16 @@
                         android:paddingBottom="5dp"
                         android:paddingTop="5dp"
                         android:textColor="@color/headtableLetra"/>
-                    <TextView android:text="Opciones"
+
+                    <TextView
                         android:layout_width="150dp"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="5dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="10dp"
-                        android:paddingBottom="5dp"
                         android:paddingTop="5dp"
-                        android:textColor="@color/headtableLetra"/>
+                        android:text="Opciones"
+                        android:textColor="@color/headtableLetra" />
                 </TableRow>
                 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
