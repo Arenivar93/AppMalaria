@@ -11,12 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.minsal.dtic.sinavec.CRUD.GotaGruesaActivity;
-import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles;
 import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.ListCapturaActivity;
+import com.minsal.dtic.sinavec.CRUD.gotaGruesa.activityGotaGruesa.ListGotaGruesaActivity;
 import com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria.ListPesquisaActivity;
 import com.minsal.dtic.sinavec.CRUD.seguimientoBotiquin.ListSeguimientoBotiquin;
-import com.minsal.dtic.sinavec.CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity;
 import com.minsal.dtic.sinavec.R;
 
 
@@ -56,9 +54,8 @@ public class MainFragment extends Fragment{
         gotaCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),GotaGruesaActivity.class);
+                Intent intent=new Intent(getActivity(),ListGotaGruesaActivity.class);
                 startActivity(intent);
-                Toast.makeText(getContext(),"Gota Gruesa",Toast.LENGTH_SHORT).show();
             }
         });
         pesquisaCard.setOnClickListener(new View.OnClickListener() {

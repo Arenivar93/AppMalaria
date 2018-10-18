@@ -1,3 +1,4 @@
+
 package com.minsal.dtic.sinavec.EntityDAO;
 
 import android.content.Context;
@@ -45,6 +46,8 @@ public class DaoMaster extends AbstractDaoMaster {
         PlCapturaAnophelesDao.createTable(db, ifNotExists);
         PlSeguimientoBotiquinDao.createTable(db, ifNotExists);
         PlPesquisaLarvariaDao.createTable(db, ifNotExists);
+        ResultadoGotaDao.createTable(db, ifNotExists);
+        PlGotaGruesaDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -73,6 +76,8 @@ public class DaoMaster extends AbstractDaoMaster {
         PlCapturaAnophelesDao.dropTable(db, ifExists);
         PlSeguimientoBotiquinDao.dropTable(db, ifExists);
         PlPesquisaLarvariaDao.dropTable(db, ifExists);
+        ResultadoGotaDao.dropTable(db, ifExists);
+        PlGotaGruesaDao.dropTable(db, ifExists);
     }
 
     /**
@@ -115,6 +120,8 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(PlCapturaAnophelesDao.class);
         registerDaoClass(PlSeguimientoBotiquinDao.class);
         registerDaoClass(PlPesquisaLarvariaDao.class);
+        registerDaoClass(ResultadoGotaDao.class);
+        registerDaoClass(PlGotaGruesaDao.class);
     }
 
     public DaoSession newSession() {
@@ -163,3 +170,10 @@ public class DaoMaster extends AbstractDaoMaster {
     }
 
 }
+
+
+
+
+
+
+

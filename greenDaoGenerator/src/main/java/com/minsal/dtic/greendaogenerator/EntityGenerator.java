@@ -315,6 +315,53 @@ public class EntityGenerator {
         plPesquisaLarvaria.addToOne(ctlCaserio,idCaserioPesquisa);
         plPesquisaLarvaria.addToOne(fosUserUser,idUserPesquisa);
 
+        //26 Tabla ResultadoGota
+        Entity resultadoGota=schema.addEntity("ResultadoGota");
+        resultadoGota.addLongProperty("id").primaryKey();
+        resultadoGota.addStringProperty("resultado");
+        resultadoGota.addStringProperty("codigo");
+
+        //27 Tabla PlGotaGruesa
+        Entity plGotaGruesa=schema.addEntity("PlGotaGruesa");
+        plGotaGruesa.addLongProperty("id").primaryKey().autoincrement();
+        plGotaGruesa.addIntProperty("idE6").notNull();
+        plGotaGruesa.addIntProperty("idSemanaEpidemiologica").notNull();
+        plGotaGruesa.addIntProperty("idSexo").notNull();
+        plGotaGruesa.addIntProperty("idEstado").notNull();
+        plGotaGruesa.addIntProperty("idUsuarioMod").notNull();
+        plGotaGruesa.addIntProperty("busquedaActiva").notNull();
+        plGotaGruesa.addStringProperty("nombre").notNull();
+        plGotaGruesa.addIntProperty("edad").notNull();
+        plGotaGruesa.addStringProperty("direccion").notNull();
+        plGotaGruesa.addStringProperty("fechaFiebre").notNull();
+        plGotaGruesa.addStringProperty("fechaToma").notNull();
+        plGotaGruesa.addStringProperty("fechaHoraReg").notNull();
+        plGotaGruesa.addStringProperty("fechaHoraMod").notNull();
+        plGotaGruesa.addStringProperty("fecha").notNull();
+        plGotaGruesa.addIntProperty("esPc").notNull();
+        plGotaGruesa.addIntProperty("tipoProcedencia").notNull();
+        plGotaGruesa.addIntProperty("anio").notNull();
+        plGotaGruesa.addStringProperty("idVectores").notNull();
+        plGotaGruesa.addIntProperty("extranjero").notNull();
+        plGotaGruesa.addIntProperty("sospecha").notNull();
+        plGotaGruesa.addIntProperty("idLabLectura").notNull();
+        plGotaGruesa.addStringProperty("detalleLectura").notNull();
+        plGotaGruesa.addIntProperty("estado_sync").notNull();
+        Property idTabletGota=plGotaGruesa.addLongProperty("idTablet").notNull().getProperty();
+        Property idSibasiGota=plGotaGruesa.addLongProperty("idSibasi").notNull().getProperty();
+        Property idCaserioGota=plGotaGruesa.addLongProperty("idCaserio").notNull().getProperty();
+        Property idUserGota=plGotaGruesa.addLongProperty("idUsuarioReg").notNull().getProperty();
+        Property idClaveGota=plGotaGruesa.addLongProperty("idClave").notNull().getProperty();
+        Property idPaisGota=plGotaGruesa.addLongProperty("idPais").notNull().getProperty();
+        Property idResultadoGota=plGotaGruesa.addLongProperty("idResultado").notNull().getProperty();
+        plGotaGruesa.addToOne(ctlPais,idPaisGota);
+        plGotaGruesa.addToOne(ctlTablet,idTabletGota);
+        plGotaGruesa.addToOne(ctlEstablecimiento,idSibasiGota);
+        plGotaGruesa.addToOne(ctlCaserio,idCaserioGota);
+        plGotaGruesa.addToOne(fosUserUser,idUserGota);
+        plGotaGruesa.addToOne(clave,idClaveGota);
+        plGotaGruesa.addToOne(resultadoGota,idResultadoGota);
+
         try {
             new DaoGenerator().generateAll(schema,"./app/src/main/java");
         } catch (Exception e) {

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CRUD.gotaGruesa.activityGotaGruesa.ListGotaGruesaActivity">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/tvDetalleSemana"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:text="Listado de Gotas Gruesas por Semana"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnNuevaGota"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:drawableLeft="@android:drawable/ic_menu_add"
+            android:text=" Ingresar Gota Gruesa"
+            android:textColor="#0b6f02"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.765"
+            app:layout_constraintStart_toEndOf="@+id/tvDetalleSemana"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="15dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@+id/tvDetalleSemana"
+            tools:layout_editor_absoluteX="0dp"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="#5b5efa"
+                android:text="Año" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="#5b5efa"
+                android:text="Semana" />
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="#5b5efa"
+                android:text="Supervisados" />
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="#5b5efa"
+                android:text="Visitados" />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="#5b5efa"
+                android:text="Riesgo Social" />
+
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="#5b5efa"
+                android:text="Personas Divulgó" />
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="15dp"
+                android:layout_weight="1"
+                android:background="#5b5efa"
+                android:text="Total semana" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/header">
+
+            <ListView
+                android:id="@+id/lvGotaGruesa"
+                android:layout_width="match_parent"
+                android:layout_height="400dp" />
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>
