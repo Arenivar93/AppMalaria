@@ -37,6 +37,9 @@ package com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol;
         import com.minsal.dtic.sinavec.R;
         import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
+        import java.text.SimpleDateFormat;
+        import java.util.Calendar;
+        import java.util.Date;
         import java.util.List;
 
 public class MapaColvolActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener {
@@ -131,8 +134,16 @@ public class MapaColvolActivity extends AppCompatActivity implements OnMapReadyC
 
                 if(!latitudColvol.getText().toString().isEmpty() && !longitudColvol.getText().toString().isEmpty()){
                     colvol.setLatitud(latitudColvol.getText().toString());
+                    long idUsuario = prefs.getLong("idUser",0);
+                    Date currentTime = Calendar.getInstance().getTime();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String fecha = dateFormat.format(currentTime);
                     colvol.setLongitud(longitudColvol.getText().toString());
                     colvol.setEstado_sync(2);
+                    colvol.setFechaHoraMod(fecha);
+                    if (idUsuario >0){
+                        colvol.setIdUsuarioMod(idUsuario);
+                    }
                     colvolDao.update(colvol);
                     Intent geolocalizarColvol=new Intent(com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol.MapaColvolActivity.this, BuscarColvolActivity.class);
                     Bundle miBundle=new Bundle();

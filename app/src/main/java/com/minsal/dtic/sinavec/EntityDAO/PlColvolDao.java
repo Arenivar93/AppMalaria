@@ -31,9 +31,11 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
         public final static Property Nombre = new Property(3, String.class, "nombre", false, "NOMBRE");
         public final static Property Estado = new Property(4, Integer.class, "estado", false, "ESTADO");
         public final static Property Clave = new Property(5, String.class, "clave", false, "CLAVE");
-        public final static Property Estado_sync = new Property(6, int.class, "estado_sync", false, "ESTADO_SYNC");
-        public final static Property IdCaserio = new Property(7, long.class, "idCaserio", false, "ID_CASERIO");
-        public final static Property IdSibasi = new Property(8, long.class, "idSibasi", false, "ID_SIBASI");
+        public final static Property FechaHoraMod = new Property(6, String.class, "FechaHoraMod", false, "FECHA_HORA_MOD");
+        public final static Property Estado_sync = new Property(7, int.class, "estado_sync", false, "ESTADO_SYNC");
+        public final static Property IdUsuarioMod = new Property(8, long.class, "idUsuarioMod", false, "ID_USUARIO_MOD");
+        public final static Property IdCaserio = new Property(9, long.class, "idCaserio", false, "ID_CASERIO");
+        public final static Property IdSibasi = new Property(10, long.class, "idSibasi", false, "ID_SIBASI");
     }
 
     private DaoSession daoSession;
@@ -58,11 +60,11 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
                 "\"NOMBRE\" TEXT," + // 3: nombre
                 "\"ESTADO\" INTEGER," + // 4: estado
                 "\"CLAVE\" TEXT," + // 5: clave
-                "\"ESTADO_SYNC\" INTEGER NOT NULL ," + // 6: estado_sync
-                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 7: idCaserio
-                "\"ID_SIBASI\" INTEGER NOT NULL ,"+"FOREIGN KEY(\"ID_CASERIO\")" +
-                " REFERENCES CTL_CASERIO(\"ID\") ON DELETE CASCADE,"+"FOREIGN KEY(\"ID_SIBASI\")" +
-                " REFERENCES CTL_ESTABLECIMIENTO(\"ID\") ON DELETE CASCADE );"); // 7: idSibasi
+                "\"FECHA_HORA_MOD\" TEXT," + // 6: FechaHoraMod
+                "\"ESTADO_SYNC\" INTEGER NOT NULL ," + // 7: estado_sync
+                "\"ID_USUARIO_MOD\" INTEGER NOT NULL ," + // 8: idUsuarioMod
+                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 9: idCaserio
+                "\"ID_SIBASI\" INTEGER NOT NULL );"); // 10: idSibasi
     }
 
     /** Drops the underlying database table. */
@@ -104,9 +106,15 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
         if (clave != null) {
             stmt.bindString(6, clave);
         }
-        stmt.bindLong(7, entity.getEstado_sync());
-        stmt.bindLong(8, entity.getIdCaserio());
-        stmt.bindLong(9, entity.getIdSibasi());
+ 
+        String FechaHoraMod = entity.getFechaHoraMod();
+        if (FechaHoraMod != null) {
+            stmt.bindString(7, FechaHoraMod);
+        }
+        stmt.bindLong(8, entity.getEstado_sync());
+        stmt.bindLong(9, entity.getIdUsuarioMod());
+        stmt.bindLong(10, entity.getIdCaserio());
+        stmt.bindLong(11, entity.getIdSibasi());
     }
 
     @Override
@@ -142,9 +150,15 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
         if (clave != null) {
             stmt.bindString(6, clave);
         }
-        stmt.bindLong(7, entity.getEstado_sync());
-        stmt.bindLong(8, entity.getIdCaserio());
-        stmt.bindLong(9, entity.getIdSibasi());
+ 
+        String FechaHoraMod = entity.getFechaHoraMod();
+        if (FechaHoraMod != null) {
+            stmt.bindString(7, FechaHoraMod);
+        }
+        stmt.bindLong(8, entity.getEstado_sync());
+        stmt.bindLong(9, entity.getIdUsuarioMod());
+        stmt.bindLong(10, entity.getIdCaserio());
+        stmt.bindLong(11, entity.getIdSibasi());
     }
 
     @Override
@@ -167,9 +181,11 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // nombre
             cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // estado
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // clave
-            cursor.getInt(offset + 6), // estado_sync
-            cursor.getLong(offset + 7), // idCaserio
-            cursor.getLong(offset + 8) // idSibasi
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // FechaHoraMod
+            cursor.getInt(offset + 7), // estado_sync
+            cursor.getLong(offset + 8), // idUsuarioMod
+            cursor.getLong(offset + 9), // idCaserio
+            cursor.getLong(offset + 10) // idSibasi
         );
         return entity;
     }
@@ -182,9 +198,11 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
         entity.setNombre(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setEstado(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setClave(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setEstado_sync(cursor.getInt(offset + 6));
-        entity.setIdCaserio(cursor.getLong(offset + 7));
-        entity.setIdSibasi(cursor.getLong(offset + 8));
+        entity.setFechaHoraMod(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setEstado_sync(cursor.getInt(offset + 7));
+        entity.setIdUsuarioMod(cursor.getLong(offset + 8));
+        entity.setIdCaserio(cursor.getLong(offset + 9));
+        entity.setIdSibasi(cursor.getLong(offset + 10));
      }
     
     @Override
@@ -222,9 +240,12 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
             SqlUtils.appendColumns(builder, "T0", daoSession.getCtlCaserioDao().getAllColumns());
             builder.append(',');
             SqlUtils.appendColumns(builder, "T1", daoSession.getCtlEstablecimientoDao().getAllColumns());
+            builder.append(',');
+            SqlUtils.appendColumns(builder, "T2", daoSession.getFosUserUserDao().getAllColumns());
             builder.append(" FROM PL_COLVOL T");
             builder.append(" LEFT JOIN CTL_CASERIO T0 ON T.\"ID_CASERIO\"=T0.\"ID\"");
             builder.append(" LEFT JOIN CTL_ESTABLECIMIENTO T1 ON T.\"ID_SIBASI\"=T1.\"ID\"");
+            builder.append(" LEFT JOIN FOS_USER_USER T2 ON T.\"ID_USUARIO_MOD\"=T2.\"ID\"");
             builder.append(' ');
             selectDeep = builder.toString();
         }
@@ -244,6 +265,12 @@ public class PlColvolDao extends AbstractDao<PlColvol, Long> {
         CtlEstablecimiento ctlEstablecimiento = loadCurrentOther(daoSession.getCtlEstablecimientoDao(), cursor, offset);
          if(ctlEstablecimiento != null) {
             entity.setCtlEstablecimiento(ctlEstablecimiento);
+        }
+        offset += daoSession.getCtlEstablecimientoDao().getAllColumns().length;
+
+        FosUserUser fosUserUser = loadCurrentOther(daoSession.getFosUserUserDao(), cursor, offset);
+         if(fosUserUser != null) {
+            entity.setFosUserUser(fosUserUser);
         }
 
         return entity;    

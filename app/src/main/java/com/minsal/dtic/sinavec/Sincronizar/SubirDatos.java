@@ -1,15 +1,19 @@
 package com.minsal.dtic.sinavec.Sincronizar;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
+import android.graphics.Color;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTablet;
@@ -99,17 +104,7 @@ public class SubirDatos extends AppCompatActivity {
         subirDatos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    float carga = calculoBateria(getApplicationContext());
-                    if (carga < 0.40) { //50% solo tiene 10 para probarla
-                        Toast.makeText(getApplicationContext(), "El estado de carga es menor al 40%, Por favor conecte el dispositivo", Toast.LENGTH_LONG).show();
-                    } else {
-                        checkinServer("subir");
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+               confirm();
 
 
             }
@@ -258,6 +253,8 @@ public class SubirDatos extends AppCompatActivity {
                 joColvolUpdate.put("id",c.getId());
                 joColvolUpdate.put("longitud",c.getLongitud());
                 joColvolUpdate.put("latitud",c.getLatitud());
+                joColvolUpdate.put("idUsuarioMod",c.getIdUsuarioMod());
+                joColvolUpdate.put("fechaHoraMod",c.getFechaHoraMod());
                 joColvolUpdate.put("idTablet",idTablet);
                 jaUpdate.put(joColvolUpdate);
             }
@@ -665,7 +662,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendColvolUpdate(String token) throws JSONException {
         JSONArray json = getUpdateColvol();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/colvol";
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/colvol";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -858,6 +855,37 @@ public class SubirDatos extends AppCompatActivity {
         criadero.setLatitud(latitud);
         criadero.setFechaHoraMod(fechaMod);
         criadero.setIdUsuarioMod(usuarioMod);
+
+    }
+    public void confirm() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(SubirDatos.this);
+        builder.setMessage(Html.fromHtml("<font color='#FF0000'><b>¿Seguro que desea enviar los datos al servidor??</b></font>"))
+                .setNegativeButton(Html.fromHtml("Cancelar"), null)
+                .setPositiveButton(Html.fromHtml("Si, Enviar"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        try {
+                            float carga = calculoBateria(getApplicationContext());
+                            if (carga < 0.40) { //50% solo tiene 10 para probarla
+                                Toast.makeText(getApplicationContext(), "El estado de carga es menor al 40%, Por favor conecte el dispositivo", Toast.LENGTH_LONG).show();
+                            } else {
+                                checkinServer("subir");
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                })
+                .setCancelable(false);
+        //.create().show();
+        AlertDialog a = builder.create();
+        a.show();
+        Button btnPositivo = a.getButton(DialogInterface.BUTTON_POSITIVE);
+        btnPositivo.setTextColor(Color.RED);
+        Button btnNegativo = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        btnNegativo.setTextColor(Color.DKGRAY);
 
     }
 

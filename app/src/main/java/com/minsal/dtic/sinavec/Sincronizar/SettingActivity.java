@@ -256,12 +256,13 @@ public class SettingActivity extends AppCompatActivity {
         caserioDao.insert(caserio);
     }
 
-    public void saveTablet(long id, long sibasi, String codigo, String serie) {
+    public void saveTablet(long id, long sibasi, String codigo, String serie,int ultimoBajado) {
         CtlTabletDao tabletDao = daoSession.getCtlTabletDao();
         CtlTablet tablet = new CtlTablet();
         tablet.setId(id);
         tablet.setCodigo(codigo);
         tablet.setIdSibasi(sibasi);
+        tablet.setUltimoRegBajado(ultimoBajado);
         tablet.setSerie(serie); //es el IMEI
         tabletDao.insert(tablet);
     }
@@ -425,14 +426,14 @@ public class SettingActivity extends AppCompatActivity {
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(getApplicationContext(), "Error!!Por favor contacta al administrador" + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), "Error1!!Por favor contacta al administrador" + e.getMessage(), Toast.LENGTH_LONG).show();
 
                                 }
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), "Error!Por favor contacta al administrador" + String.valueOf(error), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Error2!Por favor contacta al administrador" + String.valueOf(error), Toast.LENGTH_LONG).show();
 
                     }
                 }) {
@@ -633,8 +634,15 @@ public class SettingActivity extends AppCompatActivity {
 
 
                 for (int p = 0; p < jaTablet.length(); p++) {
+                    int ultimoBajado =0;
+
                     JSONObject joTablet = jaTablet.getJSONObject(p);
-                    saveTablet(joTablet.getLong("id"), joTablet.getLong("id_sibasi"), joTablet.getString("codigo"), joTablet.getString("imei"));
+                    if (!joTablet.isNull("ultimo_bajado")){
+                        ultimoBajado = joTablet.getInt("ultimo_bajado");
+                        
+                    }
+                    saveTablet(joTablet.getLong("id"), joTablet.getLong("id_sibasi"),
+                            joTablet.getString("codigo"), joTablet.getString("imei"),ultimoBajado);
                     num++;
                     publishProgress(num);
                 }
@@ -699,6 +707,7 @@ public class SettingActivity extends AppCompatActivity {
 
 
             } catch (Exception e) {
+                getApplicationContext().deleteDatabase("malaria");
                 e.printStackTrace();
                 return false;
             }
@@ -724,7 +733,7 @@ public class SettingActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
             }else{
-                Toast.makeText(getBaseContext(), "Ha ocurrido un error, Desintala la App e intenta de nuevo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Ha ocurrido un error, Reinicia la App e intenta de nuevo", Toast.LENGTH_SHORT).show();
             }
         }
 

@@ -23,7 +23,9 @@ public class PlColvol {
     private String nombre;
     private Integer estado;
     private String clave;
+    private String FechaHoraMod;
     private int estado_sync;
+    private long idUsuarioMod;
     private long idCaserio;
     private long idSibasi;
 
@@ -47,6 +49,12 @@ public class PlColvol {
     @Generated
     private transient Long ctlEstablecimiento__resolvedKey;
 
+    @ToOne(joinProperty = "idUsuarioMod")
+    private FosUserUser fosUserUser;
+
+    @Generated
+    private transient Long fosUserUser__resolvedKey;
+
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
 
@@ -59,14 +67,16 @@ public class PlColvol {
     }
 
     @Generated
-    public PlColvol(Long id, String latitud, String longitud, String nombre, Integer estado, String clave, int estado_sync, long idCaserio, long idSibasi) {
+    public PlColvol(Long id, String latitud, String longitud, String nombre, Integer estado, String clave, String FechaHoraMod, int estado_sync, long idUsuarioMod, long idCaserio, long idSibasi) {
         this.id = id;
         this.latitud = latitud;
         this.longitud = longitud;
         this.nombre = nombre;
         this.estado = estado;
         this.clave = clave;
+        this.FechaHoraMod = FechaHoraMod;
         this.estado_sync = estado_sync;
+        this.idUsuarioMod = idUsuarioMod;
         this.idCaserio = idCaserio;
         this.idSibasi = idSibasi;
     }
@@ -126,12 +136,28 @@ public class PlColvol {
         this.clave = clave;
     }
 
+    public String getFechaHoraMod() {
+        return FechaHoraMod;
+    }
+
+    public void setFechaHoraMod(String FechaHoraMod) {
+        this.FechaHoraMod = FechaHoraMod;
+    }
+
     public int getEstado_sync() {
         return estado_sync;
     }
 
     public void setEstado_sync(int estado_sync) {
         this.estado_sync = estado_sync;
+    }
+
+    public long getIdUsuarioMod() {
+        return idUsuarioMod;
+    }
+
+    public void setIdUsuarioMod(long idUsuarioMod) {
+        this.idUsuarioMod = idUsuarioMod;
     }
 
     public long getIdCaserio() {
@@ -203,6 +229,34 @@ public class PlColvol {
             this.ctlEstablecimiento = ctlEstablecimiento;
             idSibasi = ctlEstablecimiento.getId();
             ctlEstablecimiento__resolvedKey = idSibasi;
+        }
+    }
+
+    /** To-one relationship, resolved on first access. */
+    @Generated
+    public FosUserUser getFosUserUser() {
+        long __key = this.idUsuarioMod;
+        if (fosUserUser__resolvedKey == null || !fosUserUser__resolvedKey.equals(__key)) {
+            __throwIfDetached();
+            FosUserUserDao targetDao = daoSession.getFosUserUserDao();
+            FosUserUser fosUserUserNew = targetDao.load(__key);
+            synchronized (this) {
+                fosUserUser = fosUserUserNew;
+            	fosUserUser__resolvedKey = __key;
+            }
+        }
+        return fosUserUser;
+    }
+
+    @Generated
+    public void setFosUserUser(FosUserUser fosUserUser) {
+        if (fosUserUser == null) {
+            throw new DaoException("To-one property 'idUsuarioMod' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.fosUserUser = fosUserUser;
+            idUsuarioMod = fosUserUser.getId();
+            fosUserUser__resolvedKey = idUsuarioMod;
         }
     }
 

@@ -123,11 +123,14 @@ public class EntityGenerator {
         plColvol.addStringProperty("nombre");
         plColvol.addIntProperty("estado");
         plColvol.addStringProperty("clave");
+        plColvol.addStringProperty("FechaHoraMod");
         plColvol.addIntProperty("estado_sync").notNull();
+        Property usuarioMod=plColvol.addLongProperty("idUsuarioMod").notNull().getProperty();
         Property idCaserioPlColvol=plColvol.addLongProperty("idCaserio").notNull().getProperty();
         Property idSibasiPlColvol=plColvol.addLongProperty("idSibasi").notNull().getProperty();
         plColvol.addToOne(ctlCaserio,idCaserioPlColvol);
         plColvol.addToOne(ctlEstablecimiento,idSibasiPlColvol);
+        plColvol.addToOne(fosUserUser,usuarioMod);
 
         //16 Tabla ColvolClave
         Entity colvolClave=schema.addEntity("ColvolCalve");
