@@ -106,6 +106,10 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
 
+        //set user name en sesion
+        TextView userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvUser);
+        userName.setText(" "+elUser);
+
 
 
     }
@@ -152,9 +156,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (id == R.id.inicio) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MainFragment()).commit();
-        } else if (id == R.id.gotas) {
-            fragmentManager.beginTransaction().replace(R.id.contenedor, new FebrilFragment()).commit();
-        } else if (id == R.id.criadero) {
+        }else if (id == R.id.criadero) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MenuCriaderoFragment()).commit();
         } else if (id == R.id.colvol) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new MenuColvolFragment()).commit();
@@ -164,9 +166,9 @@ public class MainActivity extends AppCompatActivity
         } else if(id== R.id.subir_datos){
             Intent i = new Intent(getApplicationContext(), SubirDatos.class);
             startActivity(i);
-        }else if (id == R.id.tab) {
+        }/*else if (id == R.id.tab) {
             fragmentManager.beginTransaction().replace(R.id.contenedor, new ContenedorFragment()).commit();
-        }
+        }*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

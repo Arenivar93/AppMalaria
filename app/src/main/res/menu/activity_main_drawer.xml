@@ -9,10 +9,6 @@
             android:icon="@drawable/if_home_173033"
             android:title="Inicio" />
         <item
-            android:id="@+id/gotas"
-            android:icon="@drawable/gota_gruesa"
-            android:title="Gotas Gruesas" />
-        <item
             android:id="@+id/colvol"
             android:icon="@drawable/colvol"
             android:title="Colvol" />
@@ -32,10 +28,6 @@
                 android:id="@+id/subir_datos"
                 android:icon="@drawable/ic_cambiar"
                 android:title="Sincronixar Datos Malaria" />
-            <item
-                android:id="@+id/tab"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Tabs" />
         </menu>
     </item>
 
