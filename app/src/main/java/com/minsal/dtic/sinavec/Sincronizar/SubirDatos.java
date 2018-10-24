@@ -39,6 +39,8 @@ import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
+import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquin;
+import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquinDao;
 import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
@@ -172,6 +174,24 @@ public class SubirDatos extends AppCompatActivity {
             joCriaderoUpdate.put("id",c.getId());
             joCriaderoUpdate.put("longitud",c.getLongitud());
             joCriaderoUpdate.put("latitud",c.getLatitud());
+            joCriaderoUpdate.put("idUsuarioMod",c.getIdUsuarioMod());
+            joCriaderoUpdate.put("idTablet",idTablet);
+            joCriaderoUpdate.put("fechaHoraMod",date);
+            jaUpdate.put(joCriaderoUpdate);
+        }
+        return jaUpdate;
+    }
+    public JSONArray getSeguimientoBotiquin() throws JSONException {
+        JSONArray jaUpdate = new JSONArray();
+        List<PlSeguimientoBotiquin> Seguimientos;
+        PlSeguimientoBotiquinDao segDao = daoSession.getPlSeguimientoBotiquinDao();
+        Seguimientos = segDao.queryBuilder().where(PlSeguimientoBotiquinDao.Properties.Estado_sync.eq(1)).list();
+        SimpleDateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (PlSeguimientoBotiquin c : Seguimientos) {
+            String date = dateFormat.format(c.getFechaHoraMod());
+            JSONObject joCriaderoUpdate = new JSONObject();
+            joCriaderoUpdate.put("id",c.getId());
             joCriaderoUpdate.put("idUsuarioMod",c.getIdUsuarioMod());
             joCriaderoUpdate.put("idTablet",idTablet);
             joCriaderoUpdate.put("fechaHoraMod",date);
@@ -354,6 +374,25 @@ public class SubirDatos extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),String.valueOf(e.getMessage()),Toast.LENGTH_LONG).show();
         }
     }
+    public void updateColvolUpdate(JSONObject jsonObject){
+        try {
+            JSONArray jaColvolUpdate = jsonObject.getJSONArray("ids");
+            int total = jaColvolUpdate.length();
+            if (total>0){
+                for (int i = 0; i < jaColvolUpdate.length(); i++) {
+                    String id = String.valueOf(jaColvolUpdate.get(i));
+                    PlColvolDao colvolDao = daoSession.getPlColvolDao();
+                    PlColvol colvolUpdate = colvolDao.loadByRowId(Long.parseLong(id));
+                    colvolUpdate.setEstado_sync(0);
+                    colvolDao.update(colvolUpdate);
+                }
+                tvColvol.setText("se subieron "+String.valueOf(jaColvolUpdate.length())+" actualizaciones de ColVol");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),String.valueOf(e.getMessage()),Toast.LENGTH_LONG).show();
+        }
+    }
 
     /**
      *peticion de token al servidor,si la respuesta es corresta iniciara los metodos que suben los datos
@@ -376,7 +415,7 @@ public class SubirDatos extends AppCompatActivity {
                     tvCriaderosUpdate.setText(String.format("Criaderos actualizados para sincronizar: %d ",countCriaderosUpdate));
                     tvCriaderos.setText(String.format("Criaderos nuevos para sincronizar: %d ",countCridero));
                     tvColvol.setText(String.format("ColVol actualizados para sincronizar: %d ",counColvolUpdate));
-                    String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
+                    String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
                     RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                             new Response.Listener<String>() {
@@ -391,6 +430,7 @@ public class SubirDatos extends AppCompatActivity {
                                             sendCriaderosUpdate(token1);
                                             sendCriaderos(token1);
                                             sendColvolUpdate(token1);
+                                            sendSeguimientoBotiquin(token1);
                                         }else{
                                             Toast.makeText(getApplicationContext(), "autorizado para bajar", Toast.LENGTH_LONG).show();
                                         }
@@ -435,7 +475,7 @@ public class SubirDatos extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
 
         } else {
-                String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
+                String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
@@ -485,7 +525,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendCapturas(String tkn) throws JSONException {
         JSONArray json = getInsertCapturas();
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/capturas";
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/capturas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -531,7 +571,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendDataPesquisa(String token) throws JSONException {
         JSONArray json = getInsertPesquisas();
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/pesquisas";
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/pesquisas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -569,14 +609,54 @@ public class SubirDatos extends AppCompatActivity {
             }catch (Exception e){
                 e.printStackTrace();
             }
-
         }
+    }
+    private void sendSeguimientoBotiquin(String token) throws JSONException {
+        JSONArray json = getInsertPesquisas();
+        if (json.length()>0){
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/pesquisas";
+            RequestBody body = RequestBody.create(JSON, json.toString());
+            final okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .header("Authorization", "Bearer " + token)
+                    .build();
+            try {
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        tvPesquisa.setText(String.valueOf(e));
+                    }
+                    @Override
+                    public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            final String respuestaPesquiza = response.body().string();
+                            SubirDatos.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    JSONArray respuesta = null;
+                                    try {
+                                        respuesta = new JSONArray(respuestaPesquiza);
+                                        JSONObject jores = respuesta.getJSONObject(1);
+                                        updateLocalPesquisas(jores);
 
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
 
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
     private void sendCriaderos(String tkn) throws JSONException {
         JSONArray json = getInsetCriaderos();
-        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/criaderos";
+        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -619,7 +699,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendCriaderosUpdate(String token) throws JSONException {
         JSONArray json = getUpdateCriaderos();
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/criaderos";
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -655,14 +735,12 @@ public class SubirDatos extends AppCompatActivity {
             }catch (Exception e){
                 e.printStackTrace();
             }
-
         }
-
     }
     private void sendColvolUpdate(String token) throws JSONException {
         JSONArray json = getUpdateColvol();
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/colvol";
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/colvol";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -678,15 +756,15 @@ public class SubirDatos extends AppCompatActivity {
                     @Override
                     public void onResponse(Call call, okhttp3.Response response) throws IOException {
                         if (response.isSuccessful()) {
-                            final String respuestaUpdateCri = response.body().string();
+                            final String respuestaUpdateColvol = response.body().string();
                             SubirDatos.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     JSONArray respuesta = null;
                                     try {
-                                        respuesta = new JSONArray(respuestaUpdateCri);
-                                        JSONObject jores = respuesta.getJSONObject(1);
-                                        //updateCriaderosUpdate(jores);
+                                        respuesta = new JSONArray(respuestaUpdateColvol);
+                                        JSONObject joRespuesta = respuesta.getJSONObject(1);
+                                        updateColvolUpdate(joRespuesta);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -712,7 +790,7 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void bajarBitacora(String tkn){
         idUltimoReg = ultimoRegistroBajado();
-        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/bitacora?accion=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg="+idUltimoReg;
+        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/bitacora?accion=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg="+idUltimoReg;
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .header("Authorization", "Bearer " + tkn)
