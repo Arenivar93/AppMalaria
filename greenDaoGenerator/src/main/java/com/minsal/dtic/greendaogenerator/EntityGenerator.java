@@ -347,6 +347,8 @@ public class EntityGenerator {
         plGotaGruesa.addIntProperty("idLabLectura").notNull();
         plGotaGruesa.addStringProperty("detalleLectura").notNull();
         plGotaGruesa.addIntProperty("estado_sync").notNull();
+        plGotaGruesa.addIntProperty("unidadEdad").notNull();
+        plGotaGruesa.addStringProperty("responsable").notNull();
         Property idTabletGota=plGotaGruesa.addLongProperty("idTablet").notNull().getProperty();
         Property idSibasiGota=plGotaGruesa.addLongProperty("idSibasi").notNull().getProperty();
         Property idCaserioGota=plGotaGruesa.addLongProperty("idCaserio").notNull().getProperty();

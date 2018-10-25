@@ -5,36 +5,35 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.minsal.dtic.sinavec.CRUD.gotaGruesa.activityGotaGruesa.nuevaGotaGruesaActivity;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
+import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 
 import java.util.ArrayList;
 
 /**
- * Dialogo usado para el ingreso de los datos de un criadero
+ * Dialogo usado para el ingreso de los datos de gota gruesa
  */
 public class seleccionProcedenciaDialogFragment extends DialogFragment {
 
     private procedenciaDialogListener mListener;
-    ArrayAdapter<String> adapterTipoCriadero;
-    ArrayList<String> tipoCriadero=new ArrayList<String>();
-    private int tipoCriaderoVal=0;
-    private EditText nombre,telefono,habilitado,clave,circuito;
-    private long idColvol;
     private DaoSession daoSession;
-    private PlColvol colvol;
-    private TextView municipio,canton,caserio;
+    private CardView colvolCard;
 
     public interface procedenciaDialogListener {
         void onDialogPositiveClick(DialogFragment dialog, String nombre, String descripcion, int tipo, float ancho, float largo);
@@ -49,12 +48,8 @@ public class seleccionProcedenciaDialogFragment extends DialogFragment {
 
         daoSession=((MyMalaria) getActivity().getApplication()).getDaoSession();
 
-        nombre=(EditText)v.findViewById(R.id.nombreColvol);
-        habilitado=((EditText)v.findViewById(R.id.habilitado));
-        clave=((EditText)v.findViewById(R.id.clave));
-        municipio=(TextView)v.findViewById(R.id.idMunicipio);
-        canton=(TextView)v.findViewById(R.id.idCanton);
-        caserio=(TextView)v.findViewById(R.id.idCaserio);
+
+        colvolCard=(CardView) v.findViewById(R.id.cardColvol);
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -76,6 +71,16 @@ public class seleccionProcedenciaDialogFragment extends DialogFragment {
                         ventana.dismiss();
                     }
                 });
+            }
+        });
+
+
+        colvolCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(),nuevaGotaGruesaActivity.class);
+                startActivity(intent);
+                //Toast.makeText(getActivity().getApplicationContext(),"Regresaste",Toast.LENGTH_SHORT).show();
             }
         });
         return ventana;

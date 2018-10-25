@@ -198,7 +198,36 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.ListGotaGruesaActivity"></activity>
+        <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.ListGotaGruesaActivity"
+            android:label="Gotas Gruesas"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.ListGotaGruesaActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".CRUD.gotaGruesa.activityGotaGruesa.nuevaGotaGruesaActivity"
+            android:label="Gotas Gruesas Colvol"
+            android:parentActivityName=".CRUD.gotaGruesa.activityGotaGruesa.ListGotaGruesaActivity"
+            android:screenOrientation="landscape">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CRUD.gotaGruesa.activityGotaGruesa.ListGotaGruesaActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.nuevaGotaGruesaActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>
