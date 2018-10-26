@@ -23,5 +23,7 @@
     <color name="colorButtonLetra">#ffffff</color>
     <color name="errorFormulario">#e20202</color>
 
+    <color name="fondoCard">#dad7d7</color>
+
 
 </resources>

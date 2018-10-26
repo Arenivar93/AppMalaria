@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Build;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +35,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.minsal.dtic.sinavec.CRUD.gotaGruesa.fragmentGotaGruesa.nuevaGotaGruesaFragment;
+import com.minsal.dtic.sinavec.CRUD.gotaGruesa.fragmentGotaGruesa.seleccionProcedenciaDialogFragment;
 import com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria.NuevaPesquisaFragment;
+import com.minsal.dtic.sinavec.EntityDAO.ColvolCalve;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
@@ -40,6 +47,7 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 
+import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
 import com.minsal.dtic.sinavec.MainActivity;
@@ -53,7 +61,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener,NuevaPesquisaFragment.OnFragmentInteractionListener {
+public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener,nuevaGotaGruesaFragment.procedenciaDialogListener {
 
     private GoogleMap mMap;
     private DaoSession daoSession;
@@ -68,6 +76,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
     ArrayAdapter<String> adapter;
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
+    List<Marker> misMarkers;
 
     Utilidades utilidades;
 
@@ -191,7 +200,11 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
                 long idMunicipio = getIdMunicipioGota();
                 long idCanton = getIdCantonGota();
                 long idCaserio = getIdCaserioGota();
-                criaderosMap((int)idMunicipio);
+                if(idMunicipio!=0){
+                    colvolMap((int)idMunicipio,(int)idCanton,(int)idCaserio);
+                }else{
+                    Toast.makeText(getApplicationContext(),"Seleccione un Municipio",Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -205,27 +218,40 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                ColvolCalve colvolClave=(ColvolCalve)marker.getTag();
                /* CtlPlCriadero cria = (CtlPlCriadero) marker.getTag();
                 idCriadero=cria.getId();
                 idCaserio=cria.getCtlCaserio().getId();
                 NuevaPesquisaFragment dialog = new NuevaPesquisaFragment().newInstance(cria.getId(),cria.getNombre());
                 dialog.show(getFragmentManager(),"dialog");*/
-               Toast.makeText(getApplicationContext(),"Gotas Gruesas",Toast.LENGTH_LONG).show();
+               marker.showInfoWindow();
+               //Toast.makeText(getApplicationContext(),"Gotas Gruesas"+colvolClave.getPlColvol().getNombre(),Toast.LENGTH_LONG).show();
+                nuevaGotaGruesaFragment dialog = new nuevaGotaGruesaFragment();
+                dialog.show(getFragmentManager(), "dialog");
                 return false;
             }
 
         });
     }
-    public void criaderosMap(int municipio){
+    public void colvolMap(int municipio,int canton,int caserio){
         Utilidades u = new Utilidades(daoSession);
         List<CtlPlCriadero> criaderos = u.loadCriaderosMap(municipio);
-        if (criaderos.size()>0){
-            for (CtlPlCriadero c: criaderos){
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
-                        .title(c.getNombre())).setTag(c);
+
+        List<ColvolCalve> clavesColvol = u.loadClavesColvolMap(municipio,canton,caserio);
+
+
+        if (clavesColvol.size()>0){
+            misMarkers=new ArrayList<Marker>();
+            for (ColvolCalve c: clavesColvol){
+                String id=String.valueOf(c.getId());
+                Marker marker=mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(Double.parseDouble(c.getPlColvol().getLatitud()), Double.parseDouble(c.getPlColvol().getLongitud())))
+                        .title(c.getPlColvol().getNombre()+"--"+c.getClave().getClave()));
+                marker.setTag(c);
+                //marker.showInfoWindow();
+                misMarkers.add(marker);
             }
-            tvCountCriadero.setText(String.format("Total de colvol encontrados: %s", String.valueOf(criaderos.size())));
+            tvCountCriadero.setText(String.format("Total de colvol encontradoss: %s", String.valueOf(clavesColvol.size())));
         }else{
             tvCountCriadero.setText("Sin colvol");
         }
@@ -298,53 +324,9 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
         return idCaserio;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
-    public void OnDialogPositiveClick(DialogFragment dialog, int anopheles12, int anopheles34,
-                                      int culicino12, int culicino34, int pupa, int cucharonada,
-                                      float largo, float ancho) {
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        //String prueba = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(currentTime);
-        String fecha = dateFormat.format(currentTime);
-        float indice;
-        if (cucharonada>0 && anopheles34>0){
-            indice = anopheles34/cucharonada;
-        }else {indice=0;}
-
-        try {
-            Date fec = dateFormat.parse(fecha);
-            int semanaActual = getSemana();
-            PlPesquisaLarvariaDao pesDao = daoSession.getPlPesquisaLarvariaDao();
-            PlPesquisaLarvaria pes = new PlPesquisaLarvaria();
-            pes.setAnophelesUno(anopheles12);
-            pes.setAnophelesDos(anopheles34);
-            pes.setCulicinosUno(culicino12);
-            pes.setCulicinosDos(culicino34);
-            pes.setAncho(ancho);
-            pes.setLargo(largo);
-            pes.setNumeroCucharonada(cucharonada);
-            pes.setPupa(pupa);
-            pes.setIdCriadero(idCriadero);
-            pes.setFechaHoraReg(fecha);
-            pes.setIdEstado(1);
-            pes.setFechaHoraMod(fecha);// se debe quitar not null
-            pes.setFecha(currentTime);
-            pes.setIdSemanaEpidemiologica(semanaActual);
-            pes.setIdUsuarioReg(idUsuario);
-            pes.setIdCaserio(idCaserio);//el criadero esta amarradp a un caserio navegar a el
-            pes.setIdSibasi(idSibasi);
-            pes.setIdTablet(idTablet);
-            pes.setIndiceLarvario(indice);
-            pes.setEstado_sync(1);
-            pesDao.insert(pes);
-
-            customToadSuccess(getApplicationContext(),"Pesquisa Larvaria se guardo con éxito");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-        }
+    public void onDialogPositiveClick(DialogFragment dialog, String nombre, String descripcion, int tipo, float ancho, float largo) {
 
     }
 
