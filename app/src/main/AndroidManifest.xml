@@ -88,7 +88,8 @@
         <activity android:name=".CRUD.Colvol.activityColvol.MapaColvolActivity" />
         <activity
             android:name=".CRUD.capturaAnopheles.ListCapturaActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".CRUD.pesquisaLarvaria.ListPesquisaActivity"
             android:parentActivityName=".MainActivity" />

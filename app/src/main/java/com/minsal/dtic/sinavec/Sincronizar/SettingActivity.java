@@ -705,7 +705,6 @@ public class SettingActivity extends AppCompatActivity {
                     saveEstClave(joc.getLong("id"),joc.getLong("id_clave"),joc.getLong("id_establecimiento"));
                 }
 
-
             } catch (Exception e) {
                 getApplicationContext().deleteDatabase("malaria");
                 e.printStackTrace();

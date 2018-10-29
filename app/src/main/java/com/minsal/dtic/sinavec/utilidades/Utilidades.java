@@ -16,6 +16,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.EstablecimientoClave;
+import com.minsal.dtic.sinavec.EntityDAO.EstablecimientoClaveDao;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
@@ -71,6 +73,8 @@ public class Utilidades {
 
     private List<CtlPlCriadero> criaderosMap;
     private List<CtlEstablecimiento> establecimientoMap;
+    private List<EstablecimientoClave> establecimientoClavesMap;
+
     private List<PlColvol> colvolMap;
     private List<CtlPlCriadero> criaderos;
     private List<PlColvol> colvols;
@@ -509,6 +513,27 @@ public class Utilidades {
             establecimientoMap = qb.list();
         }
         return establecimientoMap;
+    }
+    public List<EstablecimientoClave> loadEstablecimientoClaveMap(int idMunicipio, int idDepto) {
+        EstablecimientoClaveDao estClaveDao = daoSession.getEstablecimientoClaveDao();
+        establecimientoClavesMap = new ArrayList<EstablecimientoClave>();
+        if (idMunicipio>0){
+            QueryBuilder<EstablecimientoClave> qb = estClaveDao.queryBuilder();
+            Join cltEstablecimiento = qb.join(EstablecimientoClaveDao.Properties.IdEstablecimiento,CtlEstablecimiento.class)
+                    .where(CtlEstablecimientoDao.Properties.Latitud.isNotNull()).where(CtlEstablecimientoDao.Properties.IdMunicipio.eq(idMunicipio));
+            establecimientoClavesMap = qb.orderAsc(EstablecimientoClaveDao.Properties.IdClave).list();
+        }else {
+            QueryBuilder<EstablecimientoClave> qb = estClaveDao.queryBuilder();
+            Join cltEstablecimiento = qb.join(EstablecimientoClaveDao.Properties.IdEstablecimiento,CtlEstablecimiento.class).where(CtlEstablecimientoDao.Properties.Latitud.isNotNull());
+            Join ctlMunicipio = qb.join(cltEstablecimiento,CtlEstablecimientoDao.Properties.IdMunicipio,CtlMunicipio.class,CtlMunicipioDao.Properties.Id);
+            Join ctlDepartamento = qb.join(ctlMunicipio,CtlMunicipioDao.Properties.IdDepartamento,
+                    CtlDepartamento.class,CtlDepartamentoDao.Properties.Id);
+            ctlDepartamento.where(CtlDepartamentoDao.Properties.Id.eq(idDepto));
+            establecimientoClavesMap = qb.list();
+
+
+        }
+        return establecimientoClavesMap;
     }
 
 
