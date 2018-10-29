@@ -95,6 +95,7 @@ public class EntityGenerator {
         ctlEstablecimiento.addStringProperty("nombre");
         ctlEstablecimiento.addStringProperty("latitud");
         ctlEstablecimiento.addStringProperty("longitud");
+        ctlEstablecimiento.addIntProperty("labClinico");
         ctlEstablecimiento.addIntProperty("estado_sync");
         Property idMunicipioEst=ctlEstablecimiento.addLongProperty("idMunicipio").notNull().getProperty();
         Property idTipoEstablecimiento=ctlEstablecimiento.addLongProperty("idTipoEstablecimiento").notNull().getProperty();
