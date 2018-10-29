@@ -21,6 +21,7 @@ public class CtlEstablecimiento {
     private String nombre;
     private String latitud;
     private String longitud;
+    private Integer labClinico;
     private Integer estado_sync;
     private long idMunicipio;
     private long idTipoEstablecimiento;
@@ -58,11 +59,12 @@ public class CtlEstablecimiento {
     }
 
     @Generated
-    public CtlEstablecimiento(Long id, String nombre, String latitud, String longitud, Integer estado_sync, long idMunicipio, long idTipoEstablecimiento, long idEstablecimientoPadre) {
+    public CtlEstablecimiento(Long id, String nombre, String latitud, String longitud, Integer labClinico, Integer estado_sync, long idMunicipio, long idTipoEstablecimiento, long idEstablecimientoPadre) {
         this.id = id;
         this.nombre = nombre;
         this.latitud = latitud;
         this.longitud = longitud;
+        this.labClinico = labClinico;
         this.estado_sync = estado_sync;
         this.idMunicipio = idMunicipio;
         this.idTipoEstablecimiento = idTipoEstablecimiento;
@@ -108,6 +110,14 @@ public class CtlEstablecimiento {
         this.longitud = longitud;
     }
 
+    public Integer getLabClinico() {
+        return labClinico;
+    }
+
+    public void setLabClinico(Integer labClinico) {
+        this.labClinico = labClinico;
+    }
+
     public Integer getEstado_sync() {
         return estado_sync;
     }
@@ -150,7 +160,7 @@ public class CtlEstablecimiento {
             CtlMunicipio ctlMunicipioNew = targetDao.load(__key);
             synchronized (this) {
                 ctlMunicipio = ctlMunicipioNew;
-            	ctlMunicipio__resolvedKey = __key;
+                ctlMunicipio__resolvedKey = __key;
             }
         }
         return ctlMunicipio;
@@ -178,7 +188,7 @@ public class CtlEstablecimiento {
             CtlTipoEstablecimiento ctlTipoEstablecimientoNew = targetDao.load(__key);
             synchronized (this) {
                 ctlTipoEstablecimiento = ctlTipoEstablecimientoNew;
-            	ctlTipoEstablecimiento__resolvedKey = __key;
+                ctlTipoEstablecimiento__resolvedKey = __key;
             }
         }
         return ctlTipoEstablecimiento;
@@ -197,9 +207,9 @@ public class CtlEstablecimiento {
     }
 
     /**
-    * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-    * Entity must attached to an entity context.
-    */
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
     @Generated
     public void delete() {
         __throwIfDetached();
@@ -207,9 +217,9 @@ public class CtlEstablecimiento {
     }
 
     /**
-    * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-    * Entity must attached to an entity context.
-    */
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
     @Generated
     public void update() {
         __throwIfDetached();
@@ -217,9 +227,9 @@ public class CtlEstablecimiento {
     }
 
     /**
-    * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-    * Entity must attached to an entity context.
-    */
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
     @Generated
     public void refresh() {
         __throwIfDetached();

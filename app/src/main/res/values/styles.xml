@@ -24,4 +24,7 @@
     <style name="MyAppTheme.TextInputLayout" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/errorFormulario</item>
     </style>
+    <style name="MyAppTheme.TextInputLayout.HintText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
 </resources>

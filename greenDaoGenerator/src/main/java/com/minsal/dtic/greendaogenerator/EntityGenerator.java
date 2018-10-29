@@ -95,6 +95,7 @@ public class EntityGenerator {
         ctlEstablecimiento.addStringProperty("nombre");
         ctlEstablecimiento.addStringProperty("latitud");
         ctlEstablecimiento.addStringProperty("longitud");
+        ctlEstablecimiento.addIntProperty("labClinico");
         ctlEstablecimiento.addIntProperty("estado_sync");
         Property idMunicipioEst=ctlEstablecimiento.addLongProperty("idMunicipio").notNull().getProperty();
         Property idTipoEstablecimiento=ctlEstablecimiento.addLongProperty("idTipoEstablecimiento").notNull().getProperty();
@@ -347,6 +348,8 @@ public class EntityGenerator {
         plGotaGruesa.addIntProperty("idLabLectura").notNull();
         plGotaGruesa.addStringProperty("detalleLectura").notNull();
         plGotaGruesa.addIntProperty("estado_sync").notNull();
+        plGotaGruesa.addIntProperty("unidadEdad").notNull();
+        plGotaGruesa.addStringProperty("responsable").notNull();
         Property idTabletGota=plGotaGruesa.addLongProperty("idTablet").notNull().getProperty();
         Property idSibasiGota=plGotaGruesa.addLongProperty("idSibasi").notNull().getProperty();
         Property idCaserioGota=plGotaGruesa.addLongProperty("idCaserio").notNull().getProperty();

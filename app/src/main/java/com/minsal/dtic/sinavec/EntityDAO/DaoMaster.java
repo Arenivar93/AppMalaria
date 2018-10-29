@@ -1,4 +1,3 @@
-
 package com.minsal.dtic.sinavec.EntityDAO;
 
 import android.content.Context;
@@ -170,10 +169,4 @@ public class DaoMaster extends AbstractDaoMaster {
     }
 
 }
-
-
-
-
-
-
 
