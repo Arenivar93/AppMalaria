@@ -42,6 +42,7 @@ import com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria.NuevaPesquisaFragment;
 import com.minsal.dtic.sinavec.EntityDAO.ColvolCalve;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
+import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimiento;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 
@@ -73,6 +74,8 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
     List<CtlCanton> cantones;
     ArrayList<String> listaCaserios=new ArrayList<String>();
     List<CtlCaserio> caserios;
+    ArrayList<String> listaLaboratorios=new ArrayList<String>();
+    List<CtlEstablecimiento> laboratorios;
     ArrayAdapter<String> adapter;
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
@@ -122,6 +125,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
         listaCaserios.add("Seleccione");
         municipios=utilidades.loadspinnerMunicipio(depto);
         listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
+        laboratorios=utilidades.obtenerLaboratorios(idSibasi);
 
         adapter=new ArrayAdapter
                 (this,android.R.layout.simple_list_item_1,listaMunicipio);
@@ -227,12 +231,17 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
                marker.showInfoWindow();
                //Toast.makeText(getApplicationContext(),"Gotas Gruesas"+colvolClave.getPlColvol().getNombre(),Toast.LENGTH_LONG).show();
                 nuevaGotaGruesaFragment dialog = new nuevaGotaGruesaFragment();
+                Bundle datos=new Bundle();
+                datos.putStringArrayList("lista",listaMunicipio);
+                datos.putLong("idSibasi",idSibasi);
+                dialog.setArguments(datos);
                 dialog.show(getFragmentManager(), "dialog");
                 return false;
             }
 
         });
     }
+
     public void colvolMap(int municipio,int canton,int caserio){
         Utilidades u = new Utilidades(daoSession);
         List<CtlPlCriadero> criaderos = u.loadCriaderosMap(municipio);

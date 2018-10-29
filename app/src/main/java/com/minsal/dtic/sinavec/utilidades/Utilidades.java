@@ -18,6 +18,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.EstablecimientoClave;
+import com.minsal.dtic.sinavec.EntityDAO.EstablecimientoClaveDao;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
@@ -78,6 +80,8 @@ public class Utilidades {
     private List<PlColvol> colvols;
     private List<PlPesquisaLarvaria> pesquisas;
     private List<ColvolCalve> clavesColvol;
+
+    private List<CtlEstablecimiento> listaLaboratorios;
 
     public Utilidades(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -593,6 +597,32 @@ public class Utilidades {
         clavesColvol=queryBuilder.list();
         return clavesColvol;
     }
+
+    public List<CtlEstablecimiento> obtenerLaboratorios(long idSibasi) {
+        EstablecimientoClaveDao establecimientoClaveDao=daoSession.getEstablecimientoClaveDao();
+        listaLaboratorios=new ArrayList<CtlEstablecimiento>();
+       /* QueryBuilder<EstablecimientoClave> queryBuilder=establecimientoClaveDao.queryBuilder();
+        Join establecimiento=queryBuilder.join(EstablecimientoClaveDao.Properties.IdEstablecimiento,CtlEstablecimiento.class);
+        establecimiento.where(CtlEstablecimientoDao.Properties.IdEstablecimientoPadre.eq(idSibasi));
+        establecimiento.and(CtlEstablecimientoDao.Properties.IdEstablecimientoPadre.eq(idSibasi),CtlEstablecimientoDao.Properties.)
+
+
+
+
+        ColvolCalveDao colvolClaveDao=daoSession.getColvolCalveDao();
+        clavesColvol=new ArrayList<ColvolCalve>();
+        QueryBuilder<ColvolCalve> queryBuilder=colvolClaveDao.queryBuilder();
+        Join colvol = queryBuilder.join(ColvolCalveDao.Properties.IdColvol,PlColvol.class);
+
+        if (idCtn!=0 && idCas==0){//busqueda por canton
+            Join ctlCaserio = queryBuilder.join(colvol,PlColvolDao.Properties.IdCaserio,CtlCaserio.class,CtlCaserioDao.Properties.Id);
+            Join ctlCanton = queryBuilder.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,CtlCanton.class,CtlCantonDao.Properties.Id);
+            ctlCanton.where(CtlCantonDao.Properties.Id.eq(idCtn));
+        */
+        return listaLaboratorios;
+
+    }
+
     /*public List<CtlPlCriadero> loadCriaderosMap( int idMunicipio) {
 
         CtlPlCriaderoDao criaderoDao = daoSession.getCtlPlCriaderoDao();
