@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity
                 removeSharedPreferences();
                 logOut();
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

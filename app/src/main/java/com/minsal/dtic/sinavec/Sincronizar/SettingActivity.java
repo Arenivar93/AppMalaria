@@ -284,12 +284,12 @@ public class SettingActivity extends AppCompatActivity {
         teDao.insert(te);
     }
 
-    public void saveEstablecimiento(Long id, String nombre, String lat, String lon, long idMpo, int idPadre, int idTipo) {
+    public void saveEstablecimiento(Long id, String nombre, String lat, String lon, long idMpo, int idPadre, int idTipo,int lab_clinico) {
         CtlEstablecimientoDao estDao = daoSession.getCtlEstablecimientoDao();
         CtlEstablecimiento est = new CtlEstablecimiento();
         est.setId(id);
         est.setNombre(nombre);
-
+        est.setLabClinico(lab_clinico);
         if (idMpo != 0) {
             est.setIdMunicipio(idMpo);
         }
@@ -627,7 +627,7 @@ public class SettingActivity extends AppCompatActivity {
                     }
                     saveEstablecimiento(joEst.getLong("id"), joEst.getString("nombre"), joEst.getString("latitud"),
                             joEst.getString("longitud"), id_municipio, joEst.getInt("id_establecimiento_padre"),
-                            joEst.getInt("id_tipo_establecimiento"));
+                            joEst.getInt("id_tipo_establecimiento"),joEst.getInt("lab_clinico"));
                     num++;
                     publishProgress(num);
                 }
@@ -704,7 +704,6 @@ public class SettingActivity extends AppCompatActivity {
                     JSONObject joc = jaEstClave.getJSONObject(c);
                     saveEstClave(joc.getLong("id"),joc.getLong("id_clave"),joc.getLong("id_establecimiento"));
                 }
-
 
             } catch (Exception e) {
                 getApplicationContext().deleteDatabase("malaria");

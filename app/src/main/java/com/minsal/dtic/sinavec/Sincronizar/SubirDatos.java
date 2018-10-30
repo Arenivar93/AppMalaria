@@ -189,13 +189,21 @@ public class SubirDatos extends AppCompatActivity {
         SimpleDateFormat dateFormat;
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (PlSeguimientoBotiquin c : Seguimientos) {
-            String date = dateFormat.format(c.getFechaHoraMod());
-            JSONObject joCriaderoUpdate = new JSONObject();
-            joCriaderoUpdate.put("id",c.getId());
-            joCriaderoUpdate.put("idUsuarioMod",c.getIdUsuarioMod());
-            joCriaderoUpdate.put("idTablet",idTablet);
-            joCriaderoUpdate.put("fechaHoraMod",date);
-            jaUpdate.put(joCriaderoUpdate);
+            String date = dateFormat.format(c.getFecha());
+            JSONObject joSegUpdate = new JSONObject();
+            joSegUpdate.put("id",c.getId());
+            joSegUpdate.put("idClave",c.getIdClave());
+            joSegUpdate.put("supervisado",c.getSupervisado());
+            joSegUpdate.put("visitado",c.getVisitado());
+            joSegUpdate.put("enRiesgo",c.getEnRiesgo());
+            joSegUpdate.put("numeroPersonas",c.getNumeroPersonaDivulgo());
+            joSegUpdate.put("idSemana",c.getIdSemanaEpidemiologica());
+            joSegUpdate.put("idSibasi",c.getIdSibasi());
+            joSegUpdate.put("numeroMuestras",c.getNumeroMuestra());
+            joSegUpdate.put("idUsuarioReg",c.getIdUsuarioReg());
+            joSegUpdate.put("idTablet",idTablet);
+            joSegUpdate.put("fechaHoraReg",date);
+            jaUpdate.put(joSegUpdate);
         }
         return jaUpdate;
     }
@@ -307,6 +315,25 @@ public class SubirDatos extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Error: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
     }
+    public void updateLocalSeg(JSONObject joSeguimientos) {
+        try {
+            JSONArray jaSegIserted = joSeguimientos.getJSONArray("ids");
+            if (jaSegIserted.length()>0) {
+                for (int i = 0; i < jaSegIserted.length(); i++) {
+                    String id = String.valueOf(jaSegIserted.get(i));
+                    PlSeguimientoBotiquinDao segDao = daoSession.getPlSeguimientoBotiquinDao();
+                    PlSeguimientoBotiquin segUpdate = segDao.loadByRowId(Long.parseLong(id));
+                    segUpdate.setEstado_sync(0);
+                    segDao.update(segUpdate);
+                }
+                tvSeguimientos.setText("Seguimiento de Botiquin ingresadas con éxito");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),"Error: "+e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+    }
+
     public void updateLocalPesquisas(JSONObject joPesquisas) {
             try {
                 JSONArray jaPesquisasIserted = joPesquisas.getJSONArray("ids");
@@ -409,13 +436,15 @@ public class SubirDatos extends AppCompatActivity {
                 int countCriaderosUpdate = getUpdateCriaderos().length();
                 int countCridero = getInsetCriaderos().length();
                 int counColvolUpdate = getUpdateColvol().length();
-                if (countCapturas>0 || countPesquisas>0 || countCriaderosUpdate>0 || countCridero>0 || counColvolUpdate>0){
+                int countSeguimiento = getSeguimientoBotiquin().length();
+                if (countCapturas>0 || countPesquisas>0 || countCriaderosUpdate>0 || countCridero>0 || counColvolUpdate>0 || countSeguimiento>0){
                     tvPesquisa.setText(String.format("Pesquisas lista para sincronizar: %d", countPesquisas));
                     tvCapturas.setText(String.format("Capturas lista para sincronizar: %d", countCapturas));
                     tvCriaderosUpdate.setText(String.format("Criaderos actualizados para sincronizar: %d ",countCriaderosUpdate));
                     tvCriaderos.setText(String.format("Criaderos nuevos para sincronizar: %d ",countCridero));
                     tvColvol.setText(String.format("ColVol actualizados para sincronizar: %d ",counColvolUpdate));
-                    String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
+                    tvSeguimientos.setText(String.format("Seguimiento botiquin listos para sincronizarse: %d", countSeguimiento));
+                    String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
                     RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                             new Response.Listener<String>() {
@@ -475,7 +504,7 @@ public class SubirDatos extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
 
         } else {
-                String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
+                String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
@@ -519,13 +548,12 @@ public class SubirDatos extends AppCompatActivity {
             .writeTimeout(60, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .build();
-
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     private void sendCapturas(String tkn) throws JSONException {
         JSONArray json = getInsertCapturas();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/capturas";
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/capturas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -549,9 +577,6 @@ public class SubirDatos extends AppCompatActivity {
                                         JSONArray respuesta = new JSONArray(respuestaCapturas);
                                         JSONObject jores = respuesta.getJSONObject(1);
                                         updateLocalCapturas(jores);
-
-
-
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                         Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
@@ -571,7 +596,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendDataPesquisa(String token) throws JSONException {
         JSONArray json = getInsertPesquisas();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/pesquisas";
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/pesquisas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -612,9 +637,9 @@ public class SubirDatos extends AppCompatActivity {
         }
     }
     private void sendSeguimientoBotiquin(String token) throws JSONException {
-        JSONArray json = getInsertPesquisas();
+        JSONArray json = getSeguimientoBotiquin();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/pesquisas";
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/seguimientos";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -625,20 +650,20 @@ public class SubirDatos extends AppCompatActivity {
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        tvPesquisa.setText(String.valueOf(e));
+                        tvSeguimientos.setText(String.valueOf(e));
                     }
                     @Override
                     public void onResponse(Call call, okhttp3.Response response) throws IOException {
                         if (response.isSuccessful()) {
-                            final String respuestaPesquiza = response.body().string();
+                            final String respuestaSeguimiento = response.body().string();
                             SubirDatos.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     JSONArray respuesta = null;
                                     try {
-                                        respuesta = new JSONArray(respuestaPesquiza);
+                                        respuesta = new JSONArray(respuestaSeguimiento);
                                         JSONObject jores = respuesta.getJSONObject(1);
-                                        updateLocalPesquisas(jores);
+                                        updateLocalSeg(jores);
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -656,7 +681,7 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void sendCriaderos(String tkn) throws JSONException {
         JSONArray json = getInsetCriaderos();
-        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
+        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/criaderos";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -699,7 +724,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendCriaderosUpdate(String token) throws JSONException {
         JSONArray json = getUpdateCriaderos();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/criaderos";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -740,7 +765,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendColvolUpdate(String token) throws JSONException {
         JSONArray json = getUpdateColvol();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/colvol";
+            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/colvol";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -790,7 +815,7 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void bajarBitacora(String tkn){
         idUltimoReg = ultimoRegistroBajado();
-        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/bitacora?accion=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg="+idUltimoReg;
+        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/bitacora?accion=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg="+idUltimoReg;
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .header("Authorization", "Bearer " + tkn)

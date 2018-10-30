@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimiento;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.EstablecimientoClave;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquin;
 import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquinDao;
@@ -181,12 +182,12 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
 
     public void establecimientosMap(int municipio) {
         Utilidades u = new Utilidades(daoSession);
-        List<CtlEstablecimiento> establecimientos = u.loadEstablecimientoMap(municipio,depto);
+        List<EstablecimientoClave> establecimientos = u.loadEstablecimientoClaveMap(municipio,depto);
         if (establecimientos.size() > 0) {
-            for (CtlEstablecimiento e : establecimientos) {
+            for (EstablecimientoClave e : establecimientos) {
                 mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(Double.parseDouble(e.getLatitud()), Double.parseDouble(e.getLongitud())))
-                        .title(e.getNombre())).setTag(e);
+                        .position(new LatLng(Double.parseDouble(e.getCtlEstablecimiento().getLatitud()), Double.parseDouble(e.getCtlEstablecimiento().getLongitud())))
+                        .title(e.getCtlEstablecimiento().getNombre())).setTag(e);
             }
             tvCountBotiquin.setText(String.format("Total de establecimientos encontrados: %s", String.valueOf(establecimientos.size())));
         } else {
@@ -216,6 +217,9 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
         String fecha = dateFormat.format(currentTime);
         int idClave = getIdClave(id,bandera);
         try {
+            for (int i = 0; i <50 ; i++) {
+
+
                 int semanaActual = getSemana();
                 Date fec = dateFormat.parse(fecha);
                 PlSeguimientoBotiquinDao segDao = daoSession.getPlSeguimientoBotiquinDao();
@@ -245,6 +249,7 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
                 }
 
                 segDao.insert(seg);
+            }
 
             customToadSuccess(getApplicationContext(),"Seguimiento de Botiquin registrado con éxito");
 
@@ -265,9 +270,9 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
      */
     public void setObjectMarker(int bandera,Marker marker){
         if (bandera==2){
-            CtlEstablecimiento est = (CtlEstablecimiento) marker.getTag();
+            EstablecimientoClave est = (EstablecimientoClave) marker.getTag();
             idEstablecimiento = est.getId();
-            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(est.getId(),est.getNombre(),"est");
+            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(est.getCtlEstablecimiento().getId(),est.getCtlEstablecimiento().getNombre(),"est");
             dialog.show(getFragmentManager(),"dialog");
         }else{
             PlColvol col = (PlColvol) marker.getTag();
