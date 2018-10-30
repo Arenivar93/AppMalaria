@@ -75,10 +75,8 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
         spSexo = (Spinner)v.findViewById(R.id.spSexo);
         laboratorio = (Spinner)v.findViewById(R.id.laboratorio);
 
-        //obtengo el sibasi que viene en el bundle
-        sibasi=getArguments().getLong("idSibasi");
-        ArrayList<String> lista=getArguments().getStringArrayList("lista");
-        Toast.makeText(getActivity(),lista.get(1),Toast.LENGTH_LONG).show();
+        //obtengo la lista establecimiento que viene de mi clase
+        listaLaboratorios=getArguments().getStringArrayList("listaEstClave");
 
         tipoEdad.add("Años");
         tipoEdad.add("Meses");
@@ -89,11 +87,6 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
         sexo.add("Femenino");
         adapterSexo=new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1,sexo);
         spSexo.setAdapter(adapterSexo);
-
-        //Set laboratorios
-        listaLaboratorios.add("Seleccione");
-        //listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
-
 
         adapterLaboratorio=new ArrayAdapter
                 (getActivity(),android.R.layout.simple_list_item_1,listaLaboratorios);

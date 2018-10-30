@@ -173,7 +173,7 @@ android:id="@+id/nueva_gota_modal">
                                 <Spinner
                                     android:id="@+id/laboratorio"
                                     android:layout_width="220dp"
-                                    android:layout_height="30dp"/>
+                                    android:layout_height="40dp"/>
 
                             </LinearLayout>
                         </LinearLayout>

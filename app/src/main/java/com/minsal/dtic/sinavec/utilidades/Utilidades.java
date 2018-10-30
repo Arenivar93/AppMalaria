@@ -83,7 +83,8 @@ public class Utilidades {
     private List<PlPesquisaLarvaria> pesquisas;
     private List<ColvolCalve> clavesColvol;
 
-    private List<CtlEstablecimiento> listaLaboratorios;
+    private List<EstablecimientoClave> listaLaboratorios;
+    private ArrayList<String> listaEstablecimientoClave;
 
     public Utilidades(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -621,29 +622,25 @@ public class Utilidades {
         return clavesColvol;
     }
 
-    public List<CtlEstablecimiento> obtenerLaboratorios(long idSibasi) {
+    public List<EstablecimientoClave> obtenerLaboratorios(long idSibasi) {
         EstablecimientoClaveDao establecimientoClaveDao=daoSession.getEstablecimientoClaveDao();
-        listaLaboratorios=new ArrayList<CtlEstablecimiento>();
-       /* QueryBuilder<EstablecimientoClave> queryBuilder=establecimientoClaveDao.queryBuilder();
+        listaLaboratorios=new ArrayList<EstablecimientoClave>();
+        QueryBuilder<EstablecimientoClave> queryBuilder=establecimientoClaveDao.queryBuilder();
         Join establecimiento=queryBuilder.join(EstablecimientoClaveDao.Properties.IdEstablecimiento,CtlEstablecimiento.class);
-        establecimiento.where(CtlEstablecimientoDao.Properties.IdEstablecimientoPadre.eq(idSibasi));
-        establecimiento.and(CtlEstablecimientoDao.Properties.IdEstablecimientoPadre.eq(idSibasi),CtlEstablecimientoDao.Properties.)
-
-
-
-
-        ColvolCalveDao colvolClaveDao=daoSession.getColvolCalveDao();
-        clavesColvol=new ArrayList<ColvolCalve>();
-        QueryBuilder<ColvolCalve> queryBuilder=colvolClaveDao.queryBuilder();
-        Join colvol = queryBuilder.join(ColvolCalveDao.Properties.IdColvol,PlColvol.class);
-
-        if (idCtn!=0 && idCas==0){//busqueda por canton
-            Join ctlCaserio = queryBuilder.join(colvol,PlColvolDao.Properties.IdCaserio,CtlCaserio.class,CtlCaserioDao.Properties.Id);
-            Join ctlCanton = queryBuilder.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,CtlCanton.class,CtlCantonDao.Properties.Id);
-            ctlCanton.where(CtlCantonDao.Properties.Id.eq(idCtn));
-        */
+        establecimiento.and(CtlEstablecimientoDao.Properties.IdEstablecimientoPadre.eq(idSibasi),
+                            CtlEstablecimientoDao.Properties.LabClinico.eq(1));
+        listaLaboratorios=queryBuilder.list();
         return listaLaboratorios;
+    }
 
+    public ArrayList<String> obtenerListaEstablecimientoClave(List<EstablecimientoClave> establecimientoClaves) {
+        listaEstablecimientoClave = new ArrayList<String>();
+        listaEstablecimientoClave.add("Seleccione");
+        int total=establecimientoClaves.size();
+        for (int i = 1; i < establecimientoClaves.size(); i++) {
+            listaEstablecimientoClave.add(establecimientoClaves.get(i).getCtlEstablecimiento().getNombre());
+        }
+        return listaEstablecimientoClave;
     }
 
     /*public List<CtlPlCriadero> loadCriaderosMap( int idMunicipio) {

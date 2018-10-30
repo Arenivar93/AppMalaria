@@ -48,6 +48,7 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 
+import com.minsal.dtic.sinavec.EntityDAO.EstablecimientoClave;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
@@ -75,7 +76,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
     ArrayList<String> listaCaserios=new ArrayList<String>();
     List<CtlCaserio> caserios;
     ArrayList<String> listaLaboratorios=new ArrayList<String>();
-    List<CtlEstablecimiento> laboratorios;
+    List<EstablecimientoClave> laboratorios;
     ArrayAdapter<String> adapter;
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
@@ -126,6 +127,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
         municipios=utilidades.loadspinnerMunicipio(depto);
         listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
         laboratorios=utilidades.obtenerLaboratorios(idSibasi);
+        listaLaboratorios=utilidades.obtenerListaEstablecimientoClave(laboratorios);
 
         adapter=new ArrayAdapter
                 (this,android.R.layout.simple_list_item_1,listaMunicipio);
@@ -232,8 +234,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
                //Toast.makeText(getApplicationContext(),"Gotas Gruesas"+colvolClave.getPlColvol().getNombre(),Toast.LENGTH_LONG).show();
                 nuevaGotaGruesaFragment dialog = new nuevaGotaGruesaFragment();
                 Bundle datos=new Bundle();
-                datos.putStringArrayList("lista",listaMunicipio);
-                datos.putLong("idSibasi",idSibasi);
+                datos.putStringArrayList("listaEstClave",listaLaboratorios);
                 dialog.setArguments(datos);
                 dialog.show(getFragmentManager(), "dialog");
                 return false;
