@@ -272,12 +272,12 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
         if (bandera==2){
             EstablecimientoClave est = (EstablecimientoClave) marker.getTag();
             idEstablecimiento = est.getId();
-            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(est.getCtlEstablecimiento().getId(),est.getCtlEstablecimiento().getNombre(),"est");
+            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(est.getCtlEstablecimiento().getId(),est.getCtlEstablecimiento().getNombre(),"est",est.getClave().getClave());
             dialog.show(getFragmentManager(),"dialog");
         }else{
             PlColvol col = (PlColvol) marker.getTag();
             idColvol = col.getId();
-            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(col.getId(),col.getNombre(),"col");
+            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(col.getId(),col.getNombre(),"col",col.getClave());
             dialog.show(getFragmentManager(),"dialog");
         }
     }

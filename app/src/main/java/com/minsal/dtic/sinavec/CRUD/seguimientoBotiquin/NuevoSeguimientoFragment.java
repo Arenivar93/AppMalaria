@@ -27,19 +27,21 @@ import com.minsal.dtic.sinavec.R;
 
 public class NuevoSeguimientoFragment  extends android.app.DialogFragment {
     private OnFragmentInteractionListener mListener;
-    String nombre,bandera;
+    String nombre,bandera,clave;
     long mNum;
+
     TextInputEditText titMuestras,titPersonas ;
     RadioButton rdbSupervisado,rdbVisitado;
     RadioGroup accion;
 
 
-    static NuevoSeguimientoFragment newInstance(long id, String nombre,String bandera) {
+    static NuevoSeguimientoFragment newInstance(long id, String nombre,String bandera,String clave) {
         NuevoSeguimientoFragment f = new NuevoSeguimientoFragment();
         Bundle args = new Bundle();
         args.putLong("num", id);
         args.putString("nombre", nombre);
         args.putString("bandera",bandera);
+        args.putString("clave",clave);
         f.setArguments(args);
         return f;
     }
@@ -53,6 +55,7 @@ public class NuevoSeguimientoFragment  extends android.app.DialogFragment {
         mNum = (int) getArguments().getLong("num");
         nombre = getArguments().getString("nombre");
         bandera= getArguments().getString("bandera");
+        clave = getArguments().getString("clave");
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View v               = inflater.inflate(R.layout.dialog_fragment_botiquin, null);
         rdbSupervisado = v.findViewById(R.id.rdbSupervisado);
@@ -63,7 +66,7 @@ public class NuevoSeguimientoFragment  extends android.app.DialogFragment {
        titPersonas =  v.findViewById(R.id.titPersonas);
         AlertDialog.Builder builder= new AlertDialog.Builder(getActivity());
         builder.setView(v);
-        builder.setTitle("Seguimiento Botiquin:"+nombre+ " ID: "+mNum)
+        builder.setTitle("Seguimiento Botiquin:"+nombre+ " Clave: "+clave)
                 .setPositiveButton("Guardar",null)
                 .setNegativeButton("Cancelar",null)
                 .setCancelable(false);
