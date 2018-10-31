@@ -76,7 +76,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
     ArrayList<String> listaCaserios=new ArrayList<String>();
     List<CtlCaserio> caserios;
     ArrayList<String> listaLaboratorios=new ArrayList<String>();
-    List<EstablecimientoClave> laboratorios;
+    List<CtlEstablecimiento> laboratorios;
     ArrayAdapter<String> adapter;
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
@@ -235,6 +235,9 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
                 nuevaGotaGruesaFragment dialog = new nuevaGotaGruesaFragment();
                 Bundle datos=new Bundle();
                 datos.putStringArrayList("listaEstClave",listaLaboratorios);
+                datos.putLong("idSibasi",idSibasi);
+                datos.putLong("idTablet",idTablet);
+                datos.putLong("idUsuario",idUsuario);
                 dialog.setArguments(datos);
                 dialog.show(getFragmentManager(), "dialog");
                 return false;

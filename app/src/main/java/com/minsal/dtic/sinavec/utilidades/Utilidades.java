@@ -15,6 +15,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimiento;
 import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimientoDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipioDao;
+import com.minsal.dtic.sinavec.EntityDAO.CtlPais;
+import com.minsal.dtic.sinavec.EntityDAO.CtlPaisDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
@@ -83,8 +85,11 @@ public class Utilidades {
     private List<PlPesquisaLarvaria> pesquisas;
     private List<ColvolCalve> clavesColvol;
 
-    private List<EstablecimientoClave> listaLaboratorios;
+    private List<CtlEstablecimiento> listaLaboratorios;
     private ArrayList<String> listaEstablecimientoClave;
+
+    private ArrayList<String> listaDepartamento;
+    private ArrayList<String> listaPais;
 
     public Utilidades(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -622,25 +627,73 @@ public class Utilidades {
         return clavesColvol;
     }
 
-    public List<EstablecimientoClave> obtenerLaboratorios(long idSibasi) {
+    public List<CtlEstablecimiento> obtenerLaboratorios(long idSibasi) {
         EstablecimientoClaveDao establecimientoClaveDao=daoSession.getEstablecimientoClaveDao();
-        listaLaboratorios=new ArrayList<EstablecimientoClave>();
+        listaLaboratorios=new ArrayList<CtlEstablecimiento>();
+
+        CtlEstablecimiento sibasi=daoSession.getCtlEstablecimientoDao().load(idSibasi);
+        //agrego el sibasi a la lista de establecimiento
+        listaLaboratorios.add(sibasi);
+
+        //obtendre los establecimientos que tienen lab y clave
+        List<EstablecimientoClave> lista = new ArrayList<EstablecimientoClave>();
         QueryBuilder<EstablecimientoClave> queryBuilder=establecimientoClaveDao.queryBuilder();
-        Join establecimiento=queryBuilder.join(EstablecimientoClaveDao.Properties.IdEstablecimiento,CtlEstablecimiento.class);
-        establecimiento.and(CtlEstablecimientoDao.Properties.IdEstablecimientoPadre.eq(idSibasi),
-                            CtlEstablecimientoDao.Properties.LabClinico.eq(1));
-        listaLaboratorios=queryBuilder.list();
+        Join establecimiento=queryBuilder.join(EstablecimientoClaveDao.Properties.IdEstablecimiento,CtlEstablecimiento.class)
+                .where(CtlEstablecimientoDao.Properties.IdEstablecimientoPadre.eq(idSibasi))
+                .where(CtlEstablecimientoDao.Properties.LabClinico.eq(1));
+        /*establecimiento.and(CtlEstablecimientoDao.Properties.IdEstablecimientoPadre.eq(idSibasi),
+                            CtlEstablecimientoDao.Properties.LabClinico.eq(1));*/
+        lista=queryBuilder.list();
+        //Agrego los establecimiento a mi lista
+        for (int j=0;j<lista.size();j++){
+            if (lista.get(j).getCtlEstablecimiento().getCtlTipoEstablecimiento().getCtlInstitucion().getId()==1){
+                listaLaboratorios.add(lista.get(j).getCtlEstablecimiento());
+            }
+        }
         return listaLaboratorios;
     }
 
-    public ArrayList<String> obtenerListaEstablecimientoClave(List<EstablecimientoClave> establecimientoClaves) {
+    public ArrayList<String> obtenerListaEstablecimientoClave(List<CtlEstablecimiento> establecimiento) {
         listaEstablecimientoClave = new ArrayList<String>();
         listaEstablecimientoClave.add("Seleccione");
-        int total=establecimientoClaves.size();
-        for (int i = 1; i < establecimientoClaves.size(); i++) {
-            listaEstablecimientoClave.add(establecimientoClaves.get(i).getCtlEstablecimiento().getNombre());
+        for (int i = 0; i < establecimiento.size(); i++) {
+            listaEstablecimientoClave.add(establecimiento.get(i).getNombre());
         }
         return listaEstablecimientoClave;
+    }
+
+    public List<CtlDepartamento> loadspinnerDepartamento() {
+        CtlDepartamentoDao daoDepartamento = daoSession.getCtlDepartamentoDao();
+        List<CtlDepartamento> departamentos = new ArrayList<CtlDepartamento>();
+        departamentos = daoDepartamento.queryBuilder().where(CtlDepartamentoDao.Properties.IdPais.eq(68))
+                .orderAsc(CtlDepartamentoDao.Properties.Nombre).list();
+        return departamentos;
+    }
+
+    public ArrayList<String> obtenerListaDepartamento(List<CtlDepartamento> departamentos) {
+        listaDepartamento = new ArrayList<String>();
+        listaDepartamento.add("Seleccione");
+        for (int i = 0; i < departamentos.size(); i++) {
+            listaDepartamento.add(departamentos.get(i).getNombre());
+        }
+        return listaDepartamento;
+    }
+
+    public List<CtlPais> loadspinnerPais() {
+        CtlPaisDao daoPais = daoSession.getCtlPaisDao();
+        List<CtlPais> paises = new ArrayList<CtlPais>();
+        paises = daoPais.queryBuilder().orderAsc(CtlPaisDao.Properties.Nombre).list();
+
+        return paises;
+    }
+
+    public ArrayList<String> obtenerListaPais(List<CtlPais> paises) {
+        listaPais = new ArrayList<String>();
+        listaPais.add("Seleccione");
+        for (int i = 0; i < paises.size(); i++) {
+            listaPais.add(paises.get(i).getNombre());
+        }
+        return listaPais;
     }
 
     /*public List<CtlPlCriadero> loadCriaderosMap( int idMunicipio) {
