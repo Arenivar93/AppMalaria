@@ -241,7 +241,8 @@ public class MapaColvolActivity extends AppCompatActivity implements OnMapReadyC
             longitudColvol.setText(String.valueOf(longitud));
         }
         setUpMap();
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        mMap.setOnMapClickListener(
+                new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
                 if(tipoBusqueda.isChecked()){

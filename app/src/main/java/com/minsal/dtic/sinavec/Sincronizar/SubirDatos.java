@@ -27,12 +27,18 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles;
+import com.minsal.dtic.sinavec.EntityDAO.Clave;
+import com.minsal.dtic.sinavec.EntityDAO.ClaveDao;
+import com.minsal.dtic.sinavec.EntityDAO.ColvolCalve;
+import com.minsal.dtic.sinavec.EntityDAO.ColvolCalveDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTablet;
 import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoMaster;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
@@ -116,7 +122,7 @@ public class SubirDatos extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     float carga =calculoBateria(getApplicationContext());
-                    if (carga<0.40){
+                    if (carga<0.20){
                         Toast.makeText(getApplicationContext(),"El estado de carga es menor al 40%, Por favor conecte el dispositivo",Toast.LENGTH_LONG).show();
                     }else {
                         checkinServerBajar();
@@ -398,7 +404,7 @@ public class SubirDatos extends AppCompatActivity {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(),String.valueOf(e.getMessage()),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),String.valueOf("Error: "+e.getMessage()),Toast.LENGTH_LONG).show();
         }
     }
     public void updateColvolUpdate(JSONObject jsonObject){
@@ -444,7 +450,7 @@ public class SubirDatos extends AppCompatActivity {
                     tvCriaderos.setText(String.format("Criaderos nuevos para sincronizar: %d ",countCridero));
                     tvColvol.setText(String.format("ColVol actualizados para sincronizar: %d ",counColvolUpdate));
                     tvSeguimientos.setText(String.format("Seguimiento botiquin listos para sincronizarse: %d", countSeguimiento));
-                    String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
+                    String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
                     RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                             new Response.Listener<String>() {
@@ -504,7 +510,7 @@ public class SubirDatos extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
 
         } else {
-                String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/login_check";
+                String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
@@ -553,7 +559,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendCapturas(String tkn) throws JSONException {
         JSONArray json = getInsertCapturas();
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/capturas";
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/capturas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -596,7 +602,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendDataPesquisa(String token) throws JSONException {
         JSONArray json = getInsertPesquisas();
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/pesquisas";
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/pesquisas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -639,7 +645,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendSeguimientoBotiquin(String token) throws JSONException {
         JSONArray json = getSeguimientoBotiquin();
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/seguimientos";
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/seguimientos";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -681,7 +687,7 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void sendCriaderos(String tkn) throws JSONException {
         JSONArray json = getInsetCriaderos();
-        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/criaderos";
+        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -713,6 +719,10 @@ public class SubirDatos extends AppCompatActivity {
                             }
                         });
                     }
+                    else{
+                        Log.i("Falla",response.toString());
+                        //Toast.makeText(getApplicationContext(),"Falla:"+response.toString(),Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 
@@ -724,7 +734,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendCriaderosUpdate(String token) throws JSONException {
         JSONArray json = getUpdateCriaderos();
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/criaderos";
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -765,7 +775,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendColvolUpdate(String token) throws JSONException {
         JSONArray json = getUpdateColvol();
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/colvol";
+            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/colvol";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -804,6 +814,7 @@ public class SubirDatos extends AppCompatActivity {
         }
 
     }
+
     public float calculoBateria(Context context){
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, ifilter);
@@ -815,7 +826,10 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void bajarBitacora(String tkn){
         idUltimoReg = ultimoRegistroBajado();
-        String url = "http://malaria-dev.salud.gob.sv/app_dev.php/api/bitacora?accion=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg="+idUltimoReg;
+        long maxIdUSer= getMaxIdUser();
+        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/bitacora?accion" +
+                "=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg" +
+                "="+idUltimoReg+"&maxIdUSer="+maxIdUSer;
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .header("Authorization", "Bearer " + tkn)
@@ -869,7 +883,15 @@ public class SubirDatos extends AppCompatActivity {
     public void saveCambiosBitacora(JSONObject jsTotal) {
         try {
             JSONArray jaInsertCriadero = jsTotal.getJSONArray("insertCriadero");
-            JSONArray jaUpdateCriadero = jsTotal.getJSONArray("updateCriadero");
+            JSONArray jaUpdateCriadero = jsTotal.getJSONArray("updateCriaderoServer");
+            JSONArray jaUpdateCriaderoTablet = jsTotal.getJSONArray("updateCriaderoTablet");
+            JSONArray jaInsertColvol   = jsTotal.getJSONArray("insertColvol");
+            JSONArray jaInsertClave    = jsTotal.getJSONArray("insertClave");
+            JSONArray jaInsertClaveColvol    = jsTotal.getJSONArray("insertClaveColvol");
+            JSONArray jaUpdateColvolTablet    = jsTotal.getJSONArray("updateColvol"); // las actualizaciones que han hecho las tablet hermanas
+            JSONArray jaUpdateColvolServer    = jsTotal.getJSONArray("updateColvolServer");
+            JSONArray jaInsertUser    = jsTotal.getJSONArray("insertUsuarios");
+
             if(jaInsertCriadero.length()>0){
                 for (int i = 0; i < jaInsertCriadero.length(); i++) {
                     JSONObject fila = jaInsertCriadero.getJSONObject(i);
@@ -896,36 +918,171 @@ public class SubirDatos extends AppCompatActivity {
                     tab.setUltimoRegBajado(regBajado);
                     tabDao.update(tab);
                 }
-                tvCriaderos.setText(String.format("Se Descargaron %s nuevos", String.valueOf(jaInsertCriadero.length())));
+                tvCriaderos.setText(String.format("Criaderos Descargados %s ", String.valueOf(jaInsertCriadero.length())));
 
             }else if(jaUpdateCriadero.length()>0){
-                JSONArray sentencias;
-                JSONObject total = jaUpdateCriadero.getJSONObject(0);
-                int regBajado = total.getInt("id");
-                 sentencias = total.getJSONArray("sentencia");
-                for (int i = 0; i <sentencias.length() ; i++) {
-                    JSONObject individual = sentencias.getJSONObject(i);
-                    String fecha = individual.getString("fechaHoraMod");
+                JSONObject sentencias;
+                for (int i = 0; i <jaUpdateCriadero.length() ; i++) {
+                    JSONObject total = jaUpdateCriadero.getJSONObject(i);
+                    sentencias = total.getJSONObject("sentencia");
+                    int regBajado = total.getInt("id");
+                    String fecha = sentencias.getString("fechaHoraMod");
                     DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     Date date = format.parse(fecha);
-                    saveCriaderoUpdate(individual.getLong("id"),individual.getString("latitud"),
-                            individual.getString("longitud"),individual.getLong("idUsuarioMod"),date);
+                    saveCriaderoUpdate(sentencias.getLong("id"),sentencias.getString("latitud"),
+                            sentencias.getString("longitud"),sentencias.getLong("idUsuarioMod"),date,
+                            sentencias.getString("nombre"),sentencias.getString("descripcion"),sentencias.getLong("idCaserio"));
+                    CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+                    CtlTablet tab = tabDao.loadByRowId(idTablet);
+                    tab.setUltimoRegBajado(regBajado);
+                    tabDao.update(tab);
+                }
+                tvCriaderosUpdate.setText(String.format("Se Actualizaron %s Criadeross", String.valueOf(jaUpdateCriadero.length())));
+
+            }else if (jaInsertColvol.length()>0){
+                for (int b = 0; b <jaInsertColvol.length() ; b++) {
+                    JSONObject fila = jaInsertColvol.getJSONObject(b);
+                    int regBajado = fila.getInt("id");
+                    JSONObject joColvol = fila.getJSONObject("sentencia");
+                    saveColvol(joColvol.getLong("id"),joColvol.getLong("id_caserio"),joColvol.getString("nombre"),
+                            joColvol.getLong("id_sibasi"),joColvol.getString("clave"),joColvol.getInt("estado")
+                            ,joColvol.getString("latitud"),joColvol.getString("longitud"));
+                    CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+                    CtlTablet tab = tabDao.loadByRowId(idTablet);
+                    tab.setUltimoRegBajado(regBajado);
+                    tabDao.update(tab);
+                    tvColvol.setText("Colvol escargados: "+String.valueOf(jaInsertColvol.length()));
 
                 }
-                CtlTabletDao tabDao = daoSession.getCtlTabletDao();
-                CtlTablet tab = tabDao.loadByRowId(idTablet);
-                tab.setUltimoRegBajado(regBajado);
-                tabDao.update(tab);
 
-                tvCriaderosUpdate.setText(String.format("Se Actualizaron %s Criaderos", String.valueOf(sentencias.length())));
+            }else if(jaInsertClave.length()>0){
+                for (int b = 0; b <jaInsertClave.length() ; b++) {
+                    JSONObject fila = jaInsertClave.getJSONObject(b);
+                    int regBajado = fila.getInt("id");
+                    JSONObject joClave = fila.getJSONObject("sentencia");
+                    saveClave(joClave.getLong("id"), joClave.getInt("id_departamento"), joClave.getInt("id_municipio"),
+                            joClave.getInt("correlativo"), joClave.getString("clave"), joClave.getLong("id_procedencia"));
+                    CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+                    CtlTablet tab = tabDao.loadByRowId(idTablet);
+                    tab.setUltimoRegBajado(regBajado);
+                    tabDao.update(tab);
+                }
+
+            }else if(jaInsertClaveColvol.length()>0){
+                for (int b = 0; b <jaInsertClaveColvol.length() ; b++) {
+                    JSONObject fila = jaInsertClaveColvol.getJSONObject(b);
+                    int regBajado = fila.getInt("id");
+                    JSONObject joc = fila.getJSONObject("sentencia");
+                    saveColvolClave(joc.getLong("id"),joc.getLong("id_clave"),joc.getLong("id_colvol"));
+
+                    CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+                    CtlTablet tab = tabDao.loadByRowId(idTablet);
+                    tab.setUltimoRegBajado(regBajado);
+                    tabDao.update(tab);
+                }
+
+            }else if(jaUpdateCriaderoTablet.length()>0){
+                JSONObject sentencias;
+                for (int i = 0; i <jaUpdateCriaderoTablet.length() ; i++) {
+                    sentencias= jaUpdateCriaderoTablet.getJSONObject(i);
+                    JSONArray fila = sentencias.getJSONArray("sentencia");
+                    int ultimoReg= sentencias.getInt("id");
+                    for (int j = 0; j <fila.length() ; j++) {
+                        JSONObject elemento = fila.getJSONObject(j);
+                        String fecha = elemento.getString("fechaHoraMod");
+                        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date date = format.parse(fecha);
+                        saveCriaderoUpdateTablet(elemento.getLong("id"),elemento.getString("latitud"),
+                                elemento.getString("longitud"),elemento.getLong("idUsuarioMod"),date);
+                        }
+                    CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+                    CtlTablet tab = tabDao.loadByRowId(idTablet);
+                    tab.setUltimoRegBajado(ultimoReg);
+                    tabDao.update(tab);
+                    tvCriaderosUpdate.setText(String.format("Se Actualizaron %s Criaderos", String.valueOf(jaUpdateCriaderoTablet.length())));
+
+                }
+
+            }else if (jaUpdateColvolTablet.length()>0){
+                JSONObject sentencias;
+                int actualizados =0;
+                for (int k = 0; k <jaUpdateColvolTablet.length(); k++) {
+                    sentencias = jaUpdateColvolTablet.getJSONObject(k);
+                    JSONArray fila = sentencias.getJSONArray("sentencia");
+                    int ultimoReg= sentencias.getInt("id");
+                    for (int m = 0; m <fila.length() ; m++) {
+                        JSONObject elemento = fila.getJSONObject(m);
+                        String fecha = elemento.getString("fechaHoraMod");
+                        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date date = format.parse(fecha);
+                        saveColvolUpdateTablet(elemento.getLong("id"),elemento.getString("latitud"),
+                                elemento.getString("longitud"),elemento.getLong("idUsuarioMod"),fecha);
+                        actualizados++;
+                    }
+                    CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+                    CtlTablet tab = tabDao.loadByRowId(idTablet);
+                    tab.setUltimoRegBajado(ultimoReg);
+                    tabDao.update(tab);
+                }
+
+                tvColvolUpdate.setText(String.format("Se Actualizaron %s Colvol", String.valueOf(actualizados)));
+
+            }else if(jaUpdateColvolServer.length()>0){
+                JSONObject sentencias;
+                for (int i = 0; i <jaUpdateColvolServer.length() ; i++) {
+                    JSONObject total = jaUpdateColvolServer.getJSONObject(i);
+                    sentencias = total.getJSONObject("sentencia");
+                    int regBajado = total.getInt("id");
+                    saveColvolUpdateServer(sentencias.getLong("id"),
+                            sentencias.getString("nombre"),sentencias.getString("clave"),sentencias.getInt("estado"),
+                            sentencias.getLong("id_caserio"));
+                    CtlTabletDao tabDao = daoSession.getCtlTabletDao();
+                    CtlTablet tab = tabDao.loadByRowId(idTablet);
+                    tab.setUltimoRegBajado(regBajado);
+                    tabDao.update(tab);
+                }
+                tvColvolUpdate.setText(String.format("Se Actualizaron %s Colvol", String.valueOf(jaUpdateColvolServer.length())));
+
+
+            }else if (jaInsertUser.length()>0){
+                for (int q = 0; q < jaInsertUser.length(); q++) {
+                    JSONObject joUser = jaInsertUser.getJSONObject(q);
+                    saveFosUserUser(joUser.getLong("id"), joUser.getString("firstname"), joUser.getString("username"),
+                            joUser.getString("lastname"), joUser.getString("password"), joUser.getString("salt"),
+                            joUser.getInt("id_tipo_empleado"), joUser.getInt("id_sibasi"));
+
+                }
+                tvColvolUpdate.setText(String.format("Nuevos Usuario: %d", jaInsertUser.length()));
 
             }else {
                 Toast.makeText(getApplicationContext(),"No hay registros pendientes para descargar",Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(),"Error: "+e.getMessage(),Toast.LENGTH_LONG).show();
+
         }
     }
+
+    private void saveColvolUpdateServer(long id, String nombre, String clave, int estado, long id_caserio) {
+        PlColvol col=daoSession.getPlColvolDao().loadByRowId(id);
+        col.setNombre(nombre);
+        col.setClave(clave);
+        col.setEstado(estado);
+       col.setIdCaserio(id_caserio);
+        col.update();
+
+    }
+
+    private void saveColvolUpdateTablet(long id, String latitud, String longitud, long idUsuarioMod, String date) {
+        PlColvol col=daoSession.getPlColvolDao().loadByRowId(id);
+        col.setLatitud(latitud);
+        col.setLongitud(longitud);
+        col.setIdUsuarioMod(idUsuarioMod);
+        col.setFechaHoraMod(date);
+        col.update();
+    }
+
 
     public void saveCriadero(long id, long idCaserio, int tipo, long usuarioreg, int usuarioMod,
                              String nombre, String descripcion, String latitud, String longitud, int log_cria,
@@ -952,12 +1109,25 @@ public class SubirDatos extends AppCompatActivity {
         cria.setEstado_sync(0);
         criaDao.insert(cria);
     }
-    public void saveCriaderoUpdate(long id, String latitud, String longitud,long usuarioMod,Date fechaMod){
+    public void saveCriaderoUpdate(long id, String latitud, String longitud,
+                                   long usuarioMod,Date fechaMod,String nombre, String descripcion,long idCaserio){
         CtlPlCriadero criadero=daoSession.getCtlPlCriaderoDao().loadByRowId(id);
         criadero.setLongitud(longitud);
         criadero.setLatitud(latitud);
         criadero.setFechaHoraMod(fechaMod);
+        criadero.setNombre(nombre);
+        criadero.setIdCaserio(idCaserio);
+        criadero.setDescripcion(descripcion);
         criadero.setIdUsuarioMod(usuarioMod);
+        criadero.update();
+
+    }
+    public void saveCriaderoUpdateTablet(long id, String latitud, String longitud, long idUsuarioMod, Date fechaMod) {
+        CtlPlCriadero criadero=daoSession.getCtlPlCriaderoDao().loadByRowId(id);
+        criadero.setLongitud(longitud);
+        criadero.setLatitud(latitud);
+        criadero.setFechaHoraMod(fechaMod);
+        criadero.update();
 
     }
     public void confirm() {
@@ -969,7 +1139,7 @@ public class SubirDatos extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         try {
                             float carga = calculoBateria(getApplicationContext());
-                            if (carga < 0.40) { //50% solo tiene 10 para probarla
+                            if (carga < 0.20) { //50% solo tiene 10 para probarla
                                 Toast.makeText(getApplicationContext(), "El estado de carga es menor al 40%, Por favor conecte el dispositivo", Toast.LENGTH_LONG).show();
                             } else {
                                 checkinServer("subir");
@@ -989,7 +1159,68 @@ public class SubirDatos extends AppCompatActivity {
         btnPositivo.setTextColor(Color.RED);
         Button btnNegativo = a.getButton(DialogInterface.BUTTON_NEGATIVE);
         btnNegativo.setTextColor(Color.DKGRAY);
+    }
 
+
+
+    public long getMaxIdUser(){
+        long maxIdUser = 0;
+        FosUserUserDao userDao = daoSession.getFosUserUserDao();
+        List<FosUserUser> maxPostIdRow = userDao.queryBuilder().orderDesc(FosUserUserDao.Properties.Id)
+                .limit(1).list();
+        maxIdUser = maxPostIdRow.get(0).getId();
+        return  maxIdUser;
+    }
+
+    public void saveColvol(long id,long idCaserio, String nombre,long idSibasi,String clave,
+                           int estado, String latitud, String longitud){
+        PlColvolDao colvolDao = daoSession.getPlColvolDao();
+        PlColvol colvol = new PlColvol();
+        colvol.setId(id);
+        colvol.setIdCaserio(idCaserio);
+        colvol.setNombre(nombre);
+        if (!latitud.equals("null") && !longitud.equals("null") ){
+            colvol.setLatitud(latitud);
+            colvol.setLongitud(longitud);
+        }
+        colvol.setIdSibasi(idSibasi);
+        colvol.setClave(clave);
+        colvol.setEstado(estado);
+        colvol.setEstado_sync(0);
+        colvolDao.insert(colvol);
+    }
+    public void saveClave(long id, int idDepto, int idMpo, int corr, String claveServer, long procedencia) {
+        ClaveDao claveDao = daoSession.getClaveDao();
+        Clave clave = new Clave();
+        clave.setId(id);
+        clave.setIdProcedencia(procedencia);
+        clave.setIdDepartamento(idDepto);
+        clave.setIdMunicipio(idMpo);
+        clave.setClave(claveServer);//se llama clave server porque el objeto tambien se llama clave
+        claveDao.insert(clave);
+    }
+    public void saveColvolClave(long id, long idClave,long idColvol){
+        ColvolCalveDao claDao = daoSession.getColvolCalveDao();
+        ColvolCalve cla = new ColvolCalve();
+        cla.setId(id);
+        cla.setIdClave(idClave);
+        cla.setIdColvol(idColvol);
+        claDao.insert(cla);
+    }
+    public  void saveFosUserUser(long id, String firstname, String username, String lastname,
+                                 String password, String salt, int tipoEmpleado, int idSibasi) {
+
+        FosUserUserDao fosUserUser = daoSession.getFosUserUserDao();
+        FosUserUser user = new FosUserUser();
+        user.setId(id);
+        user.setUsername(username);
+        user.setFirstname(firstname);
+        user.setLastname(lastname);
+        user.setPassword(password);
+        user.setSalt(salt);
+        user.setTipoEmpleado(tipoEmpleado);
+        user.setIdSibasi(idSibasi);
+        fosUserUser.insert(user);
     }
 
 }

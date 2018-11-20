@@ -167,9 +167,14 @@ public class MainActivity extends AppCompatActivity
         } else if(id== R.id.subir_datos){
             Intent i = new Intent(getApplicationContext(), SubirDatos.class);
             startActivity(i);
-        }/*else if (id == R.id.tab) {
-            fragmentManager.beginTransaction().replace(R.id.contenedor, new ContenedorFragment()).commit();
-        }*/
+        }else if (id == R.id.descargar_mapa) {
+            Intent map = new Intent(getApplicationContext(),MapOfflineActivity.class);
+            startActivity(map);
+        }
+        else if (id == R.id.ver_mapa) {
+            Intent map = new Intent(getApplicationContext(),MapsActivity2.class);
+            startActivity(map);
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -259,7 +264,8 @@ public class MainActivity extends AppCompatActivity
             myAndroidDeviceId = mTelephony.getDeviceId();
             return myAndroidDeviceId;
         } else {
-            myAndroidDeviceId = mTelephony.getImei();
+           // myAndroidDeviceId = mTelephony.getImei();
+            myAndroidDeviceId=  mTelephony.getDeviceId();
 
         }
         return myAndroidDeviceId;

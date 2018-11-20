@@ -5,7 +5,7 @@
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
+         location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -27,6 +27,18 @@
         android:roundIcon="@mipmap/ic_launcher_malaria_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <receiver
+            android:name=".AdminDevice.DeviceAdminReceiverMalaria"
+            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <intent-filter>
+                <!-- This action is required -->
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+            <!-- This is required this receiver to become device admin component -->
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+        </receiver>
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -89,7 +101,7 @@
         <activity
             android:name=".CRUD.capturaAnopheles.ListCapturaActivity"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".CRUD.pesquisaLarvaria.ListPesquisaActivity"
             android:parentActivityName=".MainActivity" />
@@ -128,7 +140,8 @@
         </activity>
         <activity
             android:name=".CRUD.Criaderos.activityCriadero.ActualizarCriaderoActivity"
-            android:label="Actualizar Criadero" />
+            android:label="Actualizar Criadero"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".CRUD.Criaderos.activityCriadero.ListaCriaderoMapa"
             android:label="Lista de Criaderos"
@@ -199,7 +212,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.ListGotaGruesaActivity"
+        <activity
+            android:name=".CRUD.gotaGruesa.activityGotaGruesa.ListGotaGruesaActivity"
             android:label="Gotas Gruesas"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape">
@@ -212,7 +226,6 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".CRUD.gotaGruesa.activityGotaGruesa.nuevaGotaGruesaActivity"
@@ -222,13 +235,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".CRUD.gotaGruesa.activityGotaGruesa.ListGotaGruesaActivity" />
+
             <intent-filter>
                 <action android:name="android.intent.action.nuevaGotaGruesaActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
+        <activity android:name=".MapOfflineActivity" />
+        <activity
+            android:name=".MapsActivity2"
+            android:label="@string/title_activity_maps2"></activity>
     </application>
 
 </manifest>
