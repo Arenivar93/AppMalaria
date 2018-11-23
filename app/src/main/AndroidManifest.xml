@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -244,7 +246,7 @@
         </activity>
         <activity android:name=".MapOfflineActivity" />
         <activity
-            android:name=".MapsActivity2"
+            android:name=".VerMapsOffline"
             android:label="@string/title_activity_maps2"></activity>
     </application>
 

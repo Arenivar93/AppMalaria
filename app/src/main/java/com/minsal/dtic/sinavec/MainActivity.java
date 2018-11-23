@@ -19,14 +19,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol.MenuColvolFragment;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.MenuCriaderoFragment;
@@ -38,11 +33,8 @@ import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUserDao;
 import com.minsal.dtic.sinavec.Sincronizar.SubirDatos;
 import com.minsal.dtic.sinavec.fragment.ContenedorFragment;
-import com.minsal.dtic.sinavec.fragment.CapturaFragment;
-import com.minsal.dtic.sinavec.fragment.FebrilFragment;
 import com.minsal.dtic.sinavec.fragment.LenguajesFragment;
 import com.minsal.dtic.sinavec.fragment.MainFragment;
-import com.minsal.dtic.sinavec.fragment.MapFragment;
 import com.minsal.dtic.sinavec.fragment.PesquisaFragment;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
@@ -172,7 +164,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(map);
         }
         else if (id == R.id.ver_mapa) {
-            Intent map = new Intent(getApplicationContext(),MapsActivity2.class);
+            Intent map = new Intent(getApplicationContext(),VerMapsOffline.class);
             startActivity(map);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

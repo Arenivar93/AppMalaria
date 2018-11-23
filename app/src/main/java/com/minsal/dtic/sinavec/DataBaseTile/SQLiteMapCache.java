@@ -8,19 +8,23 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.minsal.dtic.sinavec.MainActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class SQLiteMapCache extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "MapsTitle.db";
     public static final String TAG = ".dataBaseTile";
+    int depto = MainActivity.depto;
     public SQLiteMapCache(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
     private static final String INTEGER_TYPE = " INTEGER";
     private static final String DOUBLE_TYPE = " REAL";
     private static final String TEXT_TYPE = " TEXT";
@@ -60,7 +64,6 @@ public class SQLiteMapCache extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_POINT);
         db.execSQL(SQL_PK_TILE);
         db.execSQL(SQL_PK_point);
-
     }
 
     @Override
@@ -181,12 +184,13 @@ public class SQLiteMapCache extends SQLiteOpenHelper {
      * @return un entero con la cantidad de Tiles o 0 si no hay.
      */
     public int countTiles() {
+        int cantidad=0;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT count(*) FROM " + Esquema.Tile.TABLE_NAME, null);
         if (c.moveToFirst()) {
-            return c.getInt(0);
+            cantidad= c.getInt(0);
         }
-        return 0;
+        return cantidad;
     }
     /**
      * Obtiene los puntos de sincronización del mapa offline
@@ -226,5 +230,13 @@ public class SQLiteMapCache extends SQLiteOpenHelper {
         db.close();
     }
 
+    public  int countPoint() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT count(*) FROM " + Esquema.SyncPoints.TABLE_NAME, null);
+        if (c.moveToFirst()) {
+            return c.getInt(0);
+        }
+        return 0;
+    }
 
 }

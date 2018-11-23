@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.minsal.dtic.sinavec.CRUD.Colvol.fragmentColvol.verColvolMapDialogFragment;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.verCriaderoMapDialogFragment;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
@@ -31,6 +32,7 @@ import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
+import com.minsal.dtic.sinavec.tools.GoogleMapOfflineTileProvider;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 import java.util.ArrayList;
@@ -75,26 +77,18 @@ public class ListaColvolMapa extends AppCompatActivity implements OnMapReadyCall
                 .findFragmentById(R.id.mapListCriadero);
 
         mapFragment.getMapAsync(this);
-        btnBuscarColvol.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                mMap.clear();
-                long idMunicipio = getIdMunicipioPes();
-                colvolMap((int)idMunicipio);
-
-            }
-        });
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NONE); // tiene que se type none para que funcione el de la BD
         mMap.getUiSettings().setZoomControlsEnabled(true);
         moverCamaraDepartamento();
         //solo preparamos el mapa luego mostraremos los puntos al presionar el botin buscar
-
+            // se muestra el mapa que esta en la base de datos
+        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -107,11 +101,24 @@ public class ListaColvolMapa extends AppCompatActivity implements OnMapReadyCall
                 return false;
             }
         });
+        btnBuscarColvol.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+
+                mMap.clear();
+                long idMunicipio = getIdMunicipioPes();
+                colvolMap((int)idMunicipio);
+
+            }
+        });
 
 
     }
 
     public void colvolMap(int municipio){
+        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
         Utilidades u = new Utilidades(daoSession);
         List<PlColvol> colvols = u.loadColvolMap(municipio);
         if (colvols.size()>0){

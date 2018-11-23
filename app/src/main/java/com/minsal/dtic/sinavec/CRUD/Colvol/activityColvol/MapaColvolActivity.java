@@ -30,11 +30,13 @@ package com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol;
         import com.google.android.gms.maps.model.LatLng;
         import com.google.android.gms.maps.model.Marker;
         import com.google.android.gms.maps.model.MarkerOptions;
+        import com.google.android.gms.maps.model.TileOverlayOptions;
         import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
         import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
         import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
         import com.minsal.dtic.sinavec.MyMalaria;
         import com.minsal.dtic.sinavec.R;
+        import com.minsal.dtic.sinavec.tools.GoogleMapOfflineTileProvider;
         import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
         import java.text.SimpleDateFormat;
@@ -310,8 +312,9 @@ public class MapaColvolActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void setUpMap() {
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
         //mMap.getUiSettings().setMapToolbarEnabled(true);
 
         //mMap.setTrafficEnabled(true);

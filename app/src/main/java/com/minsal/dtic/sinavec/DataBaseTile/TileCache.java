@@ -254,6 +254,7 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
             }
 
             synchronized (cantDescagado) {
+                Log.i("cantidad descarga",String.valueOf(cantDescagado));
               //  publishProgress(cantDescagado);
                 cantDescagado++;
             }

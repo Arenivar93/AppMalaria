@@ -43,7 +43,7 @@ public class Validator {
      * @param c contexto
      * @return true si se encuentra disponible algun tipo de conexion, false en caso contrario.
      */
-    private static boolean isNetDisponible(Context c) {
+    public static boolean isNetDisponible(Context c) {
         ConnectivityManager connectivityManager = (ConnectivityManager)
                 c.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo actNetInfo = connectivityManager.getActiveNetworkInfo();
@@ -116,7 +116,8 @@ public class Validator {
      */
     public static boolean hasSaveMap(Context c) {
         SQLiteMapCache db = new SQLiteMapCache(c);
-        return db.countTiles() < 100 ? false : true;
+
+        return db.countTiles() >= 100;
     }
 
     /**

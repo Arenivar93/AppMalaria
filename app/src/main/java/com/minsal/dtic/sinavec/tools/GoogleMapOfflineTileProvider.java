@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.minsal.dtic.sinavec.DataBaseTile.SQLiteMapCache;
 import com.minsal.dtic.sinavec.R;
+import com.minsal.dtic.sinavec.utilidades.Validator;
 
 import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
@@ -34,7 +35,7 @@ public class GoogleMapOfflineTileProvider implements TileProvider {
         sqLiteMapCache = new SQLiteMapCache(context);
         c = context;
         not = BitmapFactory.decodeResource(c.getResources(), R.drawable.no_tile);
-        //internet = Validator.canUseMapOnline(context);
+        internet = Validator.canUseMapOnline(context);
     }
 
     private static final String TAG = GoogleMapOfflineTileProvider.class.getName();

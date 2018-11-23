@@ -58,7 +58,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         CameraPosition camera= new CameraPosition.Builder()
                 .target(venturas)
                 .zoom(15) //limit 21
-                .bearing(0)// 0  -365
+                .bearing(60)// 0  -365
                 .tilt(30)  //limit 90
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
