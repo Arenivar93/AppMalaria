@@ -2,16 +2,21 @@ package com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +36,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 
@@ -39,9 +45,13 @@ import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
 import com.minsal.dtic.sinavec.MainActivity;
+import com.minsal.dtic.sinavec.MapOfflineActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
+import com.minsal.dtic.sinavec.VerMapsOffline;
+import com.minsal.dtic.sinavec.tools.GoogleMapOfflineTileProvider;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
+import com.minsal.dtic.sinavec.utilidades.Validator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,6 +96,10 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
         u.fragment = 0;
         ActionBar actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        boolean countTiles = Validator.hasSaveMap(getApplication());
+        if (!countTiles){
+            goDowloadMap();
+        }
 
         loadSpinerMun();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -98,6 +112,7 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
                 mMap.clear();
+                mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(getApplicationContext())).zIndex(-100)).clearTileCache();
                 long idMunicipio = getIdMunicipioPes();
                 criaderosMap((int)idMunicipio);
 
@@ -119,7 +134,11 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
         moverCamaraDepartamento();
+        mMap.setMinZoomPreference(1);
+        mMap.setMaxZoomPreference(15);
         //solo preparamos el mapa luego mostraremos los puntos al presionar el botin buscar
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -134,6 +153,7 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
             }
 
         });
+
 
 
     }
@@ -165,6 +185,8 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
                 .tilt(30)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
+        mMap.setMaxZoomPreference(15);
+        mMap.setMinZoomPreference(1);
     }
 
 
@@ -306,6 +328,37 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
         startActivity(list);
         finish();
     }
+    public void  goDowloadMap(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(pesquisaLarvaria.this);
+        builder.setMessage(Html.fromHtml("<font color='#FF0000'><b>Primero debe descargar el mapa!!</b></font>"))
+                .setNegativeButton(Html.fromHtml("Cancelar"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    }
+                })
+                .setPositiveButton(Html.fromHtml("Descargar Ahora"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MapOfflineActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setCancelable(false);
+        //.create().show();
+        AlertDialog a = builder.create();
+        a.show();
+        Button btnPositivo = a.getButton(DialogInterface.BUTTON_POSITIVE);
+        btnPositivo.setTextColor(Color.RED);
+        Button btnNegativo = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        btnNegativo.setTextColor(Color.GREEN);
+
+    }
+
 
 
 }

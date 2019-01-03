@@ -189,6 +189,7 @@ public class SQLiteMapCache extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("SELECT count(*) FROM " + Esquema.Tile.TABLE_NAME, null);
         if (c.moveToFirst()) {
             cantidad= c.getInt(0);
+            Log.i("***",String.valueOf(cantidad));
         }
         return cantidad;
     }

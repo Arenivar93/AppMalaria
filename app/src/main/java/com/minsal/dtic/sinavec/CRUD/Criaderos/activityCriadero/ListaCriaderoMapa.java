@@ -2,12 +2,17 @@ package com.minsal.dtic.sinavec.CRUD.Criaderos.activityCriadero;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,14 +27,19 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.verCriaderoMapDialogFragment;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.MainActivity;
+import com.minsal.dtic.sinavec.MapOfflineActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
+import com.minsal.dtic.sinavec.VerMapsOffline;
+import com.minsal.dtic.sinavec.tools.GoogleMapOfflineTileProvider;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
+import com.minsal.dtic.sinavec.utilidades.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +81,11 @@ public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCa
         btnBuscarCriaderoPes = (Button)findViewById(R.id.btnBuscarCriaderoPes);
         u=new Utilidades(daoSession);
         loadSpinerMun();
+        boolean countTiles = Validator.hasSaveMap(getApplication());
+        if (!countTiles){
+            goDowloadMap();
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapListCriadero);
@@ -81,6 +96,7 @@ public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View view) {
                 mMap.clear();
+                mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(getApplicationContext())).zIndex(-100)).clearTileCache();
                 long idMunicipio = getIdMunicipioPes();
                 criaderosMap((int)idMunicipio);
 
@@ -91,8 +107,9 @@ public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
         moverCamaraDepartamento();
         //solo preparamos el mapa luego mostraremos los puntos al presionar el botin buscar
 
@@ -186,6 +203,36 @@ public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
+    public void  goDowloadMap(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(ListaCriaderoMapa.this);
+        builder.setMessage(Html.fromHtml("<font color='#FF0000'><b>Primero debe descargar el mapa!!</b></font>"))
+                .setNegativeButton(Html.fromHtml("Cancelar"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    }
+                })
+                .setPositiveButton(Html.fromHtml("Descargar Ahora"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MapOfflineActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setCancelable(false);
+        //.create().show();
+        AlertDialog a = builder.create();
+        a.show();
+        Button btnPositivo = a.getButton(DialogInterface.BUTTON_POSITIVE);
+        btnPositivo.setTextColor(Color.RED);
+        Button btnNegativo = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        btnNegativo.setTextColor(Color.GREEN);
 
     }
 }

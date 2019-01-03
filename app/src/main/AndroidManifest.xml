@@ -247,7 +247,8 @@
         <activity android:name=".MapOfflineActivity" />
         <activity
             android:name=".VerMapsOffline"
-            android:label="@string/title_activity_maps2"></activity>
+            android:label="@string/title_activity_maps2"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

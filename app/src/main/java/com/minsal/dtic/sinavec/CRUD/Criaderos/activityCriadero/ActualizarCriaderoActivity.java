@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.minsal.dtic.sinavec.CRUD.Criaderos.fragmentCriadero.editarCriaderoDialogFragment;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
@@ -47,9 +48,14 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriaderoDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
+import com.minsal.dtic.sinavec.MainActivity;
+import com.minsal.dtic.sinavec.MapOfflineActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
+import com.minsal.dtic.sinavec.VerMapsOffline;
+import com.minsal.dtic.sinavec.tools.GoogleMapOfflineTileProvider;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
+import com.minsal.dtic.sinavec.utilidades.Validator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -133,7 +139,10 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
         listaCaserios.add("Seleccione");
         municipios=utilidades.loadspinnerMunicipio(idDepto);
         listaMunicipio=utilidades.obtenerListaMunicipio(municipios);
-
+        boolean countTiles = Validator.hasSaveMap(getApplication());
+        if (!countTiles){
+            goDowloadMap();
+        }
         adapter=new ArrayAdapter
                 (this,android.R.layout.simple_list_item_1,listaMunicipio);
         adapter.notifyDataSetChanged();
@@ -468,15 +477,15 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
     }
 
     private void setUpMap() {
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         if (Build.VERSION.SDK_INT >= 23) {
             marshmallowGPSPremissionCheck();
-
         } else {
             enableMyLocation();
-
         }
+        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
+
     }
 
     private void enableMyLocation() {
@@ -675,5 +684,35 @@ public class ActualizarCriaderoActivity extends AppCompatActivity implements OnM
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         Toast.makeText(this,"Cancelo Criadero",Toast.LENGTH_LONG).show();
+    }
+    public void  goDowloadMap(){
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(ActualizarCriaderoActivity.this);
+        builder.setMessage(Html.fromHtml("<font color='#FF0000'><b>Primero debe descargar el mapa!!</b></font>"))
+                .setNegativeButton(Html.fromHtml("Cancelar"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    }
+                })
+                .setPositiveButton(Html.fromHtml("Descargar Ahora"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MapOfflineActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setCancelable(false);
+        //.create().show();
+        android.support.v7.app.AlertDialog a = builder.create();
+        a.show();
+        Button btnPositivo = a.getButton(DialogInterface.BUTTON_POSITIVE);
+        btnPositivo.setTextColor(Color.RED);
+        Button btnNegativo = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        btnNegativo.setTextColor(Color.GREEN);
+
     }
 }

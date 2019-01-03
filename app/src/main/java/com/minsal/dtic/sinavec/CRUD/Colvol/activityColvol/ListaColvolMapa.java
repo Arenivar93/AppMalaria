@@ -2,12 +2,17 @@ package com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,10 +35,13 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlPlCriadero;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.MainActivity;
+import com.minsal.dtic.sinavec.MapOfflineActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
+import com.minsal.dtic.sinavec.VerMapsOffline;
 import com.minsal.dtic.sinavec.tools.GoogleMapOfflineTileProvider;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
+import com.minsal.dtic.sinavec.utilidades.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +79,10 @@ public class ListaColvolMapa extends AppCompatActivity implements OnMapReadyCall
         tvCountColvol = (TextView)findViewById(R.id.tvCountCriadero);
         btnBuscarColvol = (Button)findViewById(R.id.btnBuscarCriaderoPes);
         u=new Utilidades(daoSession);
+        boolean countTiles = Validator.hasSaveMap(getApplication());
+        if (!countTiles){
+            goDowloadMap();
+        }
         loadSpinerMun();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -105,8 +117,6 @@ public class ListaColvolMapa extends AppCompatActivity implements OnMapReadyCall
 
             @Override
             public void onClick(View view) {
-
-
                 mMap.clear();
                 long idMunicipio = getIdMunicipioPes();
                 colvolMap((int)idMunicipio);
@@ -192,6 +202,36 @@ public class ListaColvolMapa extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
+    public void  goDowloadMap(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(ListaColvolMapa.this);
+        builder.setMessage(Html.fromHtml("<font color='#FF0000'><b>Primero debe descargar el mapa!!</b></font>"))
+                .setNegativeButton(Html.fromHtml("Cancelar"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    }
+                })
+                .setPositiveButton(Html.fromHtml("Descargar Ahora"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MapOfflineActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setCancelable(false);
+        //.create().show();
+        AlertDialog a = builder.create();
+        a.show();
+        Button btnPositivo = a.getButton(DialogInterface.BUTTON_POSITIVE);
+        btnPositivo.setTextColor(Color.RED);
+        Button btnNegativo = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        btnNegativo.setTextColor(Color.GREEN);
 
     }
 }

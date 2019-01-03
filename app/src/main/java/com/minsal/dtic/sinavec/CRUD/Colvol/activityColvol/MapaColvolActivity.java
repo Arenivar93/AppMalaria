@@ -7,6 +7,7 @@ package com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol;
         import android.content.Intent;
         import android.content.SharedPreferences;
         import android.content.pm.PackageManager;
+        import android.graphics.Color;
         import android.location.Location;
         import android.location.LocationListener;
         import android.location.LocationManager;
@@ -16,7 +17,9 @@ package com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol;
         import android.os.Bundle;
         import android.support.v4.app.ActivityCompat;
         import android.support.v7.app.AppCompatActivity;
+        import android.text.Html;
         import android.view.View;
+        import android.widget.Button;
         import android.widget.EditText;
         import android.widget.ImageView;
         import android.widget.Toast;
@@ -34,10 +37,14 @@ package com.minsal.dtic.sinavec.CRUD.Colvol.activityColvol;
         import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
         import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
         import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
+        import com.minsal.dtic.sinavec.MainActivity;
+        import com.minsal.dtic.sinavec.MapOfflineActivity;
         import com.minsal.dtic.sinavec.MyMalaria;
         import com.minsal.dtic.sinavec.R;
+        import com.minsal.dtic.sinavec.VerMapsOffline;
         import com.minsal.dtic.sinavec.tools.GoogleMapOfflineTileProvider;
         import com.minsal.dtic.sinavec.utilidades.Utilidades;
+        import com.minsal.dtic.sinavec.utilidades.Validator;
 
         import java.text.SimpleDateFormat;
         import java.util.Calendar;
@@ -92,6 +99,11 @@ public class MapaColvolActivity extends AppCompatActivity implements OnMapReadyC
         daoSession = ((MyMalaria) getApplication()).getDaoSession();
         utilidades=new Utilidades(daoSession);
         colvolDao=daoSession.getPlColvolDao();
+        boolean countTiles = Validator.hasSaveMap(getApplication());
+        if (!countTiles){
+            goDowloadMap();
+        }
+
 
         Bundle geolocalizarDatos=this.getIntent().getExtras();
         if(geolocalizarDatos!=null){
@@ -315,15 +327,10 @@ public class MapaColvolActivity extends AppCompatActivity implements OnMapReadyC
         mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
-        //mMap.getUiSettings().setMapToolbarEnabled(true);
-
-        //mMap.setTrafficEnabled(true);
         if (Build.VERSION.SDK_INT >= 23) {
             marshmallowGPSPremissionCheck();
-
         } else {
             enableMyLocation();
-
         }
     }
 
@@ -483,6 +490,36 @@ public class MapaColvolActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     public void onProviderDisabled(String s) {
+
+    }
+    public void  goDowloadMap(){
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MapaColvolActivity.this);
+        builder.setMessage(Html.fromHtml("<font color='#FF0000'><b>Primero debe descargar el mapa!!</b></font>"))
+                .setNegativeButton(Html.fromHtml("Cancelar"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    }
+                })
+                .setPositiveButton(Html.fromHtml("Descargar Ahora"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MapOfflineActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setCancelable(false);
+        //.create().show();
+        android.support.v7.app.AlertDialog a = builder.create();
+        a.show();
+        Button btnPositivo = a.getButton(DialogInterface.BUTTON_POSITIVE);
+        btnPositivo.setTextColor(Color.RED);
+        Button btnNegativo = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        btnNegativo.setTextColor(Color.GREEN);
 
     }
 }

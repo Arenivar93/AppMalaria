@@ -24,6 +24,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.minsal.dtic.sinavec.EntityDAO.Clave;
@@ -88,7 +89,7 @@ public class SettingActivity extends AppCompatActivity {
     ProgressBar pbSetting;
     private SharedPreferences pref;
     String username, password;
-    //public static final String imeiq= "357544060176506";
+    public static final String imeiq= "356980052723205";
     public static final int GET_IMEI_CODE =100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,10 +99,9 @@ public class SettingActivity extends AppCompatActivity {
         pbSetting = (ProgressBar) findViewById(R.id.pbSetting);
         btnSetting = (Button) findViewById(R.id.btnConfigurar);
         daoSession = ((MyMalaria) getApplication()).getDaoSession();
-        username = "nirodriguez"; // no se pueden usar las sharedpreferences ya que es la primera vez que se utiliza la tabelt
-        password = "Fer$1304";
+        username = "tablet"; // no se pueden usar las sharedpreferences ya que es la primera vez que se utiliza la tabelt
+        password = "tablet";
         instance = this;
-
         //este evento debe ocurrir solo cuando se instala la aplicacioj por primera vez o por si se borra la base
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -413,7 +413,7 @@ public class SettingActivity extends AppCompatActivity {
 
         } else {
             //antes de hacer una peticion vamos a comprobar que hay registros para enviar
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
+            String url = "http://malaria-dev.salud.gob.sv/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
@@ -463,8 +463,8 @@ public class SettingActivity extends AppCompatActivity {
 
         } else {
             Toast.makeText(getApplicationContext(), "Solicitando Datos al Servidor, espere...", Toast.LENGTH_SHORT).show();
-           String imei = getIMEINumber();
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/catalogos?imei="+imei;
+           String imei =imeiq; //getIMEINumber();
+            String url = "http://malaria-dev.salud.gob.sv/api/catalogos?imei="+imei;
             RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
@@ -745,9 +745,9 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
     public static SettingActivity getInstance() {
+
         return instance;
     }
-
 
 
 }

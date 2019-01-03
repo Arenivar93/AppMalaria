@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -116,8 +117,10 @@ public class Validator {
      */
     public static boolean hasSaveMap(Context c) {
         SQLiteMapCache db = new SQLiteMapCache(c);
+        int cantidad = db.countTiles();
+        Log.i("**",String.valueOf(cantidad));
 
-        return db.countTiles() >= 100;
+        return db.countTiles() >= 300;
     }
 
     /**

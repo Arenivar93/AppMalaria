@@ -450,7 +450,7 @@ public class SubirDatos extends AppCompatActivity {
                     tvCriaderos.setText(String.format("Criaderos nuevos para sincronizar: %d ",countCridero));
                     tvColvol.setText(String.format("ColVol actualizados para sincronizar: %d ",counColvolUpdate));
                     tvSeguimientos.setText(String.format("Seguimiento botiquin listos para sincronizarse: %d", countSeguimiento));
-                    String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
+                    String url = "http://malaria-dev.salud.gob.sv/api/login_check";
                     RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                             new Response.Listener<String>() {
@@ -510,7 +510,7 @@ public class SubirDatos extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
 
         } else {
-                String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/login_check";
+                String url = "http://malaria-dev.salud.gob.sv/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
@@ -559,7 +559,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendCapturas(String tkn) throws JSONException {
         JSONArray json = getInsertCapturas();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/capturas";
+            String url = "http://malaria-dev.salud.gob.sv/api/capturas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -602,7 +602,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendDataPesquisa(String token) throws JSONException {
         JSONArray json = getInsertPesquisas();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/pesquisas";
+            String url = "http://malaria-dev.salud.gob.sv/api/pesquisas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -645,7 +645,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendSeguimientoBotiquin(String token) throws JSONException {
         JSONArray json = getSeguimientoBotiquin();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/seguimientos";
+            String url = "http://malaria-dev.salud.gob.sv/api/seguimientos";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -687,7 +687,7 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void sendCriaderos(String tkn) throws JSONException {
         JSONArray json = getInsetCriaderos();
-        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
+        String url = "http://malaria-dev.salud.gob.sv/api/criaderos";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -734,7 +734,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendCriaderosUpdate(String token) throws JSONException {
         JSONArray json = getUpdateCriaderos();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/criaderos";
+            String url = "http://malaria-dev.salud.gob.sv/api/criaderos";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -775,7 +775,7 @@ public class SubirDatos extends AppCompatActivity {
     private void sendColvolUpdate(String token) throws JSONException {
         JSONArray json = getUpdateColvol();
         if (json.length()>0){
-            String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/colvol";
+            String url = "http://malaria-dev.salud.gob.sv/api/colvol";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -827,7 +827,7 @@ public class SubirDatos extends AppCompatActivity {
     private void bajarBitacora(String tkn){
         idUltimoReg = ultimoRegistroBajado();
         long maxIdUSer= getMaxIdUser();
-        String url = "http://10.168.10.80/proyecto_sinave_jwt/web/app_dev.php/api/bitacora?accion" +
+        String url = "http://malaria-dev.salud.gob.sv/api/bitacora?accion" +
                 "=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg" +
                 "="+idUltimoReg+"&maxIdUSer="+maxIdUSer;
         final okhttp3.Request request = new okhttp3.Request.Builder()

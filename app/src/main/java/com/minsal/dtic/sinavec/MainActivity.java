@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity
 
         //set user name en sesion
         TextView userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvUser);
-        userName.setText(" "+elUser);
+        userName.setText("Usuario: "+elUser);
 
 
 

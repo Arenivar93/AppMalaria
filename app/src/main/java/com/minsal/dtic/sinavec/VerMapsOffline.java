@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,6 +55,7 @@ public class VerMapsOffline extends FragmentActivity implements OnMapReadyCallba
     private final int REQUEST_CODE_ASK_PERMISSIONS = 123;
     private HashMap<Circle, LatLng> areas;
     private SQLiteMapCache mapDatabase;
+    TextView textview_zoom_actual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class VerMapsOffline extends FragmentActivity implements OnMapReadyCallba
         DaoSession daoSession = ((MyMalaria) getApplicationContext()).getDaoSession();
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         u = new Utilidades(daoSession);
+        textview_zoom_actual = (TextView)findViewById(R.id.textview_zoom_actual);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -93,6 +96,8 @@ public class VerMapsOffline extends FragmentActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+        mMap.setMaxZoomPreference(15);
+        mMap.setMinZoomPreference(1);
         moverCamaraDepartamento();
         mMap.getUiSettings().setMapToolbarEnabled(false);
         if (ActivityCompat.checkSelfPermission(this,
@@ -107,7 +112,7 @@ public class VerMapsOffline extends FragmentActivity implements OnMapReadyCallba
         } else {
             mMap.setMyLocationEnabled(true);
         }
-        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
+       mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
         mMap.setOnInfoWindowLongClickListener(this);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapLongClickListener(this);
@@ -119,6 +124,15 @@ public class VerMapsOffline extends FragmentActivity implements OnMapReadyCallba
             }
         });
         ponerPuntosSync();
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                float zoom = mMap.getCameraPosition().zoom;
+                textview_zoom_actual.setText("Zoom "+String.valueOf(zoom)+ "/ 15");
+
+            }
+        });
+
 
     }
 
