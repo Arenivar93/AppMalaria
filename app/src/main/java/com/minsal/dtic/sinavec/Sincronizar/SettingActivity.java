@@ -10,6 +10,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -89,8 +90,10 @@ public class SettingActivity extends AppCompatActivity {
     ProgressBar pbSetting;
     private SharedPreferences pref;
     String username, password;
-    public static final String imeiq= "356980052723205";
+    //public static final String imeiq= "356980052723205";
     public static final int GET_IMEI_CODE =100;
+    private boolean imeiGranted = false;
+    private static final String PHONE_STATE = Manifest.permission.READ_PHONE_STATE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +105,7 @@ public class SettingActivity extends AppCompatActivity {
         username = "tablet"; // no se pueden usar las sharedpreferences ya que es la primera vez que se utiliza la tabelt
         password = "tablet";
         instance = this;
+        getImeiPermission();
         //este evento debe ocurrir solo cuando se instala la aplicacioj por primera vez o por si se borra la base
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -463,7 +467,7 @@ public class SettingActivity extends AppCompatActivity {
 
         } else {
             Toast.makeText(getApplicationContext(), "Solicitando Datos al Servidor, espere...", Toast.LENGTH_SHORT).show();
-           String imei =imeiq; //getIMEINumber();
+           String imei = getIMEINumber();
             String url = "http://malaria-dev.salud.gob.sv/api/catalogos?imei="+imei;
             RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -747,6 +751,18 @@ public class SettingActivity extends AppCompatActivity {
     public static SettingActivity getInstance() {
 
         return instance;
+    }
+    private void getImeiPermission() {
+        String[] permissions = {Manifest.permission.READ_PHONE_STATE};
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            imeiGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    GET_IMEI_CODE);
+        }
     }
 
 

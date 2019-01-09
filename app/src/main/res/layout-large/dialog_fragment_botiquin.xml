@@ -45,6 +45,7 @@
                 android:layout_width="214dp"
                 android:layout_height="wrap_content"
                 android:hint="Numero de muestras"
+                android:imeOptions="flagNoExtractUi"
                 android:inputType="number" />
         </android.support.design.widget.TextInputLayout>
 
@@ -58,6 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Numero de Personas a las que se les divulgo"
                 android:inputType="number" />
         </android.support.design.widget.TextInputLayout>

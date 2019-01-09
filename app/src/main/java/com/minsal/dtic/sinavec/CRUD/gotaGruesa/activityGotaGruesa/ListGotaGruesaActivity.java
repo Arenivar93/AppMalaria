@@ -50,8 +50,8 @@ public class ListGotaGruesaActivity extends AppCompatActivity implements selecci
         btnNuevo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                seleccionProcedenciaDialogFragment dialog = new seleccionProcedenciaDialogFragment();
-                dialog.show(getFragmentManager(), "dialog");
+                Intent i = new Intent(getApplicationContext(),nuevaGotaGruesaActivity.class);
+                startActivity(i);
             }
         });
     }

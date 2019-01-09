@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Build;
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -81,6 +83,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
     ArrayAdapter<String> adapter2;
     ArrayAdapter<String> adapter3;
     List<Marker> misMarkers;
+    Marker marker;
 
     Utilidades utilidades;
 
@@ -225,13 +228,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
             @Override
             public boolean onMarkerClick(Marker marker) {
                 ColvolCalve colvolClave=(ColvolCalve)marker.getTag();
-               /* CtlPlCriadero cria = (CtlPlCriadero) marker.getTag();
-                idCriadero=cria.getId();
-                idCaserio=cria.getCtlCaserio().getId();
-                NuevaPesquisaFragment dialog = new NuevaPesquisaFragment().newInstance(cria.getId(),cria.getNombre());
-                dialog.show(getFragmentManager(),"dialog");*/
                marker.showInfoWindow();
-               //Toast.makeText(getApplicationContext(),"Gotas Gruesas"+colvolClave.getPlColvol().getNombre(),Toast.LENGTH_LONG).show();
                 nuevaGotaGruesaFragment dialog = new nuevaGotaGruesaFragment();
                 Bundle datos=new Bundle();
                 datos.putStringArrayList("listaEstClave",listaLaboratorios);
@@ -244,6 +241,24 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
             }
 
         });
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                if (marker!=null){
+                    for(Marker marker : misMarkers) {
+                        if(Math.abs(marker.getPosition().latitude - latLng.latitude) < 0.005 && Math.abs(marker.getPosition().longitude - latLng.longitude) < 0.005) {
+                            marker.showInfoWindow();
+                            //Toast.makeText(nuevaGotaGruesaActivity.this, marker.getTitle(), Toast.LENGTH_SHORT).show(); //do some stuff
+                            break;
+                        }
+                    }
+
+                }
+
+            }
+        });
+
+
     }
 
     public void colvolMap(int municipio,int canton,int caserio){
@@ -257,11 +272,12 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
             misMarkers=new ArrayList<Marker>();
             for (ColvolCalve c: clavesColvol){
                 String id=String.valueOf(c.getId());
-                Marker marker=mMap.addMarker(new MarkerOptions()
+                marker=mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(Double.parseDouble(c.getPlColvol().getLatitud()), Double.parseDouble(c.getPlColvol().getLongitud())))
-                        .title(c.getPlColvol().getNombre()+"--"+c.getClave().getClave()));
+                        .title(c.getPlColvol().getNombre()+"--"+c.getClave().getClave())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.gota_sangre)));
                 marker.setTag(c);
-                //marker.showInfoWindow();
+                marker.showInfoWindow();
                 misMarkers.add(marker);
             }
             tvCountCriadero.setText(String.format("Total de colvol encontradoss: %s", String.valueOf(clavesColvol.size())));

@@ -69,6 +69,11 @@ public class EditSeguimiento extends AppCompatActivity {
         segDao = daoSession.getPlSeguimientoBotiquinDao();
         try {
             segEdit = segDao.loadByRowId(Long.parseLong((String) id_seguimiento));
+            if (segEdit.getEstado_sync()==0){
+                imActualizar.setVisibility(View.INVISIBLE);
+                imEliminar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(),"Este registro ya fue sincronizado, solo puede editarse en la web",Toast.LENGTH_LONG).show();
+            }
             String botiquin = "Boqituin: "+bundle.getString("nombre")+"    Clave:"+segEdit.getClave().getClave();
             tvNombre.setText(botiquin);
             int supervisado = segEdit.getSupervisado();

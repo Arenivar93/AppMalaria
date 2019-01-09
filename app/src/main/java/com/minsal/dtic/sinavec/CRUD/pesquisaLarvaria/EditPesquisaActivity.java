@@ -82,6 +82,11 @@ public class EditPesquisaActivity extends AppCompatActivity {
         try {
             id_pesquisa = bundle.get("id_pesquisa");
             pesEdit = pesDao.loadByRowId((long)(id_pesquisa));
+            if (pesEdit.getEstado_sync()==0){
+                imActualizar.setVisibility(View.INVISIBLE);
+                imElimnar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(),"Este registro ya fue sincronizado, solo puede editarse en la web",Toast.LENGTH_LONG).show();
+            }
             int pupa       = pesEdit.getPupa();
             float ancho    = pesEdit.getAncho();
             float largo    = pesEdit.getLargo();

@@ -79,6 +79,7 @@
                 android:layout_width="254dp"
                 android:layout_height="wrap_content"
                 android:hint="Numero de muestras"
+                android:imeOptions="flagNoExtractUi"
                 android:inputType="number" />
         </android.support.design.widget.TextInputLayout>
 
@@ -90,7 +91,7 @@
                 android:id="@+id/titPersonasEdit"
                 android:layout_width="254dp"
                 android:layout_height="wrap_content"
-
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Numero de Personas a las que se les divulgo"
                 android:inputType="number" />
         </android.support.design.widget.TextInputLayout>

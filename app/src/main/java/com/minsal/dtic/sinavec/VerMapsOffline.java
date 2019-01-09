@@ -55,7 +55,7 @@ public class VerMapsOffline extends FragmentActivity implements OnMapReadyCallba
     private final int REQUEST_CODE_ASK_PERMISSIONS = 123;
     private HashMap<Circle, LatLng> areas;
     private SQLiteMapCache mapDatabase;
-    TextView textview_zoom_actual;
+    //TextView textview_zoom_actual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class VerMapsOffline extends FragmentActivity implements OnMapReadyCallba
         DaoSession daoSession = ((MyMalaria) getApplicationContext()).getDaoSession();
         prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         u = new Utilidades(daoSession);
-        textview_zoom_actual = (TextView)findViewById(R.id.textview_zoom_actual);
+        //textview_zoom_actual = (TextView)findViewById(R.id.textview_zoom_actual);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -124,14 +124,7 @@ public class VerMapsOffline extends FragmentActivity implements OnMapReadyCallba
             }
         });
         ponerPuntosSync();
-        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                float zoom = mMap.getCameraPosition().zoom;
-                textview_zoom_actual.setText("Zoom "+String.valueOf(zoom)+ "/ 15");
 
-            }
-        });
 
 
     }

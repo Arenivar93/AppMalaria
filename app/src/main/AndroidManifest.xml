@@ -196,10 +196,18 @@
             android:name=".CRUD.pesquisaLarvaria.EditPesquisaActivity"
             android:label="Editar Captura Anopheles"
             android:parentActivityName=".CRUD.pesquisaLarvaria.ListPesquisaActivity" />
-        <activity android:name=".CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity" />
-        <activity android:name=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin" />
-        <activity android:name=".CRUD.seguimientoBotiquin.DetalleSeguimientoSemana" />
-        <activity android:name=".CRUD.seguimientoBotiquin.EditSeguimiento" />
+        <activity android:name=".CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity"
+            android:label="Seguimiento de Botiquín"
+            android:parentActivityName=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin"/>
+        <activity android:name=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin"
+            android:label="Listado de Seguimiento de Botiquin"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".CRUD.seguimientoBotiquin.DetalleSeguimientoSemana"
+            android:label="Detalle de semana"
+            android:parentActivityName=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin"/>
+        <activity android:name=".CRUD.seguimientoBotiquin.EditSeguimiento"
+            android:label="Editar Seguimiento de Botiquin"
+            android:parentActivityName=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin"/>
         <activity
             android:name=".CRUD.capturaAnopheles.DetalleCapturaSemanaActivity"
             android:label="Detalle de Semana"
@@ -231,7 +239,7 @@
         </activity>
         <activity
             android:name=".CRUD.gotaGruesa.activityGotaGruesa.nuevaGotaGruesaActivity"
-            android:label="Gotas Gruesas Colvol"
+            android:label="Seleccione un colvol"
             android:parentActivityName=".CRUD.gotaGruesa.activityGotaGruesa.ListGotaGruesaActivity"
             android:screenOrientation="landscape">
             <meta-data

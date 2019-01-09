@@ -63,7 +63,7 @@ public class DetalleSeguimientoSemana extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String fila = lista.get(position);
-                Toast.makeText(getApplicationContext(),fila,Toast.LENGTH_LONG).show();
+               // Toast.makeText(getApplicationContext(),fila,Toast.LENGTH_LONG).show();
                 String[] parts= fila.split("/");
                 String id= parts[0];
                 String nombre= parts[3];

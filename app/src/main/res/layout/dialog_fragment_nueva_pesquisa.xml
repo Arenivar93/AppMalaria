@@ -26,7 +26,7 @@
                 android:id="@+id/titAnopheles12"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-
+                android:imeOptions="flagNoExtractUi"
                 android:layout_weight="1"
                 android:hint="Anopheles (I-II):"
                 android:inputType="number" />
@@ -43,7 +43,7 @@
                 android:id="@+id/titAnopheles34"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-
+                android:imeOptions="flagNoExtractUi"
                 android:layout_weight="1"
                 android:hint="Anopheles (III-IV):"
                 android:inputType="number" />
@@ -60,7 +60,7 @@
                 android:id="@+id/titCulicino12"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-
+                android:imeOptions="flagNoExtractUi"
                 android:layout_weight="1"
                 android:hint="Culicino (I-II):"
                 android:inputType="number" />
@@ -85,6 +85,7 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Culicino (III-IV):"
                 android:inputType="number" />
         </android.support.design.widget.TextInputLayout>
@@ -101,6 +102,7 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Pupas:"
                 android:inputType="number" />
         </android.support.design.widget.TextInputLayout>
@@ -117,6 +119,7 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Cucharonadas"
                 android:inputType="number" />
         </android.support.design.widget.TextInputLayout>
@@ -140,6 +143,7 @@
                 android:layout_width="247dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:imeOptions="flagNoExtractUi"
                 android:hint="Largo de criadero:"
                 android:inputType="numberDecimal" />
         </android.support.design.widget.TextInputLayout>
@@ -155,6 +159,7 @@
                 android:layout_width="249dp"
                 android:layout_height="wrap_content"
                 android:hint="Ancho de criadero"
+                android:imeOptions="flagNoExtractUi"
                 android:inputType="number|numberDecimal" />
 
         </android.support.design.widget.TextInputLayout>

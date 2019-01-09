@@ -118,7 +118,7 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
             LatLngBounds limitesGPS = toBounds((LatLng) point[i]);
             //Descarga las imagenes del papa para cada zoom que se desea tenear
             for (int z = minZoom; z <= maxZoom; z++) {
-                Log.d(TAG, "Descargando zoom " + z);
+                Log.d(TAG, "Descargando zoom---- " + z);
                 int limeteXY1[] = getTile(limitesGPS.northeast, z);
                 int limeteXY2[] = getTile(limitesGPS.southwest, z);
 
@@ -189,9 +189,10 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
             URL url = new URL(String.format(UPPER_ZOOM_TILE_URL, x, y, z));
             Log.d(TAG, url.toString());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
+           // connection.setDoInput(true);
             connection.connect();
-            return BitmapFactory.decodeStream(connection.getInputStream());
+            Bitmap myBitmap = BitmapFactory.decodeStream(connection.getInputStream());
+            return myBitmap;
         } catch (IOException e) {
             Log.d(TAG, "exception when retrieving bitmap from internet" + e.toString());
             return null;
@@ -244,6 +245,7 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
                 if (database.getTile(x, y, z) == null) {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     Bitmap imageMap = getBitmapFromURL(x, y, z);
+
                     if (imageMap != null) {
                         imageMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                         byte[] image = stream.toByteArray();
