@@ -14,15 +14,11 @@ import com.minsal.dtic.sinavec.R;
 
 import java.util.ArrayList;
 
-public class AdapterCustom extends BaseAdapter {
+public class AdapterGotaGruesa extends BaseAdapter {
     Context context;
-   // ArrayList<String> capturas;
-    DaoSession daoSession;
-    ArrayList<String> listaCapturas;
     ArrayList<String> lista;
-    PlCapturaAnophelesDao capDao;
 
-    public AdapterCustom(Context context, ArrayList<String> lista) {
+    public AdapterGotaGruesa(Context context, ArrayList<String> lista) {
         this.context = context;
         this.lista = lista;
 
@@ -50,26 +46,22 @@ public class AdapterCustom extends BaseAdapter {
         TextView tv1, tv2, tv3,tv4,tv5,tv6,tv7;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View v = inflater.inflate(R.layout.list_custom_adapter, viewGroup, false);
+        View v = inflater.inflate(R.layout.list_gota_adapter, viewGroup, false);
         try {
-            tv1 = (TextView) v.findViewById(R.id.tvAda1);
-            tv2 = (TextView) v.findViewById(R.id.tvAda2);
-            tv3 = (TextView) v.findViewById(R.id.tvAda3);
-            tv4 = (TextView) v.findViewById(R.id.tvAda4);
-            tv5 = (TextView) v.findViewById(R.id.tvAda5);
-            tv6 = (TextView) v.findViewById(R.id.tvAda6);
-            tv7= (TextView) v.findViewById(R.id.tvAda7);
+            tv1 = (TextView) v.findViewById(R.id.tvgg1);//año
+            tv2 = (TextView) v.findViewById(R.id.tvgg2);//semana
+            tv3 = (TextView) v.findViewById(R.id.tvgg3);//total
+            tv4 = (TextView) v.findViewById(R.id.tvgg4);//negativa
+            tv5 = (TextView) v.findViewById(R.id.tvgg5);//positiva
+            tv6 = (TextView) v.findViewById(R.id.tvgg6);//sin resultado
             String str = lista.get(position);
             String[] tvs = str.split("-");
             tv1.setText(tvs[0]);
             tv2.setText(tvs[1]);
             tv3.setText(tvs[2]);
-            tv4.setText(tvs[3]);
-            tv5.setText(tvs[4]);
-            tv6.setText(tvs[5]);
-            if (tvs.length>6){
-                tv7.setText(tvs[6]);
-            }
+            tv4.setText(tvs[4]);
+            tv5.setText(tvs[5]);
+            tv6.setText(tvs[3]);
 
         }catch (Exception e ){
             e.printStackTrace();

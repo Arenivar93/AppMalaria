@@ -436,6 +436,33 @@ public class Utilidades {
         c.close();
         return seguimientoBySem;
     }
+    /**
+     *metodos para gota gruesa por semana
+     */
+
+    public ArrayList<String> loadGotaBySemana() {
+        ArrayList gotaBySem = new ArrayList<String>();
+        //  pesquisaPrueba = new ArrayList<String>();
+        int total;
+        try {
+            Cursor c = daoSession.getDatabase().rawQuery("SELECT strftime('%Y', FECHA_TOMA) AS anio, ID_SEMANA_EPIDEMIOLOGICA,COUNT(ID) as total,SUM(CASE ID_RESULTADO WHEN 3 THEN 1 else 0 end) as sin_resultado," +
+                    "SUM(CASE ID_RESULTADO WHEN 1 THEN 1 else 0 end) as negativo," +
+                    " SUM(CASE ID_RESULTADO WHEN 2 THEN 1 WHEN 4 THEN 1 WHEN 5 THEN 1 WHEN 6 THEN 1 else  0 end) as positivas " +
+                    " FROM PL_GOTA_GRUESA" +
+                    " GROUP BY ID_SEMANA_EPIDEMIOLOGICA", null);
+            if (c.moveToFirst()) {
+                do {
+                    gotaBySem.add(c.getString(0) + "-" + c.getInt(1) + "-" + c.getInt(2)+"-"+c.getInt(3)+"-"+c.getInt(4)+"-"+c.getInt(5));
+                } while (c.moveToNext());
+            }
+            c.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return gotaBySem;
+    }
     public ArrayList<String> loadSeguimientosDetalleCombinado(int semana) {
         ArrayList seguimientoCombinado = new ArrayList<PlSeguimientoBotiquin>();
         int total;

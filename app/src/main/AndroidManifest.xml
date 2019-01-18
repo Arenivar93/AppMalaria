@@ -31,8 +31,9 @@
         android:theme="@style/AppTheme">
         <receiver
             android:name=".AdminDevice.DeviceAdminReceiverMalaria"
-            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
             <intent-filter>
+
                 <!-- This action is required -->
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
@@ -41,6 +42,7 @@
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
         </receiver>
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -196,18 +198,22 @@
             android:name=".CRUD.pesquisaLarvaria.EditPesquisaActivity"
             android:label="Editar Captura Anopheles"
             android:parentActivityName=".CRUD.pesquisaLarvaria.ListPesquisaActivity" />
-        <activity android:name=".CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity"
+        <activity
+            android:name=".CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity"
             android:label="Seguimiento de Botiquín"
-            android:parentActivityName=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin"/>
-        <activity android:name=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin"
+            android:parentActivityName=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin" />
+        <activity
+            android:name=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin"
             android:label="Listado de Seguimiento de Botiquin"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".CRUD.seguimientoBotiquin.DetalleSeguimientoSemana"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".CRUD.seguimientoBotiquin.DetalleSeguimientoSemana"
             android:label="Detalle de semana"
-            android:parentActivityName=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin"/>
-        <activity android:name=".CRUD.seguimientoBotiquin.EditSeguimiento"
+            android:parentActivityName=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin" />
+        <activity
+            android:name=".CRUD.seguimientoBotiquin.EditSeguimiento"
             android:label="Editar Seguimiento de Botiquin"
-            android:parentActivityName=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin"/>
+            android:parentActivityName=".CRUD.seguimientoBotiquin.ListSeguimientoBotiquin" />
         <activity
             android:name=".CRUD.capturaAnopheles.DetalleCapturaSemanaActivity"
             android:label="Detalle de Semana"
@@ -256,7 +262,9 @@
         <activity
             android:name=".VerMapsOffline"
             android:label="@string/title_activity_maps2"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
+        <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.GotaGruesaEditActivity" />
+        <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.DetalleSemanaGotaGruesa"></activity>
     </application>
 
 </manifest>

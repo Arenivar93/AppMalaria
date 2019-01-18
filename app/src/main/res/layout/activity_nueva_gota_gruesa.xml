@@ -8,30 +8,70 @@
     android:background="@color/headtableLetra"
     tools:context=".CRUD.gotaGruesa.activityGotaGruesa.nuevaGotaGruesaActivity">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="25dp"
+                android:text="Municipio"
+                android:textSize="12sp" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_marginTop="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/spMunicipioGota"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cantón"
+                android:textSize="12sp"/>
+
         <Spinner
-            android:layout_width="220dp"
-            android:layout_height="40dp"
-            android:id="@+id/spMunicipioGota"/>
-        <Spinner
-            android:layout_width="220dp"
-            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/spCantonGota"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Caserío"
+                android:textSize="12sp"/>
         <Spinner
-            android:layout_width="220dp"
-            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/spCaserioGota"/>
+        </LinearLayout>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:id="@+id/btnBuscarCriaderoPes"
             android:text="Buscar"/>
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:id="@+id/tvCountCriadero"/>
     </LinearLayout>
@@ -39,15 +79,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:orientation="vertical">
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             xmlns:app="http://schemas.android.com/apk/res-auto">
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:map="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -60,12 +98,11 @@
                 android:layout_gravity="bottom|end"
                 android:layout_margin="16dp"
                 android:clickable="true"
+                android:focusable="true"
                 android:src="@android:drawable/ic_menu_compass"
                 app:backgroundTint="@color/colorAccent"
                 app:borderWidth="0dp"
                 />
-
-
         </FrameLayout>
     </LinearLayout>
 

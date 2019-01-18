@@ -99,6 +99,7 @@
                             android:id="@+id/edtUser"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:imeOptions="flagNoExtractUi"
                             android:hint="Usuario:"
                             android:inputType="textPersonName" />
                     </android.support.design.widget.TextInputLayout>
@@ -116,6 +117,7 @@
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/edtPass"
                             android:layout_width="match_parent"
+                            android:imeOptions="flagNoExtractUi"
                             android:layout_height="match_parent"
                             android:hint="Contraseña:"
                             android:inputType="textPassword" />

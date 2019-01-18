@@ -16,6 +16,7 @@ import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
 
 
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class MetodosGlobales{
@@ -120,6 +121,37 @@ public class MetodosGlobales{
             }
         }
         return connected;
+    }
+    public static final ArrayList<String> getTipoDocumento() {
+        ArrayList<String> tipos = new ArrayList<>();
+        tipos.add("Seleccione");
+        tipos.add("DUI");
+        tipos.add("Carné Minoridad");
+        tipos.add("Carné ISSS");
+        tipos.add("Pasaporte");
+        tipos.add("Carné Trabajo");
+        tipos.add("Carné Estudiante");
+        tipos.add("Ninguno");
+        tipos.add("Otros");
+        tipos.add("Partida Nacimiento");
+        tipos.add("NIT");
+        return tipos;
+    }
+    public static final ArrayList<String> getSexo() {
+        ArrayList<String> tipos = new ArrayList<>();
+        tipos.add("Seleccione");
+        tipos.add("Masculino");
+        tipos.add("Femenino");
+
+        return tipos;
+    }
+    public static final ArrayList<String> getTipoEdad() {
+        ArrayList<String> tipoEdad = new ArrayList<>();
+        tipoEdad.add("Años");
+        tipoEdad.add("Meses");
+        tipoEdad.add("Dias");
+
+        return tipoEdad;
     }
 
 

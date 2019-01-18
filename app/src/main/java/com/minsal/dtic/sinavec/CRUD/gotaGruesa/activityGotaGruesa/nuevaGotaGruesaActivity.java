@@ -122,7 +122,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
         u.fragment = 0;
 
 
-        Toast.makeText(getApplicationContext(),""+depto,Toast.LENGTH_LONG).show();
+       // Toast.makeText(getApplicationContext(),""+depto,Toast.LENGTH_LONG).show();
 
         //loadSpinerMun();
         listaCanton.add("Seleccione");
@@ -235,6 +235,8 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
                 datos.putLong("idSibasi",idSibasi);
                 datos.putLong("idTablet",idTablet);
                 datos.putLong("idUsuario",idUsuario);
+                datos.putLong("idClave",colvolClave.getIdClave());
+                datos.putString("nombreColvol",colvolClave.getPlColvol().getNombre());
                 dialog.setArguments(datos);
                 dialog.show(getFragmentManager(), "dialog");
                 return false;
@@ -280,7 +282,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
                 marker.showInfoWindow();
                 misMarkers.add(marker);
             }
-            tvCountCriadero.setText(String.format("Total de colvol encontradoss: %s", String.valueOf(clavesColvol.size())));
+            tvCountCriadero.setText(String.format("Total de colvol encontrados: %s", String.valueOf(clavesColvol.size())));
         }else{
             tvCountCriadero.setText("Sin colvol");
         }
@@ -337,6 +339,14 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
         return idMunicipio;
     }
     public long getIdCantonGota() {
+        int lisIdCaserio = spCanton.getSelectedItemPosition();
+        int idCanton = 0;
+        if (lisIdCaserio != 0) {
+            idCanton = (int) (long) cantones.get(lisIdCaserio - 1).getId();
+        }
+        return idCanton;
+    }
+    public long getIdLaboratorioGota() {
         int lisIdCaserio = spCanton.getSelectedItemPosition();
         int idCanton = 0;
         if (lisIdCaserio != 0) {
@@ -405,4 +415,5 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
         startActivity(list);
         finish();
     }
+
 }

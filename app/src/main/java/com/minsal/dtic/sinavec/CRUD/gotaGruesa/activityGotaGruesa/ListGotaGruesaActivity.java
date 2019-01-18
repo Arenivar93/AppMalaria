@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.minsal.dtic.sinavec.MainActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
 import com.minsal.dtic.sinavec.adapters.AdapterCustom;
+import com.minsal.dtic.sinavec.adapters.AdapterGotaGruesa;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
 
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class ListGotaGruesaActivity extends AppCompatActivity implements selecci
         daoSession =((MyMalaria)getApplicationContext()).getDaoSession();
         u.fragment = 0;
         final ArrayList<String> gotasList = listaAdapter();
-        AdapterCustom adapter =new AdapterCustom(this,gotasList);
+        AdapterGotaGruesa adapter =new AdapterGotaGruesa(this,gotasList);
         listaGotas.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -54,11 +56,23 @@ public class ListGotaGruesaActivity extends AppCompatActivity implements selecci
                 startActivity(i);
             }
         });
+        listaGotas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String fila = gotasList.get(position);
+                String semana_g= fila.substring(5,7); //semana_g probablelemte trae un gion si es menor a 10
+                String id_semana= semana_g.replace("-","");
+                Intent intent = new Intent(getApplicationContext(),DetalleSemanaGotaGruesa.class);
+                intent.putExtra("id_semana",id_semana);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     public ArrayList<String> listaAdapter(){
         Utilidades u = new Utilidades(daoSession);
-        ArrayList<String> lista= u.loadSeguimientosBySem();
+        ArrayList<String> lista= u.loadGotaBySemana();
         return lista;
     }
 
@@ -80,4 +94,5 @@ public class ListGotaGruesaActivity extends AppCompatActivity implements selecci
     public void onDialogNegativeClick(DialogFragment dialog) {
 
     }
+
 }

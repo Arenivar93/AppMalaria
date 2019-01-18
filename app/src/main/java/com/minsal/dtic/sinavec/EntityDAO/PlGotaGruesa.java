@@ -1,4 +1,3 @@
-
 package com.minsal.dtic.sinavec.EntityDAO;
 
 import org.greenrobot.greendao.annotation.*;
@@ -27,7 +26,7 @@ public class PlGotaGruesa {
     private int busquedaActiva;
 
     @NotNull
-    private String nombre;
+    private String primerNombre;
     private int edad;
 
     @NotNull
@@ -41,11 +40,7 @@ public class PlGotaGruesa {
 
     @NotNull
     private String fechaHoraReg;
-
-    @NotNull
     private String fechaHoraMod;
-
-    @NotNull
     private String fecha;
     private int esPc;
     private int tipoProcedencia;
@@ -56,14 +51,18 @@ public class PlGotaGruesa {
     private int extranjero;
     private int sospecha;
     private int idLabLectura;
-
-    @NotNull
     private String detalleLectura;
     private int estado_sync;
     private int unidadEdad;
+    private String responsable;
+    private String segundoNombre;
 
     @NotNull
-    private String responsable;
+    private String primerApellido;
+    private String segundoApellido;
+    private String numeroDocIdePaciente;
+    private String idDocIdePaciente;
+    private String fechaNacimiento;
     private long idTablet;
     private long idSibasi;
     private long idCaserio;
@@ -134,7 +133,7 @@ public class PlGotaGruesa {
     }
 
     @Generated
-    public PlGotaGruesa(Long id, int idE6, int idSemanaEpidemiologica, int idSexo, int idEstado, int idUsuarioMod, int busquedaActiva, String nombre, int edad, String direccion, String fechaFiebre, String fechaToma, String fechaHoraReg, String fechaHoraMod, String fecha, int esPc, int tipoProcedencia, int anio, String idVectores, int extranjero, int sospecha, int idLabLectura, String detalleLectura, int estado_sync, int unidadEdad, String responsable, long idTablet, long idSibasi, long idCaserio, long idUsuarioReg, long idClave, long idPais, long idResultado) {
+    public PlGotaGruesa(Long id, int idE6, int idSemanaEpidemiologica, int idSexo, int idEstado, int idUsuarioMod, int busquedaActiva, String primerNombre, int edad, String direccion, String fechaFiebre, String fechaToma, String fechaHoraReg, String fechaHoraMod, String fecha, int esPc, int tipoProcedencia, int anio, String idVectores, int extranjero, int sospecha, int idLabLectura, String detalleLectura, int estado_sync, int unidadEdad, String responsable, String segundoNombre, String primerApellido, String segundoApellido, String numeroDocIdePaciente, String idDocIdePaciente, String fechaNacimiento, long idTablet, long idSibasi, long idCaserio, long idUsuarioReg, long idClave, long idPais, long idResultado) {
         this.id = id;
         this.idE6 = idE6;
         this.idSemanaEpidemiologica = idSemanaEpidemiologica;
@@ -142,7 +141,7 @@ public class PlGotaGruesa {
         this.idEstado = idEstado;
         this.idUsuarioMod = idUsuarioMod;
         this.busquedaActiva = busquedaActiva;
-        this.nombre = nombre;
+        this.primerNombre = primerNombre;
         this.edad = edad;
         this.direccion = direccion;
         this.fechaFiebre = fechaFiebre;
@@ -161,6 +160,12 @@ public class PlGotaGruesa {
         this.estado_sync = estado_sync;
         this.unidadEdad = unidadEdad;
         this.responsable = responsable;
+        this.segundoNombre = segundoNombre;
+        this.primerApellido = primerApellido;
+        this.segundoApellido = segundoApellido;
+        this.numeroDocIdePaciente = numeroDocIdePaciente;
+        this.idDocIdePaciente = idDocIdePaciente;
+        this.fechaNacimiento = fechaNacimiento;
         this.idTablet = idTablet;
         this.idSibasi = idSibasi;
         this.idCaserio = idCaserio;
@@ -234,13 +239,13 @@ public class PlGotaGruesa {
     }
 
     @NotNull
-    public String getNombre() {
-        return nombre;
+    public String getPrimerNombre() {
+        return primerNombre;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setNombre(@NotNull String nombre) {
-        this.nombre = nombre;
+    public void setPrimerNombre(@NotNull String primerNombre) {
+        this.primerNombre = primerNombre;
     }
 
     public int getEdad() {
@@ -291,23 +296,19 @@ public class PlGotaGruesa {
         this.fechaHoraReg = fechaHoraReg;
     }
 
-    @NotNull
     public String getFechaHoraMod() {
         return fechaHoraMod;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setFechaHoraMod(@NotNull String fechaHoraMod) {
+    public void setFechaHoraMod(String fechaHoraMod) {
         this.fechaHoraMod = fechaHoraMod;
     }
 
-    @NotNull
     public String getFecha() {
         return fecha;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setFecha(@NotNull String fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
@@ -369,13 +370,11 @@ public class PlGotaGruesa {
         this.idLabLectura = idLabLectura;
     }
 
-    @NotNull
     public String getDetalleLectura() {
         return detalleLectura;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setDetalleLectura(@NotNull String detalleLectura) {
+    public void setDetalleLectura(String detalleLectura) {
         this.detalleLectura = detalleLectura;
     }
 
@@ -395,14 +394,62 @@ public class PlGotaGruesa {
         this.unidadEdad = unidadEdad;
     }
 
-    @NotNull
     public String getResponsable() {
         return responsable;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setResponsable(@NotNull String responsable) {
+    public void setResponsable(String responsable) {
         this.responsable = responsable;
+    }
+
+    public String getSegundoNombre() {
+        return segundoNombre;
+    }
+
+    public void setSegundoNombre(String segundoNombre) {
+        this.segundoNombre = segundoNombre;
+    }
+
+    @NotNull
+    public String getPrimerApellido() {
+        return primerApellido;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setPrimerApellido(@NotNull String primerApellido) {
+        this.primerApellido = primerApellido;
+    }
+
+    public String getSegundoApellido() {
+        return segundoApellido;
+    }
+
+    public void setSegundoApellido(String segundoApellido) {
+        this.segundoApellido = segundoApellido;
+    }
+
+    public String getNumeroDocIdePaciente() {
+        return numeroDocIdePaciente;
+    }
+
+    public void setNumeroDocIdePaciente(String numeroDocIdePaciente) {
+        this.numeroDocIdePaciente = numeroDocIdePaciente;
+    }
+
+    public String getIdDocIdePaciente() {
+        return idDocIdePaciente;
+    }
+
+    public void setIdDocIdePaciente(String idDocIdePaciente) {
+        this.idDocIdePaciente = idDocIdePaciente;
+    }
+
+    public String getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(String fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     public long getIdTablet() {
@@ -471,7 +518,7 @@ public class PlGotaGruesa {
             CtlPais ctlPaisNew = targetDao.load(__key);
             synchronized (this) {
                 ctlPais = ctlPaisNew;
-                ctlPais__resolvedKey = __key;
+            	ctlPais__resolvedKey = __key;
             }
         }
         return ctlPais;
@@ -499,7 +546,7 @@ public class PlGotaGruesa {
             CtlTablet ctlTabletNew = targetDao.load(__key);
             synchronized (this) {
                 ctlTablet = ctlTabletNew;
-                ctlTablet__resolvedKey = __key;
+            	ctlTablet__resolvedKey = __key;
             }
         }
         return ctlTablet;
@@ -527,7 +574,7 @@ public class PlGotaGruesa {
             CtlEstablecimiento ctlEstablecimientoNew = targetDao.load(__key);
             synchronized (this) {
                 ctlEstablecimiento = ctlEstablecimientoNew;
-                ctlEstablecimiento__resolvedKey = __key;
+            	ctlEstablecimiento__resolvedKey = __key;
             }
         }
         return ctlEstablecimiento;
@@ -555,7 +602,7 @@ public class PlGotaGruesa {
             CtlCaserio ctlCaserioNew = targetDao.load(__key);
             synchronized (this) {
                 ctlCaserio = ctlCaserioNew;
-                ctlCaserio__resolvedKey = __key;
+            	ctlCaserio__resolvedKey = __key;
             }
         }
         return ctlCaserio;
@@ -583,7 +630,7 @@ public class PlGotaGruesa {
             FosUserUser fosUserUserNew = targetDao.load(__key);
             synchronized (this) {
                 fosUserUser = fosUserUserNew;
-                fosUserUser__resolvedKey = __key;
+            	fosUserUser__resolvedKey = __key;
             }
         }
         return fosUserUser;
@@ -611,7 +658,7 @@ public class PlGotaGruesa {
             Clave claveNew = targetDao.load(__key);
             synchronized (this) {
                 clave = claveNew;
-                clave__resolvedKey = __key;
+            	clave__resolvedKey = __key;
             }
         }
         return clave;
@@ -639,7 +686,7 @@ public class PlGotaGruesa {
             ResultadoGota resultadoGotaNew = targetDao.load(__key);
             synchronized (this) {
                 resultadoGota = resultadoGotaNew;
-                resultadoGota__resolvedKey = __key;
+            	resultadoGota__resolvedKey = __key;
             }
         }
         return resultadoGota;
@@ -658,9 +705,9 @@ public class PlGotaGruesa {
     }
 
     /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
+    * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+    * Entity must attached to an entity context.
+    */
     @Generated
     public void delete() {
         __throwIfDetached();
@@ -668,9 +715,9 @@ public class PlGotaGruesa {
     }
 
     /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
+    * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+    * Entity must attached to an entity context.
+    */
     @Generated
     public void update() {
         __throwIfDetached();
@@ -678,9 +725,9 @@ public class PlGotaGruesa {
     }
 
     /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
+    * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+    * Entity must attached to an entity context.
+    */
     @Generated
     public void refresh() {
         __throwIfDetached();

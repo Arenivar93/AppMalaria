@@ -43,6 +43,8 @@ import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnopheles;
 import com.minsal.dtic.sinavec.EntityDAO.PlCapturaAnophelesDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
+import com.minsal.dtic.sinavec.EntityDAO.PlGotaGruesa;
+import com.minsal.dtic.sinavec.EntityDAO.PlGotaGruesaDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlSeguimientoBotiquin;
@@ -273,6 +275,26 @@ public class SubirDatos extends AppCompatActivity {
             jacriaderos.put(joCriaderoUpdate);
         }
         return jacriaderos;
+    }
+    public JSONArray getInsertGotaGruesa() throws JSONException {
+        JSONArray jaGotas = new JSONArray();
+        List<PlGotaGruesa> gota = new ArrayList<PlGotaGruesa>();
+        PlGotaGruesaDao gotaDao = daoSession.getPlGotaGruesaDao();
+        gota = gotaDao.queryBuilder().where(PlGotaGruesaDao.Properties.Estado_sync.eq(1)).list();
+        SimpleDateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (PlGotaGruesa c : gota) {
+            String date = dateFormat.format(c.getFechaHoraReg());
+            JSONObject joCriaderoUpdate = new JSONObject();
+            joCriaderoUpdate.put("id",c.getId());
+            joCriaderoUpdate.put("idSibasi",c.getIdSibasi());
+            joCriaderoUpdate.put("idCaserio",c.getIdCaserio());
+            joCriaderoUpdate.put("idCaserio",c.getIdCaserio());
+            joCriaderoUpdate.put("fechaHoraReg",date);
+            joCriaderoUpdate.put("idTablet",c.getIdTablet());
+            jaGotas.put(joCriaderoUpdate);
+        }
+        return jaGotas;
     }
     public JSONArray getUpdateColvol()  {
         JSONArray jaUpdate = new JSONArray();

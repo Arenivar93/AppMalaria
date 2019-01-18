@@ -506,7 +506,6 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
 
-
     private class saveDowloadedCat extends AsyncTask<JSONObject, Integer, Boolean> {
 
         int num = 0;
@@ -763,7 +762,9 @@ public class SettingActivity extends AppCompatActivity {
                     permissions,
                     GET_IMEI_CODE);
         }
+
     }
+
 
 
 }

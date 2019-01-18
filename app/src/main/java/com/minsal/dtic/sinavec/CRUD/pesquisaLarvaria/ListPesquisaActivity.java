@@ -69,6 +69,7 @@ public class ListPesquisaActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(),DetalleSemanaActivity.class);
                 i.putExtra("id_semana",id_semana);
                 startActivity(i);
+                finish();
 
             }
         });
