@@ -60,7 +60,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class SeguimientoBotiquinActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener,NuevoSeguimientoFragment.OnFragmentInteractionListener {
+public class SeguimientoBotiquinActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, NuevoSeguimientoFragment.OnFragmentInteractionListener {
     private SharedPreferences prefs;
     Utilidades u;
     private DaoSession daoSession;
@@ -76,30 +76,31 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
     long idEstablecimiento, idColvol;
     TextView tvCountBotiquin;
     String clave;
-    long idSibasi,idTablet,idUsuario;
+    long idSibasi, idTablet, idUsuario;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seguimiento_botiquin);
-        daoSession = ((MyMalaria)getApplicationContext()).getDaoSession();
-        prefs      = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-        u          = new Utilidades(daoSession);
-        rdbColvol  = (RadioButton)findViewById(R.id.rdbColvol);
-        rdbSmo     = (RadioButton)findViewById(R.id.rdbSmo);
-        ivBuscar   = (ImageView)findViewById(R.id.ivBuscarBotiquin);
-        spMunicipio=(Spinner)findViewById(R.id.spMunicipioBotiquin);
-        tvCountBotiquin    = (TextView)findViewById(R.id.tvCountBotiquin);
-        idSibasi  = prefs.getLong("idSibasiUser",0);
-        idTablet  = prefs.getLong("idTablet",0);
-        idUsuario = prefs.getLong("idUser",0);
-        ActionBar actionBar=getSupportActionBar();
+        daoSession = ((MyMalaria) getApplicationContext()).getDaoSession();
+        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        u = new Utilidades(daoSession);
+        rdbColvol = (RadioButton) findViewById(R.id.rdbColvol);
+        rdbSmo = (RadioButton) findViewById(R.id.rdbSmo);
+        ivBuscar = (ImageView) findViewById(R.id.ivBuscarBotiquin);
+        spMunicipio = (Spinner) findViewById(R.id.spMunicipioBotiquin);
+        tvCountBotiquin = (TextView) findViewById(R.id.tvCountBotiquin);
+        idSibasi = prefs.getLong("idSibasiUser", 0);
+        idTablet = prefs.getLong("idTablet", 0);
+        idUsuario = prefs.getLong("idUser", 0);
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         loadSpinerMun();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         boolean countTiles = Validator.hasSaveMap(getApplication());
-        if (!countTiles){
+        if (!countTiles) {
             goDowloadMap();
         }
 
@@ -109,18 +110,18 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
             public void onClick(View view) {
                 mMap.clear();
                 mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(getApplicationContext())).zIndex(-100)).clearTileCache();
-               boolean validate= validateSpinnerRadio();
-               if (validate){
-                   long idMunicipio = getIdMunicipioPes();
-                   if (rdbSmo.isChecked()){
-                       establecimientosMap((int) idMunicipio);
-                       bandera = 2;
-                   }else{
-                       colvolMap((int) idMunicipio);
-                       bandera=1;
-                   }
+                boolean validate = validateSpinnerRadio();
+                if (validate) {
+                    long idMunicipio = getIdMunicipioPes();
+                    if (rdbSmo.isChecked()) {
+                        establecimientosMap((int) idMunicipio);
+                        bandera = 2;
+                    } else {
+                        colvolMap((int) idMunicipio);
+                        bandera = 1;
+                    }
 
-               }
+                }
 
             }
         });
@@ -162,35 +163,39 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
     public void onProviderDisabled(String s) {
 
     }
-    private void moverCamaraDepartamento(){
+
+    private void moverCamaraDepartamento() {
         String elUser = prefs.getString("user", "");
-        int idDepto=u.deptoUser(elUser);
-        List<Double> coordenadasDepto=u.getCoordenadasDepartamento(idDepto);
-        cameraZoom=new CameraPosition.Builder()
-                .target(new LatLng(coordenadasDepto.get(0),coordenadasDepto.get(1)))
+        int idDepto = u.deptoUser(elUser);
+        List<Double> coordenadasDepto = u.getCoordenadasDepartamento(idDepto);
+        cameraZoom = new CameraPosition.Builder()
+                .target(new LatLng(coordenadasDepto.get(0), coordenadasDepto.get(1)))
                 .zoom(10)
                 .bearing(5)
                 .tilt(30)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraZoom));
     }
+
     private void loadSpinerMun() {
-        Utilidades u   = new Utilidades(daoSession);
-        municipios     = u.loadspinnerMunicipio(depto);
+        Utilidades u = new Utilidades(daoSession);
+        municipios = u.loadspinnerMunicipio(depto);
         listaMunicipio = u.getMunicipioTodos(municipios);
         ArrayAdapter<String> adapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_list_item_1, listaMunicipio);
         spMunicipio.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
-    public boolean validateSpinnerRadio(){
-        boolean validate= true;
-        if (!rdbSmo.isChecked() && !rdbColvol.isChecked()){
-            Toast.makeText(getApplicationContext(),"Seleccione el tipo de botiquin",Toast.LENGTH_LONG).show();
+
+    public boolean validateSpinnerRadio() {
+        boolean validate = true;
+        if (!rdbSmo.isChecked() && !rdbColvol.isChecked()) {
+            Toast.makeText(getApplicationContext(), "Seleccione el tipo de botiquin", Toast.LENGTH_LONG).show();
             validate = false;
-            }
-            return validate;
+        }
+        return validate;
     }
+
     public long getIdMunicipioPes() {
         int listIdMunicipio = spMunicipio.getSelectedItemPosition();
         int idMunicipio = 0;
@@ -202,7 +207,7 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
 
     public void establecimientosMap(int municipio) {
         Utilidades u = new Utilidades(daoSession);
-        List<EstablecimientoClave> establecimientos = u.loadEstablecimientoClaveMap(municipio,depto);
+        List<EstablecimientoClave> establecimientos = u.loadEstablecimientoClaveMap(municipio, depto);
         if (establecimientos.size() > 0) {
             for (EstablecimientoClave e : establecimientos) {
                 mMap.addMarker(new MarkerOptions()
@@ -214,6 +219,7 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
             tvCountBotiquin.setText("No se encontraron criaderos registrados con coordenadas");
         }
     }
+
     public void colvolMap(int municipio) {
         Utilidades u = new Utilidades(daoSession);
         List<PlColvol> colvols = u.loadColvolMap(municipio);
@@ -228,53 +234,52 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
             tvCountBotiquin.setText("No se encontraron colvol registrados con coordenadas");
         }
     }
-//la bandera que recibe colvol= col , establecimiento = est para buscar dependiendo de eso el id clave
+
+    //la bandera que recibe colvol= col , establecimiento = est para buscar dependiendo de eso el id clave
     @Override
-    public void OnDialogPositiveClick(DialogFragment dialog, int muestras, int personas, String accion, int riesgo,String bandera, long id) {
+    public void OnDialogPositiveClick(DialogFragment dialog, int muestras, int personas, String accion, int riesgo, String bandera, long id) {
         Date currentTime = Calendar.getInstance().getTime();
-       // Toast.makeText(getApplicationContext(),bandera,Toast.LENGTH_LONG).show();
+        // Toast.makeText(getApplicationContext(),bandera,Toast.LENGTH_LONG).show();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String fecha = dateFormat.format(currentTime);
-        int idClave = getIdClave(id,bandera);
+        int idClave = getIdClave(id, bandera);
         try {
-            for (int i = 0; i <50 ; i++) {
 
-
-                int semanaActual = getSemana();
-                Date fec = dateFormat.parse(fecha);
-                PlSeguimientoBotiquinDao segDao = daoSession.getPlSeguimientoBotiquinDao();
-                PlSeguimientoBotiquin seg = new PlSeguimientoBotiquin();
-                seg.setIdClave(idClave);
-                seg.setNumeroMuestra(muestras);
-                seg.setNumeroPersonaDivulgo(personas);
-                seg.setFecha(fec);
-                seg.setFechaHoraReg(fecha);
-                seg.setFechaRegistro(fec);
-                seg.setIdSibasi(idSibasi);
-                seg.setIdUsuarioReg(idUsuario);
-                seg.setIdUsuarioMod((int) idUsuario);// el usuario mod esta como not null en la base local
-                seg.setIdTablet(idTablet);
-                seg.setEstado_sync(1);
-                seg.setIdEstadoFormulario(2);
-                seg.setIdSemanaEpidemiologica(semanaActual);
-                if (accion.equals("visitar")){
-                    seg.setVisitado(1);
-                }else{
-                    seg.setSupervisado(1);
-                }
-                if (riesgo==1){
-                    seg.setEnRiesgo(1);
-                }else{
-                    seg.setEnRiesgo(0);
-                }
-
-                segDao.insert(seg);
+            int semanaActual = getSemana();
+            Date fec = dateFormat.parse(fecha);
+            PlSeguimientoBotiquinDao segDao = daoSession.getPlSeguimientoBotiquinDao();
+            PlSeguimientoBotiquin seg = new PlSeguimientoBotiquin();
+            seg.setIdClave(idClave);
+            seg.setNumeroMuestra(muestras);
+            seg.setNumeroPersonaDivulgo(personas);
+            seg.setFecha(fec);
+            seg.setFechaHoraReg(fecha);
+            seg.setFechaRegistro(fec);
+            seg.setIdSibasi(idSibasi);
+            seg.setIdUsuarioReg(idUsuario);
+            seg.setIdUsuarioMod((int) idUsuario);// el usuario mod esta como not null en la base local
+            seg.setIdTablet(idTablet);
+            seg.setEstado_sync(1);
+            seg.setIdEstadoFormulario(2);
+            seg.setIdSemanaEpidemiologica(semanaActual);
+            if (accion.equals("visitar")) {
+                seg.setVisitado(1);
+            } else {
+                seg.setSupervisado(1);
+            }
+            if (riesgo == 1) {
+                seg.setEnRiesgo(1);
+            } else {
+                seg.setEnRiesgo(0);
             }
 
-            customToadSuccess(getApplicationContext(),"Seguimiento de Botiquin registrado con éxito");
+            segDao.insert(seg);
 
-        }catch (Exception e){
-            Toast.makeText(getApplicationContext(),"Error"+e.getMessage(),Toast.LENGTH_LONG).show();
+
+            customToadSuccess(getApplicationContext(), "Seguimiento de Botiquin registrado con éxito");
+
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Error" + e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
 
@@ -284,40 +289,44 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
     public void onDialogNegativeClick(DialogFragment dialog) {
 
     }
-    /** este metodo nos servira para saber si vamos a castear un colvol o establecimiento en el mapa
-     *la bandera recibira el paramtro si es colvol o si establecimiento
+
+    /**
+     * este metodo nos servira para saber si vamos a castear un colvol o establecimiento en el mapa
+     * la bandera recibira el paramtro si es colvol o si establecimiento
      * 1= colvol 2= establecimiento
      */
-    public void setObjectMarker(int bandera,Marker marker){
-        if (bandera==2){
+    public void setObjectMarker(int bandera, Marker marker) {
+        if (bandera == 2) {
             EstablecimientoClave est = (EstablecimientoClave) marker.getTag();
             idEstablecimiento = est.getId();
-            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(est.getCtlEstablecimiento().getId(),est.getCtlEstablecimiento().getNombre(),"est",est.getClave().getClave());
-            dialog.show(getFragmentManager(),"dialog");
-        }else{
+            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(est.getCtlEstablecimiento().getId(), est.getCtlEstablecimiento().getNombre(), "est", est.getClave().getClave());
+            dialog.show(getFragmentManager(), "dialog");
+        } else {
             PlColvol col = (PlColvol) marker.getTag();
             idColvol = col.getId();
-            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(col.getId(),col.getNombre(),"col",col.getClave());
-            dialog.show(getFragmentManager(),"dialog");
+            NuevoSeguimientoFragment dialog = NuevoSeguimientoFragment.newInstance(col.getId(), col.getNombre(), "col", col.getClave());
+            dialog.show(getFragmentManager(), "dialog");
         }
     }
-    public int getIdClave(long id, String bandera){
+
+    public int getIdClave(long id, String bandera) {
         int idClave = 0;
-        if (bandera.equals("est")){
+        if (bandera.equals("est")) {
             String sqlQUERY = "SELECT ID_CLAVE FROM ESTABLECIMIENTO_CLAVE WHERE ID_ESTABLECIMIENTO='" + id + "'";
             Cursor cursor = daoSession.getDatabase().rawQuery(sqlQUERY, null);
             if (cursor.moveToFirst()) {
                 idClave = cursor.getInt(0);
             }
-        }else{
+        } else {
             String sqlQUERY = "SELECT ID_CLAVE FROM COLVOL_CALVE WHERE ID_COLVOL='" + id + "'";
             Cursor cursor = daoSession.getDatabase().rawQuery(sqlQUERY, null);
             if (cursor.moveToFirst()) {
                 idClave = cursor.getInt(0);
             }
         }
-        return  idClave;
+        return idClave;
     }
+
     public int getSemana() {
         int semana = 0;
         try {
@@ -341,6 +350,7 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
 
         return semana;
     }
+
     public void customToadSuccess(Context context, String message) {
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.toad_exito,
@@ -356,11 +366,12 @@ public class SeguimientoBotiquinActivity extends AppCompatActivity implements On
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(getApplicationContext(),ListSeguimientoBotiquin.class);
+        Intent i = new Intent(getApplicationContext(), ListSeguimientoBotiquin.class);
         startActivity(i);
         finish();
     }
-    public void  goDowloadMap(){
+
+    public void goDowloadMap() {
         AlertDialog.Builder builder = new AlertDialog.Builder(SeguimientoBotiquinActivity.this);
         builder.setMessage(Html.fromHtml("<font color='#FF0000'><b>Primero debe descargar el mapa!!</b></font>"))
                 .setNegativeButton(Html.fromHtml("Cancelar"), new DialogInterface.OnClickListener() {

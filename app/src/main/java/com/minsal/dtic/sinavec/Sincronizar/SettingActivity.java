@@ -112,7 +112,11 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    checkinServer();
+                    if (imeiGranted) {
+                        checkinServer();
+                    }else{
+                        getImeiPermission();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -515,7 +519,7 @@ public class SettingActivity extends AppCompatActivity {
             super.onPreExecute();
             Toast.makeText(getApplicationContext(), "Iniciando descarga de datos", Toast.LENGTH_SHORT).show();
             pbSetting.setProgress(0);
-            pbSetting.setMax(5000);
+            pbSetting.setMax(19);
             btnSetting.setEnabled(false);
 
 
@@ -549,28 +553,32 @@ public class SettingActivity extends AppCompatActivity {
                 for (int i = 0; i < jaPaises.length(); i++) {
                     JSONObject joPais = jaPaises.getJSONObject(i);
                     saveCoutry(joPais.getLong("id"), joPais.getString("nombre"), joPais.getInt("activo"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int j = 0; j < jaProcedencia.length(); j++) {
                     JSONObject joProcedencia = jaProcedencia.getJSONObject(j);
                     saveProcedencia(joProcedencia.getLong("id"), joProcedencia.getString("nombre"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int k = 0; k < jaClave.length(); k++) {
                     JSONObject joClave = jaClave.getJSONObject(k);
                     saveClave(joClave.getLong("id"), joClave.getInt("id_departamento"), joClave.getInt("id_municipio"),
                             joClave.getInt("correlativo"), joClave.getString("clave"), joClave.getLong("id_procedencia"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int l = 0; l < jaDepartamento.length(); l++) {
                     JSONObject joDepto = jaDepartamento.getJSONObject(l);
                     saveDepartamento(joDepto.getLong("id"), joDepto.getString("nombre"), joDepto.getLong("id_pais"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int m = 0; m < jaMunicipio.length(); m++) {
                     JSONObject joMpo = jaMunicipio.getJSONObject(m);
                     int id_depto_apoyo;
@@ -580,15 +588,17 @@ public class SettingActivity extends AppCompatActivity {
                         id_depto_apoyo = 0;
                     }
                     saveMunicipio(joMpo.getLong("id"), joMpo.getString("nombre"), joMpo.getLong("id_departamento"), id_depto_apoyo);
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int n = 0; n < jaCanton.length(); n++) {
                     JSONObject joCanton = jaCanton.getJSONObject(n);
                     saveCanton(joCanton.getLong("id"), joCanton.getString("nombre"), joCanton.getLong("id_municipio"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int o = 0; o < jaCaserio.length(); o++) {
                     JSONObject joCaserio = jaCaserio.getJSONObject(o);
                     int id_depto_apoyo;
@@ -605,21 +615,23 @@ public class SettingActivity extends AppCompatActivity {
                     }
                     savecaserio(joCaserio.getLong("id"), joCaserio.getString("nombre"), joCaserio.getLong("id_canton"),
                             id_depto_apoyo, bandera);
-                    num++;
-                    publishProgress(num);
                 }
+                num++;
+                publishProgress(num);
                 for (int q = 0; q < jaInstitucion.length(); q++) {
                     JSONObject joIns = jaInstitucion.getJSONObject(q);
                     saveInstitucion(joIns.getLong("id"), joIns.getString("nombre"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int r = 0; r < jaTipo.length(); r++) {
                     JSONObject joTipo = jaTipo.getJSONObject(r);
                     saveTipoestablecimiento(joTipo.getLong("id"), joTipo.getString("nombre"), joTipo.getLong("id_institucion"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 saveMinsal();
                 for (int s = 0; s < jaEst.length(); s++) {
                     JSONObject joEst = jaEst.getJSONObject(s);
@@ -632,9 +644,10 @@ public class SettingActivity extends AppCompatActivity {
                     saveEstablecimiento(joEst.getLong("id"), joEst.getString("nombre"), joEst.getString("latitud"),
                             joEst.getString("longitud"), id_municipio, joEst.getInt("id_establecimiento_padre"),
                             joEst.getInt("id_tipo_establecimiento"),joEst.getInt("lab_clinico"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
 
 
                 for (int p = 0; p < jaTablet.length(); p++) {
@@ -647,17 +660,19 @@ public class SettingActivity extends AppCompatActivity {
                     }
                     saveTablet(joTablet.getLong("id"), joTablet.getLong("id_sibasi"),
                             joTablet.getString("codigo"), joTablet.getString("imei"),ultimoBajado);
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int q = 0; q < jaUser.length(); q++) {
                     JSONObject joUser = jaUser.getJSONObject(q);
                     saveFosUserUser(joUser.getLong("id"), joUser.getString("firstname"), joUser.getString("username"),
                             joUser.getString("lastname"), joUser.getString("password"), joUser.getString("salt"),
                             joUser.getInt("id_tipo_empleado"), joUser.getInt("id_sibasi"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int y = 0; y < jaCriadero.length(); y++) {
                     JSONObject joCria = jaCriadero.getJSONObject(y);
                     int idUsuarioMod;
@@ -669,30 +684,34 @@ public class SettingActivity extends AppCompatActivity {
                             joCria.getString("latitud"), joCria.getString("longitud"), joCria.getInt("longitud_criadero"),
                             joCria.getInt("ancho_criadero"), joCria.getString("fecha_hora_reg"), joCria.getString("fecha_hora_mod"),
                             joCria.getLong("id_sibasi"),joCria.getInt("id_estado_criadero"));
-                    num++;
-                    publishProgress(num);
+
 
                 }
+                num++;
+                publishProgress(num);
                 for (int z = 0; z <jaActividad.length() ; z++) {
                     JSONObject joCap = jaActividad.getJSONObject(z);
                     saveTipoActivida(joCap.getLong("id"),joCap.getString("nombre"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int x = 0; x <jaTipoCaptura.length() ; x++) {
                     JSONObject joTipo = jaTipoCaptura.getJSONObject(x);
                     saveTipoCaptura(joTipo.getLong("id"),joTipo.getString("nombre"));
-                    num++;
-                    publishProgress(num);
+
                 }
+                num++;
+                publishProgress(num);
                 for (int a = 0; a <jaSemana.length() ; a++) {
                     JSONObject joSem = jaSemana.getJSONObject(a);
                     saveSemana(joSem.getLong("id"),joSem.getInt("anio"),
                               joSem.getString("fecf"),joSem.getString("feci"),joSem.getInt("semana"));
-                    num++;
-                    publishProgress(num);
+
 
                 }
+                num++;
+                publishProgress(num);
                 for (int b = 0; b <jaColvol.length() ; b++) {
                     JSONObject joColvol = jaColvol.getJSONObject(b);
                     saveColvol(joColvol.getLong("id"),joColvol.getLong("id_caserio"),joColvol.getString("nombre"),
@@ -700,14 +719,20 @@ public class SettingActivity extends AppCompatActivity {
                               ,joColvol.getString("latitud"),joColvol.getString("longitud"));
 
                 }
+                num++;
+                publishProgress(num);
                 for (int c = 0; c <jaColvolClave.length() ; c++) {
                     JSONObject joc = jaColvolClave.getJSONObject(c);
                     saveColvolClave(joc.getLong("id"),joc.getLong("id_clave"),joc.getLong("id_colvol"));
                 }
+                num++;
+                publishProgress(num);
                 for (int c = 0; c <jaEstClave.length() ; c++) {
                     JSONObject joc = jaEstClave.getJSONObject(c);
                     saveEstClave(joc.getLong("id"),joc.getLong("id_clave"),joc.getLong("id_establecimiento"));
                 }
+                num++;
+                publishProgress(num);
 
             } catch (Exception e) {
                 getApplicationContext().deleteDatabase("malaria");

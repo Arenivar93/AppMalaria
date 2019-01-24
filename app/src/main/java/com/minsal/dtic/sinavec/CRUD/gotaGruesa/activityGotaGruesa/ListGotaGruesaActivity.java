@@ -1,7 +1,9 @@
 package com.minsal.dtic.sinavec.CRUD.gotaGruesa.activityGotaGruesa;
 
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,17 +35,19 @@ public class ListGotaGruesaActivity extends AppCompatActivity implements selecci
     List<PlSeguimientoBotiquin> gotaGruesa;
     Utilidades u;
     private DaoSession daoSession;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_gota_gruesa);
-        btnNuevo      = (Button)findViewById(R.id.btnNuevaGota);
+        btnNuevo   = (Button)findViewById(R.id.btnNuevaGota);
         listaGotas = (ListView)findViewById(R.id.lvGotaGruesa);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         daoSession =((MyMalaria)getApplicationContext()).getDaoSession();
         u.fragment = 0;
+        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         final ArrayList<String> gotasList = listaAdapter();
         AdapterGotaGruesa adapter =new AdapterGotaGruesa(this,gotasList);
         listaGotas.setAdapter(adapter);
@@ -52,8 +56,14 @@ public class ListGotaGruesaActivity extends AppCompatActivity implements selecci
         btnNuevo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),nuevaGotaGruesaActivity.class);
-                startActivity(i);
+                long tipoEmpleado =  prefs.getLong("idTipoEmpleado",0);
+                if (tipoEmpleado!= 3){
+                    //btnNuevo.setEnabled(false);
+                    Toast.makeText(getApplicationContext(),"Usuario no autorizado para Ingresa gota gruesa",Toast.LENGTH_LONG).show();
+                }else {
+                    Intent i = new Intent(getApplicationContext(), nuevaGotaGruesaActivity.class);
+                    startActivity(i);
+                }
             }
         });
         listaGotas.setOnItemClickListener(new AdapterView.OnItemClickListener() {

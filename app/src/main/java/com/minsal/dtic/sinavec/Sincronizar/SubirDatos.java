@@ -11,10 +11,12 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,11 +85,13 @@ public class SubirDatos extends AppCompatActivity {
     private SharedPreferences pref;
     ImageView subirDatos, bajarDatos;
     TextView tvCapturas,tvPesquisa,tvCriaderos, tvCriaderosUpdate,tvSeguimientos;
-    TextView tvColvol,tvColvolUpdate;
+    TextView tvColvol,tvColvolUpdate,tvGotaGruesa,tvSubirDatos;
+    ProgressBar pbSubirDatos;
     String username, password;
     long idTablet;
     long idSibasi;
     int idUltimoReg;
+    int progres=0;
 
 
     @Override
@@ -104,7 +108,9 @@ public class SubirDatos extends AppCompatActivity {
         tvColvol = (TextView)findViewById(R.id.tvColvolInsert);
         tvSeguimientos = (TextView) findViewById(R.id.tvSeguimientos);
         tvCriaderosUpdate = (TextView) findViewById(R.id.tvCriaderosUpdate);
-
+        tvGotaGruesa = (TextView)findViewById(R.id.tvGotaGruesa);
+        tvSubirDatos = (TextView)findViewById(R.id.tvSubirDatos);
+        pbSubirDatos = (ProgressBar)findViewById(R.id.pbSubirDatos);
         pref = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         username = pref.getString("userRem", "");
         password = pref.getString("passRem", "");
@@ -284,14 +290,38 @@ public class SubirDatos extends AppCompatActivity {
         SimpleDateFormat dateFormat;
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (PlGotaGruesa c : gota) {
-            String date = dateFormat.format(c.getFechaHoraReg());
+           // String date = dateFormat.format(c.getFechaHoraReg());
             JSONObject joCriaderoUpdate = new JSONObject();
             joCriaderoUpdate.put("id",c.getId());
+            joCriaderoUpdate.put("idE6",c.getIdE6());
+            joCriaderoUpdate.put("idSemana",c.getIdSemanaEpidemiologica());
+            joCriaderoUpdate.put("idSexo",c.getIdSexo());
+            joCriaderoUpdate.put("pirmerNombre",c.getPrimerNombre());
+            joCriaderoUpdate.put("direccion",c.getDireccion());
+            joCriaderoUpdate.put("fechaFiebre",c.getFechaFiebre());
+            joCriaderoUpdate.put("fechaToma",c.getFechaToma());
+            joCriaderoUpdate.put("fechaHoraReg",c.getFechaHoraReg());
+            joCriaderoUpdate.put("tipoProcedencia",c.getTipoProcedencia());
+            joCriaderoUpdate.put("anio",c.getAnio());
+            joCriaderoUpdate.put("extranjero",c.getExtranjero());
+            joCriaderoUpdate.put("idLabLectura",c.getIdLabLectura());
+            joCriaderoUpdate.put("estadoSync",c.getEstado_sync());
+            joCriaderoUpdate.put("unidadEdad",c.getUnidadEdad());
+            joCriaderoUpdate.put("responsable",c.getResponsable());
+            joCriaderoUpdate.put("segundoNombre",c.getSegundoNombre());
+            joCriaderoUpdate.put("primerApellido",c.getPrimerApellido());
+            joCriaderoUpdate.put("segundoApellido",c.getSegundoApellido());
+            joCriaderoUpdate.put("numeroDocIdePaciente",c.getNumeroDocIdePaciente());
+            joCriaderoUpdate.put("idDocIdePaciente",c.getIdDocIdePaciente());
+            joCriaderoUpdate.put("fechaNacimiento",c.getFechaNacimiento());
+            joCriaderoUpdate.put("idTablet",c.getIdTablet());
             joCriaderoUpdate.put("idSibasi",c.getIdSibasi());
             joCriaderoUpdate.put("idCaserio",c.getIdCaserio());
-            joCriaderoUpdate.put("idCaserio",c.getIdCaserio());
-            joCriaderoUpdate.put("fechaHoraReg",date);
-            joCriaderoUpdate.put("idTablet",c.getIdTablet());
+            joCriaderoUpdate.put("idUsuarioReg",c.getIdUsuarioReg());
+            joCriaderoUpdate.put("idClave",c.getIdClave());
+            joCriaderoUpdate.put("idPais",c.getIdPais());
+            joCriaderoUpdate.put("idResultado",c.getIdResultado());
+            joCriaderoUpdate.put("edad",c.getEdad());
             jaGotas.put(joCriaderoUpdate);
         }
         return jaGotas;
@@ -465,7 +495,13 @@ public class SubirDatos extends AppCompatActivity {
                 int countCridero = getInsetCriaderos().length();
                 int counColvolUpdate = getUpdateColvol().length();
                 int countSeguimiento = getSeguimientoBotiquin().length();
-                if (countCapturas>0 || countPesquisas>0 || countCriaderosUpdate>0 || countCridero>0 || counColvolUpdate>0 || countSeguimiento>0){
+                int countGota =getInsertGotaGruesa().length();
+                if (countCapturas>0 || countPesquisas>0 || countCriaderosUpdate>0 ||
+                        countCridero>0 || counColvolUpdate>0 || countSeguimiento>0 || countGota>0){
+                    pbSubirDatos.setMax(7);
+
+                    pbSubirDatos.setVisibility(View.VISIBLE);
+                    tvSubirDatos.setVisibility(View.VISIBLE);
                     tvPesquisa.setText(String.format("Pesquisas lista para sincronizar: %d", countPesquisas));
                     tvCapturas.setText(String.format("Capturas lista para sincronizar: %d", countCapturas));
                     tvCriaderosUpdate.setText(String.format("Criaderos actualizados para sincronizar: %d ",countCriaderosUpdate));
@@ -488,6 +524,7 @@ public class SubirDatos extends AppCompatActivity {
                                             sendCriaderos(token1);
                                             sendColvolUpdate(token1);
                                             sendSeguimientoBotiquin(token1);
+                                            sendGotaGruesa(token1);
                                         }else{
                                             Toast.makeText(getApplicationContext(), "autorizado para bajar", Toast.LENGTH_LONG).show();
                                         }
@@ -580,6 +617,8 @@ public class SubirDatos extends AppCompatActivity {
             = MediaType.parse("application/json; charset=utf-8");
     private void sendCapturas(String tkn) throws JSONException {
         JSONArray json = getInsertCapturas();
+        progres++;
+        incrementProgres(progres);
         if (json.length()>0){
             String url = "http://malaria-dev.salud.gob.sv/api/capturas";
             RequestBody body = RequestBody.create(JSON, json.toString());
@@ -621,8 +660,96 @@ public class SubirDatos extends AppCompatActivity {
         }
 
     }
+    private void sendGotaGruesa(String tkn) throws JSONException {
+        JSONArray json = getInsertGotaGruesa();
+        progres++;
+        incrementProgres(progres);
+        if (json.length()>0){
+            String url = "http://malaria-dev.salud.gob.sv/api/gotas";
+            RequestBody body = RequestBody.create(JSON, json.toString());
+            final okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .header("Authorization", "Bearer " + tkn)
+                    .build();
+            try {
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        //tvCapturas.setText("Error:"+String.valueOf(e));
+                        Log.i("eroor",e.getMessage());
+                    }
+                    @Override
+                    public void onResponse(Call call, final okhttp3.Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            final String respuestaGota = response.body().string();
+                            SubirDatos.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONArray respuesta = new JSONArray(respuestaGota);
+                                       updateGotaGruesaLocal(respuesta);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void updateGotaGruesaLocal(JSONArray respuesta) {
+        tvSubirDatos.setText("Completado...");
+        String respuestaView="";
+        try {
+            JSONArray idGotas = new JSONArray();
+            JSONArray idError = new JSONArray();
+            Log.i("***sdi*******", respuesta.toString());
+            if (respuesta.length()>0) {
+
+                JSONObject gotas = respuesta.getJSONObject(1);
+                 idGotas = gotas.getJSONArray("ids");
+                idError = gotas.getJSONArray("error");
+                for (int i = 0; i < idGotas.length(); i++) {
+                    long idLocal = idGotas.getLong(i);
+                    PlGotaGruesa gotaGruesa = daoSession.getPlGotaGruesaDao().loadByRowId(idLocal);
+                    gotaGruesa.setEstado_sync(0);
+                    gotaGruesa.update();
+
+                }
+                if (idError.length()>0){
+                    for (int k = 0; k <idError.length() ; k++) {
+                        long idLocal = idError.getLong(k);
+                        PlGotaGruesa gotaGruesa = daoSession.getPlGotaGruesaDao().loadByRowId(idLocal);
+                        gotaGruesa.setEstado_sync(3);
+                        gotaGruesa.update();
+                    }
+                }
+            }
+            tvGotaGruesa.setMovementMethod(new ScrollingMovementMethod());
+            tvGotaGruesa.setText("Gotas Gruesas enviadas: "+String.valueOf(idGotas.length())+
+                    "\n Gotas Gruesas que no se  enviaron por E6 Duplicado: "+idError.length());
+
+        }catch (Exception e){
+            e.printStackTrace();
+            tvGotaGruesa.setText("Posible duplicado de E6 \n"+e.getMessage()+respuesta.toString());
+
+        }
+
+    }
+
     private void sendDataPesquisa(String token) throws JSONException {
         JSONArray json = getInsertPesquisas();
+        progres++;
+        incrementProgres(progres);
         if (json.length()>0){
             String url = "http://malaria-dev.salud.gob.sv/api/pesquisas";
             RequestBody body = RequestBody.create(JSON, json.toString());
@@ -666,6 +793,8 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void sendSeguimientoBotiquin(String token) throws JSONException {
         JSONArray json = getSeguimientoBotiquin();
+        progres++;
+        incrementProgres(progres);
         if (json.length()>0){
             String url = "http://malaria-dev.salud.gob.sv/api/seguimientos";
             RequestBody body = RequestBody.create(JSON, json.toString());
@@ -709,6 +838,8 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void sendCriaderos(String tkn) throws JSONException {
         JSONArray json = getInsetCriaderos();
+        progres++;
+        incrementProgres(progres);
         String url = "http://malaria-dev.salud.gob.sv/api/criaderos";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
@@ -755,6 +886,8 @@ public class SubirDatos extends AppCompatActivity {
 
     private void sendCriaderosUpdate(String token) throws JSONException {
         JSONArray json = getUpdateCriaderos();
+        progres++;
+        incrementProgres(progres);
         if (json.length()>0){
             String url = "http://malaria-dev.salud.gob.sv/api/criaderos";
             RequestBody body = RequestBody.create(JSON, json.toString());
@@ -796,6 +929,8 @@ public class SubirDatos extends AppCompatActivity {
     }
     private void sendColvolUpdate(String token) throws JSONException {
         JSONArray json = getUpdateColvol();
+        progres++;
+        incrementProgres(progres);
         if (json.length()>0){
             String url = "http://malaria-dev.salud.gob.sv/api/colvol";
             RequestBody body = RequestBody.create(JSON, json.toString());
@@ -1243,6 +1378,9 @@ public class SubirDatos extends AppCompatActivity {
         user.setTipoEmpleado(tipoEmpleado);
         user.setIdSibasi(idSibasi);
         fosUserUser.insert(user);
+    }
+    public void incrementProgres(int progresCount){
+        pbSubirDatos.setProgress(progresCount);
     }
 
 

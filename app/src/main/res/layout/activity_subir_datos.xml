@@ -28,88 +28,142 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="245dp"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/subirDatos"
-                android:layout_width="130dp"
-                android:layout_height="100dp"
-                android:clickable="true"
-                android:focusable="true"
-                style="?android:borderlessButtonStyle"
-                app:srcCompat="@drawable/enviar_datos" />
-
-            <View
-                android:layout_width="50dp"
-                android:layout_height="20dp">
-
-            </View>
-
-            <ImageView
-                android:id="@+id/imBajar"
-                android:layout_width="130dp"
-                android:layout_height="100dp"
-                android:clickable="true"
-                style="?android:borderlessButtonStyle"
-                android:focusable="true"
-                app:srcCompat="@drawable/recibir_datos" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="233dp"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvPesquisa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvCapturas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tvPesquisa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/tvCriaderos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                <TextView
+                    android:id="@+id/tvCapturas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-                android:text="" />
+                <TextView
+                    android:id="@+id/tvCriaderos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="" />
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tvGotaGruesa"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="vertical"
+                        />
 
-            <TextView
-                android:id="@+id/tvCriaderosUpdate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                </ScrollView>
 
-                android:text="" />
 
-            <TextView
-                android:id="@+id/tvSeguimientos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            </LinearLayout>
 
-                android:text="" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/subirDatos"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="130dp"
+                        android:layout_height="100dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:srcCompat="@drawable/enviar_datos" />
 
-            <TextView
-                android:id="@+id/tvColvolInsert"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="20dp">
 
-            <TextView
-                android:id="@+id/tvColvolUpdate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                    </View>
+
+                    <ImageView
+                        android:id="@+id/imBajar"
+                        style="?android:borderlessButtonStyle"
+                        android:layout_width="130dp"
+                        android:layout_height="100dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:srcCompat="@drawable/recibir_datos" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvSubirDatos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:text="subiendo datos..."/>
+
+                    <ProgressBar
+                        android:id="@+id/pbSubirDatos"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:visibility="invisible"/>
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvCriaderosUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tvSeguimientos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tvColvolInsert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tvColvolUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
 
         </LinearLayout>
-
-
     </LinearLayout>
+
 
 </LinearLayout>
 

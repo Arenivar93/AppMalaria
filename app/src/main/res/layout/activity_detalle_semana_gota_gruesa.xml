@@ -71,6 +71,12 @@
                 android:background="#5b5efa"
                 android:layout_weight="1"
                 android:text="Caserio"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:background="#5b5efa"
+                android:layout_weight="1"
+                android:text="Estado"/>
         </LinearLayout>
         <ListView
             android:id="@+id/lvDtalleGotaSemana"

@@ -1,19 +1,24 @@
 package com.minsal.dtic.sinavec.CRUD.gotaGruesa.activityGotaGruesa;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,7 +28,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles;
+import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.DetalleCapturaSemanaActivity;
 import com.minsal.dtic.sinavec.CRUD.gotaGruesa.fragmentGotaGruesa.nuevaGotaGruesaFragment;
+import com.minsal.dtic.sinavec.EntityDAO.ColvolCalve;
+import com.minsal.dtic.sinavec.EntityDAO.ColvolCalveDao;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlDepartamento;
@@ -31,6 +40,7 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimiento;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPais;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 import com.minsal.dtic.sinavec.EntityDAO.PlGotaGruesa;
 import com.minsal.dtic.sinavec.EntityDAO.PlGotaGruesaDao;
 import com.minsal.dtic.sinavec.MyMalaria;
@@ -93,15 +103,18 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
     List<CtlEstablecimiento> laboratorios;
     private SharedPreferences prefs;
     PlGotaGruesa gota;
+    long idRegistro,idColvolClave,idSemana;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gota_gruesa_edit);
         Bundle bundle = getIntent().getExtras();
-        prefs               = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        prefs = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
-       long idRegistro = bundle.getLong("idRegistro");
+        idRegistro = bundle.getLong("idRegistro");
+        idColvolClave = bundle.getLong("idColvolClave");
         daoSession=((MyMalaria)getApplication()).getDaoSession();
         utilidades=new Utilidades(daoSession);
         //declaracion de objetos del layout
@@ -141,6 +154,7 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
         idSibasi  = prefs.getLong("idSibasiUser",0);
         idTablet  = prefs.getLong("idTablet",0);
         idUsuario = prefs.getLong("idUser",0);
+
         listaMunicipios.add("Seleccione");
         adapterMunicipio=new ArrayAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,listaMunicipios);
         spMunicipio.setAdapter(adapterMunicipio);
@@ -172,7 +186,11 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
         paises=utilidades.loadspinnerPais();
         listaPaises=utilidades.obtenerListaPais(paises);
         adapterPaises=new ArrayAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,listaPaises);
-        spPais.setAdapter(adapterPaises);
+        spPais.setAdapter(adapterPaises);if (getColvolTomo(idColvolClave).size()>0){
+            nombreColvol = getColvolTomo(idColvolClave).get(0).getPlColvol().getNombre();
+          setTitle(nombreColvol);
+        }
+        this.setTitle("Tomada por: "+nombreColvol);
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -235,6 +253,86 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+        fechaToma.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar c=Calendar.getInstance();
+                dia=c.get(Calendar.DAY_OF_MONTH);
+                mes=c.get(Calendar.MONTH);
+                anio=c.get(Calendar.YEAR);
+                DatePickerDialog datePickerDialog=new DatePickerDialog(GotaGruesaEditActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+
+                        fechaTomaTxt = sdf.format(c.getTime());
+                        fechaToma.setText(dayOfMonth+"-"+(monthOfYear+1)+"-"+year);
+                    }
+                },anio,mes,dia);
+                datePickerDialog.show();
+            }
+        });
+        fechaNac.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar c2=Calendar.getInstance();
+                dia=c2.get(Calendar.DAY_OF_MONTH);
+                mes=c2.get(Calendar.MONTH);
+                anio=c2.get(Calendar.YEAR);
+                DatePickerDialog datePickerDialog=new DatePickerDialog(GotaGruesaEditActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                        String edadConcatenada = MetodosGlobales.calcularEdad(year,monthOfYear+1,dayOfMonth);
+                        String parts[] =edadConcatenada.split("/");
+                        String anios = parts[0];
+                        String meses = parts[1];
+                        String dias = parts[2];
+                        if (!anios.equals("0")){
+                            titGgEdad.setText(anios);
+                            spEdad.setSelection(0);
+                        }else if(!meses.equals("0")){
+                            titGgEdad.setText(meses);
+                            spEdad.setSelection(1);
+                        }else{
+                            titGgEdad.setText(dias);
+                            spEdad.setSelection(2);
+                        }
+
+
+                        fechaNac.setText(dayOfMonth+"-"+(monthOfYear+1)+"-"+year);
+                    }
+                },anio,mes,dia);
+                datePickerDialog.show();
+
+
+            }
+        });
+
+        fechaNac.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                fechaNac.setText("");
+                titGgEdad.setText("");
+                return false;
+            }
+        });
+
+        fechaFiebre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar c3=Calendar.getInstance();
+                dia=c3.get(Calendar.DAY_OF_MONTH);
+                mes=c3.get(Calendar.MONTH);
+                anio=c3.get(Calendar.YEAR);
+                DatePickerDialog datePickerDialog=new DatePickerDialog(GotaGruesaEditActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                        fechaFiebre.setText(dayOfMonth+"-"+(monthOfYear+1)+"-"+year);
+                        fechaFiebreTxt = sdf.format(c3.getTime());
+                    }
+                },anio,mes,dia);
+                datePickerDialog.show();
             }
         });
         spMunicipio.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -311,10 +409,11 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
             int sexo = gota.getIdSexo();
             //fecha de fiebre
             String fechaFiebreEdit =gota.getFechaFiebre();
-            String fechaEditex= formatDate(fechaFiebreEdit,"yyyy-MM-dd","dd-MM-yyyy");
-            fechaFiebre.setText(fechaEditex);
+           // String fechaEditex= formatDate(fechaFiebreEdit,"yyyy-MM-dd","dd-MM-yyyy");
+            fechaFiebre.setText(fechaFiebreEdit);
             //fecha de toma
             String fechaTomaEdit =gota.getFechaToma();
+            fechaToma.setText(fechaTomaEdit);
 
 
             tvGge6.setText(String.valueOf(gota.getIdE6()));
@@ -348,6 +447,7 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
                linearExtranjero.setVisibility(View.VISIBLE);
                linearLocal.setVisibility(View.GONE);
             }else{
+                linearExtranjero.setVisibility(View.GONE);
                 //llenar los spines de depto
                 long idDepto = gota.getCtlCaserio().getCtlCanton().getCtlMunicipio().getIdDepartamento();
                 for (int i = 0; i <departamentos.size() ; i++) {
@@ -358,16 +458,28 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
             if (sexo ==1){
                 spSexo.setSelection(1);
             }else{spSexo.setSelection(2);}
-            int tipoDocumento = Integer.parseInt(gota.getIdDocIdePaciente());
-            setTipoDocumento(tipoDocumento);
+            if (gota.getIdDocIdePaciente()!= null){
+                int tipoDocumento = Integer.parseInt(gota.getIdDocIdePaciente());
+                setTipoDocumento(tipoDocumento);
+
+            }
+
             int idLaboratorio = gota.getIdLabLectura();
             setSpLaboratorio(idLaboratorio);
         }catch (Exception e){
             e.printStackTrace();
             Toast.makeText(getApplicationContext(),"Error al obtner los datos "+e.getMessage(),Toast.LENGTH_SHORT).show();
         }
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirm();
+            }
+        });
+    }//fin oncreate
 
-    }
+
+
     public void setTipoDocumento(int idDoc){
         ArrayList<String> tipodoc = MetodosGlobales.getTipoDocumento();
         for (int i = 0; i <tipodoc.size() ; i++) {
@@ -467,7 +579,7 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
         boolean valida = false;
         String fechaNacimiento = fechaNac.getText().toString().trim();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date convertedDateNac = new Date();
         Date convertedDateHoy = new Date();
         Date fechaHoy = new Date();
@@ -517,7 +629,9 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
         String anio = dateAnio.format(currentTime);
         PlGotaGruesaDao gotaDao = daoSession.getPlGotaGruesaDao();
         List<PlGotaGruesa> gota = gotaDao.queryBuilder().where(PlGotaGruesaDao.Properties.Anio.eq(anio))
-                .where(PlGotaGruesaDao.Properties.IdE6.eq(e6)).where(PlGotaGruesaDao.Properties.IdClave.eq(clave)).list();
+                .where(PlGotaGruesaDao.Properties.IdE6.eq(e6))
+                .where(PlGotaGruesaDao.Properties.IdClave.eq(clave))
+                .where(PlGotaGruesaDao.Properties.Id.notEq(idRegistro)).list();
         return gota.size();
     }
     private int getIdLabLee(){
@@ -532,7 +646,7 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
         boolean valida = false;
         String fechaTomada = fechaToma.getText().toString().trim();
         String fechaInicioFiebre = fechaFiebre.getText().toString().trim();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date convertedDateToma = new Date();
         Date convertedFechaFiebre = new Date();
         try {
@@ -551,20 +665,20 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
     private void saveData(){
         try{
             PlGotaGruesaDao gotaGruesaDao = daoSession.getPlGotaGruesaDao();
-            PlGotaGruesa gota = new PlGotaGruesa();
+            PlGotaGruesa gota = gotaGruesaDao.loadByRowId(idRegistro);
             int semanaActual = getSemana();
             Date currentTime = Calendar.getInstance().getTime();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            SimpleDateFormat dateAnio = new SimpleDateFormat("yyyy");
             String fecha = dateFormat.format(currentTime);
-            String anio = dateAnio.format(currentTime);
+            String anio = fechaToma.getText().toString().trim().substring(6,10);
+            Log.i(anio,anio);
             String primerNombre = titGgNombre.getText().toString().trim();
             String primerApellido = titGgPrimerApellido.getText().toString().trim();
             String edad = titGgEdad.getText().toString().trim();
             int idSexo = spSexo.getSelectedItemPosition();
             long idPais =0;
             long idCaserio=0;
-            long idClaveColvol = idClave;
+            //long idClaveColvol = idClave;
             if (swExtrajero.isChecked()){
                 idPais= paises.get(spPais.getSelectedItemPosition()-1).getId();
                 gota.setExtranjero(1);
@@ -581,10 +695,9 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
             gota.setPrimerNombre(primerNombre);
             gota.setPrimerApellido(primerApellido);
             gota.setEdad(Integer.parseInt(edad));
-            gota.setIdClave(idClaveColvol);
             gota.setIdSexo(idSexo);
             gota.setIdPais(idPais);
-            gota.setIdResultado(3); // por el momento siempre sera sin resultado ya que solo son de colvol
+            gota.setIdResultado(85); // por el momento siempre sera sin resultado ya que solo son de colvol
             if (idCaserio>0){
                 gota.setIdCaserio(idCaserio);
             }
@@ -594,16 +707,13 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
             if (!titGgSegundoNombre.getText().toString().trim().equals("")){
                 gota.setSegundoNombre(titGgSegundoNombre.getText().toString().trim());
             }
-            gota.setEstado_sync(0);
-            gota.setFechaFiebre(fechaFiebreTxt);
-            gota.setFechaToma(fechaTomaTxt);
+            gota.setEstado_sync(1);
+            gota.setFechaFiebre(fechaFiebre.getText().toString().trim());
+            gota.setFechaToma(fechaToma.getText().toString().trim());
             gota.setDireccion(tvGgDescripcion.getText().toString().trim());
             gota.setFechaHoraReg(fecha);
             gota.setEsPc(1);
             gota.setTipoProcedencia(1);
-            gota.setIdSibasi(idSibasi);
-            gota.setIdUsuarioReg(idSibasi);
-            gota.setIdTablet(idTablet);
             gota.setIdE6(Integer.parseInt(e6));
             gota.setAnio(Integer.parseInt(anio));
             if (!titGgNumeroDoc.getText().toString().trim().equals("")){
@@ -611,6 +721,10 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
                     gota.setIdDocIdePaciente(String.valueOf(spGgTipoDoc.getSelectedItemPosition()));
                     gota.setNumeroDocIdePaciente(titGgNumeroDoc.getText().toString().trim());
                 }else{gota.setIdDocIdePaciente(String.valueOf(spGgTipoDoc.getSelectedItemPosition()));}
+            }else{
+                gota.setIdDocIdePaciente(String.valueOf(7));
+                gota.setNumeroDocIdePaciente(null);
+
             }
             if (!fechaNac.getText().toString().trim().equals("")){
                 gota.setFechaNacimiento(fechaNac.getText().toString().trim());
@@ -621,7 +735,13 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
             gota.setIdSemanaEpidemiologica(semanaActual);
             gota.setIdVectores("N/A");
             gotaGruesaDao.save(gota);
+            int semanaVolver = gota.getIdSemanaEpidemiologica();
             Toast.makeText(getApplicationContext(),"Se guardo con exito",Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), DetalleSemanaGotaGruesa.class);
+            intent.putExtra("id_semana", String.valueOf(semanaVolver));
+            intent.putExtra("bandera_delete", "bandera_delete");
+            startActivity(intent);
+            finish();
 
 
 
@@ -638,5 +758,40 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
         String parsedDate = formatter.format(initDate);
 
         return parsedDate;
+    }
+    private List<ColvolCalve> getColvolTomo(long idClave){
+
+        List<ColvolCalve> lista = daoSession.getColvolCalveDao().queryBuilder()
+                .where(ColvolCalveDao.Properties.IdClave.eq(idClave)).list();
+        return lista;
+
+    }
+    public void confirm() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(GotaGruesaEditActivity.this);
+        builder.setMessage(Html.fromHtml("<font color='#FF0000'><b>¿Seguro que desea eliminar la gota gruesa?</b></font>"))
+                .setNegativeButton(Html.fromHtml("Cancelar"), null)
+                .setPositiveButton(Html.fromHtml("Sí, Eliminar"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        PlGotaGruesa gota = daoSession.getPlGotaGruesaDao().loadByRowId(idRegistro);
+                        idSemana = gota.getIdSemanaEpidemiologica();
+                        gota.delete();
+                        Toast.makeText(getApplicationContext(), "La Captura se eliminó con éxito", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), DetalleSemanaGotaGruesa.class);
+                        intent.putExtra("id_semana", String.valueOf(idSemana));
+                        intent.putExtra("bandera_delete", "bandera_delete");
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setCancelable(false);
+        //.create().show();
+        AlertDialog a = builder.create();
+        a.show();
+        Button btnPositivo = a.getButton(DialogInterface.BUTTON_POSITIVE);
+        btnPositivo.setTextColor(Color.RED);
+        Button btnNegativo = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        btnNegativo.setTextColor(Color.GREEN);
     }
 }

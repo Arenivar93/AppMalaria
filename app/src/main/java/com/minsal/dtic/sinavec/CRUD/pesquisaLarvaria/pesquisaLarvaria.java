@@ -243,7 +243,6 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
         }else {indice=0;}
 
         try {
-            for (int i = 0; i <50 ; i++) {
                 Date fec = dateFormat.parse(fecha);
                 int semanaActual = getSemana();
                 PlPesquisaLarvariaDao pesDao = daoSession.getPlPesquisaLarvariaDao();
@@ -270,7 +269,7 @@ public class pesquisaLarvaria extends AppCompatActivity implements OnMapReadyCal
                 pes.setEstado_sync(1);
                 pesDao.insert(pes);
 
-            }
+
 
 
             customToadSuccess(getApplicationContext(),"Pesquisa Larvaria se guardo con éxito");

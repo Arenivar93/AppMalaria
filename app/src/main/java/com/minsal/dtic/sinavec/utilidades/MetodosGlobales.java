@@ -13,10 +13,17 @@ import static java.util.Objects.hash;
 
 import com.minsal.dtic.sinavec.EntityDAO.CtlTabletDao;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 
 public class MetodosGlobales{
@@ -153,6 +160,36 @@ public class MetodosGlobales{
 
         return tipoEdad;
     }
+    public static String calcularEdad(int yearOfBirth, int monthOfBirth, int dayOfBirth) {
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDate today = LocalDate.now();
+            LocalDate birthdate = LocalDate.of(yearOfBirth, monthOfBirth, dayOfBirth);
+            Period p = Period.between(birthdate, today);
+            String anios = String.valueOf(p.getYears());
+            String meses = String.valueOf(p.getMonths());
+            String dias = String.valueOf(p.getDays());
+            return anios+"/"+meses+"/"+dias;
+        } else {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH) + 1;
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+            Calendar c2 = new GregorianCalendar(yearOfBirth, monthOfBirth, dayOfBirth);
+            Calendar c1 = new GregorianCalendar(year, month, day);
+            long end = c2.getTimeInMillis();
+            long start = c1.getTimeInMillis();
+            long milliseconds = TimeUnit.MILLISECONDS.toMillis(Math.abs(end - start));
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(milliseconds);
+            int mYear = c.get(Calendar.YEAR) - 1970;
+            int mMonth = c.get(Calendar.MONTH);
+            int mDay = c.get(Calendar.DAY_OF_MONTH) - 1;
+            return mYear+"/"+mMonth+"/"+mDay;
+        }
+    }
+
 
 
 

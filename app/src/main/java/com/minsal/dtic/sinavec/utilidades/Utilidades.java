@@ -445,7 +445,7 @@ public class Utilidades {
         //  pesquisaPrueba = new ArrayList<String>();
         int total;
         try {
-            Cursor c = daoSession.getDatabase().rawQuery("SELECT strftime('%Y', FECHA_TOMA) AS anio, ID_SEMANA_EPIDEMIOLOGICA,COUNT(ID) as total,SUM(CASE ID_RESULTADO WHEN 3 THEN 1 else 0 end) as sin_resultado," +
+            Cursor c = daoSession.getDatabase().rawQuery("SELECT ANIO AS anio, ID_SEMANA_EPIDEMIOLOGICA,COUNT(ID) as total,SUM(CASE ID_RESULTADO WHEN 3 THEN 1 else 0 end) as sin_resultado," +
                     "SUM(CASE ID_RESULTADO WHEN 1 THEN 1 else 0 end) as negativo," +
                     " SUM(CASE ID_RESULTADO WHEN 2 THEN 1 WHEN 4 THEN 1 WHEN 5 THEN 1 WHEN 6 THEN 1 else  0 end) as positivas " +
                     " FROM PL_GOTA_GRUESA" +

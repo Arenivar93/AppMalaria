@@ -73,9 +73,10 @@ public class MainActivity extends AppCompatActivity
         long idTablet     = getIdTablet();
         long iduser       = getIdUser();
         depto             = deptoUser(elUser); // este id lo usaremos para conocer el departamento al que pertence el usaurio
+        int tipoEmpelado = getTipoEmpleado(iduser);
         if (bundle!=null){
             if (bundle.get("bandera_pref")!=null){
-                saveOnPreferences(idSibasiUser,idTablet,iduser,depto);
+                saveOnPreferences(idSibasiUser,idTablet,iduser,depto,tipoEmpelado);
             }
         }
 
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity
 
         //set user name en sesion
         TextView userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvUser);
-        userName.setText("Usuario: "+elUser);
+        userName.setText(elUser);
 
 
 
@@ -244,6 +245,10 @@ public class MainActivity extends AppCompatActivity
         }
         return idtablet;
     }
+    public  int getTipoEmpleado(long idUsuario){
+        FosUserUser user = daoSession.getFosUserUserDao().loadByRowId(idUsuario);
+        return user.getTipoEmpleado();
+    }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String getIMEINumber() {
         String myAndroidDeviceId = "";
@@ -262,12 +267,13 @@ public class MainActivity extends AppCompatActivity
         }
         return myAndroidDeviceId;
     }
-    private void saveOnPreferences(long idSibasiUser, long idTablet, long idUser,long idDeptoUser) {
+    private void saveOnPreferences(long idSibasiUser, long idTablet, long idUser,long idDeptoUser,long idTipoEmpleado) {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putLong("idSibasiUser",idSibasiUser);
             editor.putLong("idTablet",idTablet);
             editor.putLong("idUser",idUser);
             editor.putLong("idDeptoUser",idDeptoUser);
+            editor.putLong("idTipoEmpleado",idTipoEmpleado);
             editor.apply();
     }
     public long getIdUser() {

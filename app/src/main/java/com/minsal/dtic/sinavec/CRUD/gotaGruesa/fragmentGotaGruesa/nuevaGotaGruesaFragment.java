@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -40,6 +41,8 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimiento;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPais;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
+import com.minsal.dtic.sinavec.EntityDAO.PlColvolDao;
 import com.minsal.dtic.sinavec.EntityDAO.PlGotaGruesa;
 import com.minsal.dtic.sinavec.EntityDAO.PlGotaGruesaDao;
 import com.minsal.dtic.sinavec.MyMalaria;
@@ -92,19 +95,21 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             tvGge6;
     TextInputEditText fechaNac,titGgNombre,titGgSegundoNombre,titGgPrimerApellido,
             titGgSegundoApellido,titGgEdad,titGgNumeroDoc,titGgResponsable;
-    private int dia,mes,anio;
+    TextInputLayout tilFechaFiebre,tilFechaToma;
+   // private int dia,mes,anio;
     private long idSibasi;
     private long idTablet;
     private long idUsuario,idClave;
     int salir=0;
     private Spinner spGgTipoDoc;
     String nombreColvol;
+    boolean banderaEdad= false;
 
     Utilidades utilidades;
     private LinearLayout linearLocal,linearExtranjero;
     Switch swExtrajero;
     Button btnGuardar, btnCancelar;
-    String fechaTomaTxt,fechaFiebreTxt;
+    //String fechaTomaTxt,fechaFiebreTxt;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     List<CtlEstablecimiento> laboratorios;;
 
@@ -159,6 +164,8 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
         spGgTipoDoc =(Spinner)v.findViewById(R.id.spGgTipoDoc);
         titGgNumeroDoc =(TextInputEditText)v.findViewById(R.id.titGgNumeroDoc);
         titGgResponsable =(TextInputEditText)v.findViewById(R.id.titGgResponsable);
+        tilFechaToma = (TextInputLayout)v.findViewById(R.id.tilGgFechaToma) ;
+        tilFechaFiebre = (TextInputLayout)v.findViewById(R.id.tilGgFechaInicioFiebre) ;
 
 
         idSibasi=getArguments().getLong("idSibasi");
@@ -166,6 +173,7 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
         idUsuario=getArguments().getLong("idUsuario");
         idClave =getArguments().getLong("idClave");
         nombreColvol =getArguments().getString("nombreColvol");
+        tvGge6.setText(String.valueOf(getMaxE6()));
         laboratorios=utilidades.obtenerLaboratorios(idSibasi);
         listaLaboratorios=utilidades.obtenerListaEstablecimientoClave(laboratorios);
         ArrayAdapter adapterTipoDoc = new ArrayAdapter(getActivity(),R.layout.support_simple_spinner_dropdown_item, MetodosGlobales.getTipoDocumento());
@@ -208,7 +216,7 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                boolean valida = validateData();
-                if (valida){
+                if (valida && validatefechaHoy()){
                     saveData();
                 }else{
                     Toast.makeText(getActivity(),"Existen errores en el formulario",Toast.LENGTH_SHORT).show();
@@ -348,15 +356,26 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 final Calendar c=Calendar.getInstance();
-                dia=c.get(Calendar.DAY_OF_MONTH);
-                mes=c.get(Calendar.MONTH);
-                anio=c.get(Calendar.YEAR);
+               int dia=c.get(Calendar.DAY_OF_MONTH);
+                int mes=c.get(Calendar.MONTH);
+               int anio=c.get(Calendar.YEAR);
                 DatePickerDialog datePickerDialog=new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                        int month = monthOfYear + 1;
+                        String formattedMonth = "" + month;
+                        String formattedDayOfMonth = "" + dayOfMonth;
+                        if(month < 10){
 
-                        fechaTomaTxt = sdf.format(c.getTime());
-                        fechaToma.setText(dayOfMonth+"/"+(monthOfYear+1)+"/"+year);
+                            formattedMonth = "0" + month;
+                        }
+                        if(dayOfMonth < 10){
+
+                            formattedDayOfMonth = "0" + dayOfMonth;
+                        }
+
+
+                        fechaToma.setText(formattedDayOfMonth+"-"+formattedMonth+"-"+year);
                     }
                 },anio,mes,dia);
                 datePickerDialog.show();
@@ -366,12 +385,17 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 final Calendar c2=Calendar.getInstance();
-                dia=c2.get(Calendar.DAY_OF_MONTH);
-                mes=c2.get(Calendar.MONTH);
-                anio=c2.get(Calendar.YEAR);
+                int  dia=c2.get(Calendar.DAY_OF_MONTH);
+                int mes=c2.get(Calendar.MONTH);
+                int anio=c2.get(Calendar.YEAR);
+
                 DatePickerDialog datePickerDialog=new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                        int month = monthOfYear + 1;
+                        banderaEdad = true;
+                        String formattedMonth = "" + month;
+                        String formattedDayOfMonth = "" + dayOfMonth;
                         String edadConcatenada = calcularEdad(year,monthOfYear+1,dayOfMonth);
                         String parts[] =edadConcatenada.split("/");
                         String anios = parts[0];
@@ -387,9 +411,17 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
                             titGgEdad.setText(dias);
                             spEdad.setSelection(2);
                         }
+                        if(month < 10){
+
+                            formattedMonth = "0" + month;
+                        }
+                        if(dayOfMonth < 10){
+
+                            formattedDayOfMonth = "0" + dayOfMonth;
+                        }
 
 
-                        fechaNac.setText(dayOfMonth+"/"+(monthOfYear+1)+"/"+year);
+                        fechaNac.setText(formattedDayOfMonth+"-"+formattedMonth+"-"+year);
                     }
                 },anio,mes,dia);
                 datePickerDialog.show();
@@ -398,11 +430,13 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             }
         });
 
+
         fechaNac.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 fechaNac.setText("");
                 titGgEdad.setText("");
+                banderaEdad = false;
                 return false;
             }
         });
@@ -411,17 +445,50 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 final Calendar c3=Calendar.getInstance();
-                dia=c3.get(Calendar.DAY_OF_MONTH);
-                mes=c3.get(Calendar.MONTH);
-                anio=c3.get(Calendar.YEAR);
+               int dia=c3.get(Calendar.DAY_OF_MONTH);
+                int mes=c3.get(Calendar.MONTH);
+                int anio=c3.get(Calendar.YEAR);
                 DatePickerDialog datePickerDialog=new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                        fechaFiebre.setText(dayOfMonth+"/"+(monthOfYear+1)+"/"+year);
-                        fechaFiebreTxt = sdf.format(c3.getTime());
+                        int month = monthOfYear + 1;
+                        String formattedMonth = "" + month;
+                        String formattedDayOfMonth = "" + dayOfMonth;
+                        if(month < 10){
+
+                            formattedMonth = "0" + month;
+                        }
+                        if(dayOfMonth < 10){
+
+                            formattedDayOfMonth = "0" + dayOfMonth;
+                        }
+
+
+                        fechaFiebre.setText(formattedDayOfMonth+"-"+formattedMonth+"-"+year);
+
                     }
                 },anio,mes,dia);
                 datePickerDialog.show();
+            }
+        });
+        titGgEdad.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!banderaEdad){
+                    setFechaNac(titGgEdad.getText().toString().trim());
+
+                }
+
             }
         });
 
@@ -490,11 +557,16 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             titGgResponsable.setError("Nombre de responsable requerido");
             titGgResponsable.requestFocus();
 
+        }else if((spEdad.getSelectedItemPosition()==1 || spEdad.getSelectedItemPosition()==2) && titGgResponsable.getText().toString().trim().equals("")){
+            titGgResponsable.setError("Nombre de responsable requerido");
+            titGgResponsable.requestFocus();
+
         }else if(spSexo.getSelectedItemPosition()==0){
             TextView errorText=(TextView)spSexo.getSelectedView();
             errorText.setError("");
             errorText.setTextColor(Color.BLUE);
             errorText.setText("Seleccione el sexo");
+            errorText.setFocusableInTouchMode(true);
             errorText.requestFocus();
         }else if(spGgTipoDoc.getSelectedItemPosition()!=0 && spGgTipoDoc.getSelectedItemPosition()!=7 && titGgNumeroDoc.getText().toString().trim().equals("")){
             titGgNumeroDoc.setError("Ingrese un numero de documento");
@@ -552,9 +624,9 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             int semanaActual = getSemana();
             Date currentTime = Calendar.getInstance().getTime();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            SimpleDateFormat dateAnio = new SimpleDateFormat("yyyy");
+            String anio = fechaToma.getText().toString().trim().substring(6,10);
+
             String fecha = dateFormat.format(currentTime);
-            String anio = dateAnio.format(currentTime);
             String primerNombre = titGgNombre.getText().toString().trim();
             String primerApellido = titGgPrimerApellido.getText().toString().trim();
             String edad = titGgEdad.getText().toString().trim();
@@ -581,7 +653,7 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             gota.setIdClave(idClaveColvol);
             gota.setIdSexo(idSexo);
             gota.setIdPais(idPais);
-            gota.setIdResultado(3); // por el momento siempre sera sin resultado ya que solo son de colvol
+            gota.setIdResultado(85); // por el momento siempre sera sin resultado ya que solo son de colvol
             if (idCaserio>0){
                 gota.setIdCaserio(idCaserio);
             }
@@ -591,15 +663,15 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             if (!titGgSegundoNombre.getText().toString().trim().equals("")){
                 gota.setSegundoNombre(titGgSegundoNombre.getText().toString().trim());
             }
-            gota.setEstado_sync(0);
-            gota.setFechaFiebre(fechaFiebreTxt);
-            gota.setFechaToma(fechaTomaTxt);
+            gota.setEstado_sync(1);
+            gota.setFechaFiebre(fechaFiebre.getText().toString().trim());
+            gota.setFechaToma(fechaToma.getText().toString().trim());
             gota.setDireccion(tvGgDescripcion.getText().toString().trim());
             gota.setFechaHoraReg(fecha);
             gota.setEsPc(1);
             gota.setTipoProcedencia(1);
             gota.setIdSibasi(idSibasi);
-            gota.setIdUsuarioReg(idSibasi);
+            gota.setIdUsuarioReg(idUsuario);
             gota.setIdTablet(idTablet);
             gota.setIdE6(Integer.parseInt(e6));
             gota.setAnio(Integer.parseInt(anio));
@@ -608,6 +680,8 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
                     gota.setIdDocIdePaciente(String.valueOf(spGgTipoDoc.getSelectedItemPosition()));
                     gota.setNumeroDocIdePaciente(titGgNumeroDoc.getText().toString().trim());
                 }else{gota.setIdDocIdePaciente(String.valueOf(spGgTipoDoc.getSelectedItemPosition()));}
+            }else{
+                gota.setIdDocIdePaciente(String.valueOf(7));
             }
             if (!fechaNac.getText().toString().trim().equals("")){
                 gota.setFechaNacimiento(fechaNac.getText().toString().trim());
@@ -665,11 +739,19 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             return mYear+"/"+mMonth+"/"+mDay;
         }
     }
+    public static int calculoFechaNac(int yearAge) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            int year = cal.get(Calendar.YEAR);
+            int yearBirth = year-yearAge;
+            return yearBirth;
+
+    }
     public  boolean validatefechaToma(){
         boolean valida = false;
-        String fechaTomada = fechaToma.getText().toString().trim();
+       String fechaTomada = fechaToma.getText().toString().trim();
         String fechaInicioFiebre = fechaFiebre.getText().toString().trim();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date convertedDateToma = new Date();
         Date convertedFechaFiebre = new Date();
         try {
@@ -685,11 +767,39 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
         }
         return  valida;
     }
+    public  boolean validatefechaHoy(){
+        boolean valida = false;
+        String fechaTomada = fechaToma.getText().toString().trim();
+        String fechaInicioFiebre = fechaFiebre.getText().toString().trim();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date currentTime = Calendar.getInstance().getTime();
+        Date convertedDateToma = new Date();
+        Date convertedFechaFiebre = new Date();
+        try {
+            convertedFechaFiebre = dateFormat.parse(fechaInicioFiebre);
+            convertedDateToma = dateFormat.parse(fechaTomada);
+            if (currentTime.before(convertedFechaFiebre)){
+                tilFechaFiebre.setError("Fecha no puede ser mayor a este dia");
+                tilFechaFiebre.requestFocus();
+            }else if(currentTime.before(convertedDateToma)){
+                tilFechaToma.setError("Fecha no puede ser mayor a este dia");
+                tilFechaToma.requestFocus();
+            }else{
+                valida= true;
+                tilFechaToma.setError(null);
+                tilFechaFiebre.setError(null);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  valida;
+    }
     public  boolean validatefechaNacimiento(){
         boolean valida = false;
         String fechaNacimiento = fechaNac.getText().toString().trim();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date convertedDateNac = new Date();
         Date convertedDateHoy = new Date();
         Date fechaHoy = new Date();
@@ -742,6 +852,19 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
                 .where(PlGotaGruesaDao.Properties.IdE6.eq(e6)).where(PlGotaGruesaDao.Properties.IdClave.eq(clave)).list();
         return gota.size();
     }
+    public int getMaxE6(){
+        String clave = String.valueOf(idClave);
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat dateAnio = new SimpleDateFormat("yyyy");
+        String anio = dateAnio.format(currentTime);
+        PlGotaGruesaDao gotaDao = daoSession.getPlGotaGruesaDao();
+        List<PlGotaGruesa> gota = gotaDao.queryBuilder().where(PlGotaGruesaDao.Properties.Anio.eq(anio))
+                .where(PlGotaGruesaDao.Properties.IdClave.eq(clave)).orderDesc(PlGotaGruesaDao.Properties.IdE6).list();
+        if (gota.size()>0){
+            return gota.get(0).getIdE6()+1;
+
+        }else{ return 1;}
+    }
     private int getIdLabLee(){
         int idLaboratorio=0;
         int selected = spLaboratorio.getSelectedItemPosition();
@@ -750,5 +873,17 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
         }
         return idLaboratorio;
     }
+    private void setFechaNac(String edad){
+        try {
+            int anioNac = calculoFechaNac(Integer.parseInt(edad));
+            fechaNac.setText("01-01-"+String.valueOf(anioNac));
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
 
 }

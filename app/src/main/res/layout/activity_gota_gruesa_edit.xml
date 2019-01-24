@@ -124,13 +124,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:hint="Fecha Nacimiento:"
                             app:errorTextAppearance="@style/MyAppTheme.TextInputLayout">
 
                             <android.support.design.widget.TextInputEditText
                                 android:id="@+id/titGgFechaNacEdit"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Fecha Nacimiento:"
                                 android:imeOptions="flagNoExtractUi" />
                         </android.support.design.widget.TextInputLayout>
 
