@@ -76,7 +76,7 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
 
                 }
             });
-            progress.setTitle("Almacenamiento de cache");
+            progress.setTitle("Almacenamiento de cache...");
             progress.setMessage("Zona: " + 0);
             progress.show();
         }
@@ -85,7 +85,7 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
     @Override
     protected void onPostExecute(Void dataTiles) {
         super.onPostExecute(dataTiles);
-        progress.setMessage("Chache guardada");
+        progress.setMessage("Cache guardada");
         progress.setOnCancelListener(null);
         progress.dismiss();
 

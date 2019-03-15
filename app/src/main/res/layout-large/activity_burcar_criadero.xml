@@ -111,45 +111,50 @@
             android:gravity="center_vertical|center"
             android:layout_marginTop="12dp">
             <TableLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center">
                 <TableRow
                     android:background="@color/colorPrimary">
-                    <TextView android:text="N°"
-                        android:layout_width="40dp"
-                        android:paddingRight="10dp"
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="0.3"
                         android:paddingBottom="5dp"
+                        android:paddingEnd="10dp"
                         android:paddingTop="5dp"
-                        android:textColor="@color/headtableLetra"/>
+                        android:text="N°"
+                        android:textColor="@color/headtableLetra" />
                     <TextView android:text="Nombre"
-                        android:layout_width="200dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.7"
+                        android:paddingStart="20dp"
                         android:paddingBottom="5dp"
                         android:paddingTop="5dp"
                         android:textColor="@color/headtableLetra"/>
                     <TextView android:text="Canton"
-                        android:layout_width="200dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:paddingStart="35dp"
                         android:paddingBottom="5dp"
                         android:paddingTop="5dp"
                         android:textColor="@color/headtableLetra"/>
                     <TextView android:text="Caserio"
-                        android:layout_width="200dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:paddingStart="65dp"
                         android:paddingBottom="5dp"
                         android:paddingTop="5dp"
                         android:textColor="@color/headtableLetra"/>
-                    <TextView android:text="Opciones"
-                        android:layout_width="150dp"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
                         android:paddingBottom="5dp"
+                        android:paddingStart="18dp"
                         android:paddingTop="5dp"
-                        android:textColor="@color/headtableLetra"/>
+                        android:text="Opciones"
+                        android:textColor="@color/headtableLetra" />
                 </TableRow>
             <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
@@ -157,7 +162,7 @@
                 android:gravity="center_vertical|center">
                 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/tableCriadero"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical|center"
                     >

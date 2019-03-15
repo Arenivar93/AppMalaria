@@ -230,7 +230,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:hint="Tiempo de Colecta"
+                        android:hint="Tiempo de Colecta (Minutos)"
                         android:imeOptions="flagNoExtractUi"
                         android:inputType="number" />
                 </android.support.design.widget.TextInputLayout>

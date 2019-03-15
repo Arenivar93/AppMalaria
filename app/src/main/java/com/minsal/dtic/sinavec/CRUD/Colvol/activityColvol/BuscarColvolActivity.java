@@ -298,28 +298,30 @@ public class BuscarColvolActivity extends AppCompatActivity {
                         TableLayout.LayoutParams.WRAP_CONTENT));
                 String[] colText={i+1+"",colvol.getNombre()+" "+"("+colvol.getClave()+")",colvol.getCtlCaserio().getCtlCanton().getNombre(),colvol.getCtlCaserio().getNombre()};
                 TextView tv;
-                int j=0;
+                int celda=0;
                 for(String text:colText) {
+
                     tv = new TextView(getApplicationContext());
-                    if (j==0){
-                        tv.setLayoutParams(new TableRow.LayoutParams(85,
-                                TableRow.LayoutParams.WRAP_CONTENT));
+                    if (celda==0){//es el numero
+                        tv.setLayoutParams(new TableRow.LayoutParams(0,
+                                TableRow.LayoutParams.WRAP_CONTENT,0.3f));
                         tv.setPadding(15, 5, 10, 5);
-                    }else if(j==1){
-                        tv.setLayoutParams(new TableRow.LayoutParams(300,
-                                TableRow.LayoutParams.WRAP_CONTENT));
+                    }else if(celda==1){
+                        tv.setLayoutParams(new TableRow.LayoutParams(0,
+                                TableRow.LayoutParams.WRAP_CONTENT,1.7f));
                         tv.setPadding(15, 5, 10, 5);
-                    }else{
-                        tv.setLayoutParams(new TableRow.LayoutParams(300,
-                                TableRow.LayoutParams.WRAP_CONTENT));
+                    }else {
+                        tv.setLayoutParams(new TableRow.LayoutParams(0,
+                                TableRow.LayoutParams.WRAP_CONTENT,1f));
                         tv.setPadding(15, 5, 10, 5);
                     }
-                    tv.setTextSize(16);
+
+
                     tv.setText(text);
 
                     tv.setTextColor(Color.BLACK);
                     row.addView(tv);
-                    j++;
+                    celda++;
                 }
                 // Creation  button
                 final ImageButton button = new ImageButton(getApplicationContext());

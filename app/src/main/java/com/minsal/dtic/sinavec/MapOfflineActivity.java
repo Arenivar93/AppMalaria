@@ -53,7 +53,7 @@ public class MapOfflineActivity extends FragmentActivity
     private SQLiteMapCache mapDatabase;
     List<LatLng> coordenadaPoligono;
     TextView tvzoom_descarga;
-    ImageView imSaveMap;
+    ImageView imSaveMap,imcancelar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +63,7 @@ public class MapOfflineActivity extends FragmentActivity
         DaoSession daoSession = ((MyMalaria) getApplicationContext()).getDaoSession();
         u = new Utilidades(daoSession);
         imSaveMap = (ImageView) findViewById(R.id.imSaveMap);
+        imcancelar = (ImageView) findViewById(R.id.cancel_button);
         tvzoom_descarga = (TextView) findViewById(R.id.tvzoom_descarga);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map2);
@@ -74,12 +75,21 @@ public class MapOfflineActivity extends FragmentActivity
         if (!internet) {
             hasInternet();
         }
+        imcancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
 
     }
 
+
     public void save(View v) {
-        TileCache downloader = new TileCache(this, 10000, 1, 15);
+        TileCache downloader = new TileCache(this, 10000, 1, 13);
         mapDatabase.deleteAllTile(); //Borra los datos de la tabla de Tile
         downloader.execute(areas.values().toArray());
 
