@@ -20,16 +20,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.CapturaAnopheles;
-import com.minsal.dtic.sinavec.CRUD.capturaAnopheles.DetalleCapturaSemanaActivity;
 import com.minsal.dtic.sinavec.CRUD.gotaGruesa.fragmentGotaGruesa.nuevaGotaGruesaFragment;
 import com.minsal.dtic.sinavec.EntityDAO.ColvolCalve;
 import com.minsal.dtic.sinavec.EntityDAO.ColvolCalveDao;
@@ -40,7 +36,6 @@ import com.minsal.dtic.sinavec.EntityDAO.CtlEstablecimiento;
 import com.minsal.dtic.sinavec.EntityDAO.CtlMunicipio;
 import com.minsal.dtic.sinavec.EntityDAO.CtlPais;
 import com.minsal.dtic.sinavec.EntityDAO.DaoSession;
-import com.minsal.dtic.sinavec.EntityDAO.FosUserUser;
 import com.minsal.dtic.sinavec.EntityDAO.PlGotaGruesa;
 import com.minsal.dtic.sinavec.EntityDAO.PlGotaGruesaDao;
 import com.minsal.dtic.sinavec.MyMalaria;
@@ -77,11 +72,14 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
     private ArrayList<String> listaMunicipios=new ArrayList<>();
     private ArrayList<String> listaCantones=new ArrayList<>();
     private ArrayList<String> listaCaserios=new ArrayList<>();
+    private ArrayList<String> listaUcsf=new ArrayList<>();
     ArrayAdapter<String> adapterPaises;
     ArrayAdapter<String> adapterDepartamento;
     ArrayAdapter<String> adapterMunicipio;
     ArrayAdapter<String> adapterCanton;
     ArrayAdapter<String> adapterCaserio;
+    private List<CtlEstablecimiento> ucsfs;
+
     private EditText fechaToma,fechaFiebre,tvGgDescripcion,
             tvGge6;
     TextInputEditText fechaNac,titGgNombre,titGgSegundoNombre,titGgPrimerApellido,
@@ -93,6 +91,7 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
     int salir=0;
     private Spinner spGgTipoDoc;
     String nombreColvol;
+    Spinner spUcsfReferente;
 
     Utilidades utilidades;
     private LinearLayout linearLocal,linearExtranjero;
@@ -134,6 +133,8 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
         linearExtranjero=(LinearLayout)findViewById(R.id.linearExtranjeroEdit);
         linearLocal=(LinearLayout)findViewById(R.id.linearLocalEdit);
         swExtrajero = (Switch)findViewById(R.id.swGgExtranjeroEdit);
+        spUcsfReferente = (Spinner) findViewById(R.id.spUcsfReferente) ;
+
         fechaToma.setFocusable(false);
         fechaToma.setClickable(true);
         fechaFiebre.setFocusable(false);
@@ -189,6 +190,11 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
         spPais.setAdapter(adapterPaises);if (getColvolTomo(idColvolClave).size()>0){
             nombreColvol = getColvolTomo(idColvolClave).get(0).getPlColvol().getNombre();
           setTitle(nombreColvol);
+            ucsfs = utilidades.getUscf(getColvolTomo(idColvolClave).get(0).getPlColvol().getIdCaserio());
+            listaUcsf = utilidades.getListaUcsf(ucsfs);
+            ArrayAdapter adapterUcsf = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,listaUcsf);
+            spUcsfReferente.setAdapter(adapterUcsf);
+
         }
         this.setTitle("Tomada por: "+nombreColvol);
         btnGuardar.setOnClickListener(new View.OnClickListener() {
@@ -369,6 +375,8 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
 
             }
         });
+
+
         spCanton.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -465,7 +473,9 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
             }
 
             int idLaboratorio = gota.getIdLabLectura();
+            int idEstArea = gota.getIdEstablecimientoArea();
             setSpLaboratorio(idLaboratorio);
+            setSpEstablecimientoArea(idEstArea);
         }catch (Exception e){
             e.printStackTrace();
             Toast.makeText(getApplicationContext(),"Error al obtner los datos "+e.getMessage(),Toast.LENGTH_SHORT).show();
@@ -493,6 +503,14 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
         for (int i = 0; i <labs.size() ; i++) {
             if (labs.get(i).getId()== idLab){
                 spLaboratorio.setSelection(i+1);
+            }
+        }
+    }
+    public void setSpEstablecimientoArea(int idEst){
+
+        for (int i = 0; i <ucsfs.size() ; i++) {
+            if (ucsfs.get(i).getId()== idEst){
+                spUcsfReferente.setSelection(i+1);
             }
         }
     }
@@ -526,6 +544,14 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
             errorText.setTextColor(Color.BLUE);
             errorText.setText("Seleccione el sexo");
             errorText.requestFocus();
+        }else if(spUcsfReferente.getSelectedItemPosition()==0){
+            TextView errorText=(TextView)spUcsfReferente.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.BLUE);
+            errorText.setText("Seleccione la UCSF del AGI)");
+            errorText.setFocusableInTouchMode(true);
+            errorText.requestFocus();
+
         }else if(spGgTipoDoc.getSelectedItemPosition()!=0 && spGgTipoDoc.getSelectedItemPosition()!=7 && titGgNumeroDoc.getText().toString().trim().equals("")){
             titGgNumeroDoc.setError("Ingrese un numero de documento");
             titGgNumeroDoc.requestFocus();
@@ -707,12 +733,15 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
             if (!titGgSegundoNombre.getText().toString().trim().equals("")){
                 gota.setSegundoNombre(titGgSegundoNombre.getText().toString().trim());
             }
-            gota.setEstado_sync(1);
             gota.setFechaFiebre(fechaFiebre.getText().toString().trim());
             gota.setFechaToma(fechaToma.getText().toString().trim());
             gota.setDireccion(tvGgDescripcion.getText().toString().trim());
             gota.setFechaHoraReg(fecha);
-            gota.setEsPc(1);
+            if(gota.getEstado_sync()==0 ){
+                gota.setEstado_sync(2);
+            }else if(gota.getEstado_sync()==3){
+                gota.setEstado_sync(1);
+            }
             gota.setTipoProcedencia(1);
             gota.setIdE6(Integer.parseInt(e6));
             gota.setAnio(Integer.parseInt(anio));
@@ -732,9 +761,11 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
             if (!titGgResponsable.getText().toString().trim().equals("")){
                 gota.setResponsable(titGgResponsable.getText().toString().trim());
             }
+            long idEstablecimiento = ucsfs.get(spUcsfReferente.getSelectedItemPosition()-1).getId();
+            gota.setIdEstablecimientoArea((int) idEstablecimiento);
             gota.setIdSemanaEpidemiologica(semanaActual);
             gota.setIdVectores("N/A");
-            gotaGruesaDao.save(gota);
+            gotaGruesaDao.update(gota);
             int semanaVolver = gota.getIdSemanaEpidemiologica();
             Toast.makeText(getApplicationContext(),"Se guardo con exito",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), DetalleSemanaGotaGruesa.class);

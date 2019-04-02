@@ -23,99 +23,16 @@
         android:id="@+id/linerarLayout"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_weight="0.1"
         android:background="#cde4f2"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp"
-            android:visibility="gone">
 
-            <TextView
-                android:id="@+id/textview_cantidad_km"
-                android:layout_width="wrap_content"
-
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Radio de la zona"
-                android:textAllCaps="true" />
-
-            <Spinner
-                android:id="@+id/spinner_cantidad_km"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/textview_cantidad_km"
-            android:background="#000000"
-            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp"
-            android:visibility="gone">
 
-            <TextView
-                android:id="@+id/textview_zoom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Zoom Min"
-                android:textAllCaps="true" />
-
-            <Spinner
-                android:id="@+id/spinner_min_zoom"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content" />
-
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/textview_cantidad_km"
-            android:background="#000000"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/textview_zoom_max"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Zoom Max"
-                android:textAllCaps="true" />
-
-            <Spinner
-                android:id="@+id/spinner_max_zoom"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="5dp">
 
@@ -138,10 +55,20 @@
                 android:textSize="10dp" />
         </LinearLayout>
 
-        <Space
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/msgmap"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="30dp"
+                android:textColor="@color/colorAccent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/imSaveMap"

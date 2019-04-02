@@ -139,6 +139,7 @@ public class MapOfflineActivity extends FragmentActivity
                 tvzoom_descarga.setText(String.valueOf(zoom)+ "/15 ");
             }
         });
+
     }
 
     @Override
@@ -201,25 +202,7 @@ public class MapOfflineActivity extends FragmentActivity
         }
     }
 
-    public void addPolin() {
-        // Instantiates a new Polyline object and adds points to define a rectangle
-        PolylineOptions rectOptions = new PolylineOptions()
-                .add(new LatLng(13.743664, -90.131320))
-                .add(new LatLng(13.833092, -90.112246))
-                .add(new LatLng(14.061549, -89.834857))
-                .add(new LatLng(14.034928, -89.735845))
-                .add(new LatLng(13.976264, -89.698708))
-                .add(new LatLng(13.902913, -89.733020))  // North of the previous point, but at the same longitude
-                .add(new LatLng(13.888216, -89.785212))  // Same latitude, and 30km to the west
-                .add(new LatLng(13.836221, -89.774186))  // Same longitude, and 16km to the south
-                .add(new LatLng(13.664136, -89.837223))  // Same longitude, and 16km to the south
-                .add(new LatLng(13.703732, -89.919153))  // Same longitude, and 16km to the south
-                .add(new LatLng(13.665015, -89.956200))  // Same longitude, and 16km to the south
-                .add(new LatLng(13.743664, -90.131320)); // Closes the polyline.
 
-// Get back the mutable Polyline
-        Polyline polyline = mMap.addPolyline(rectOptions);
-    }
 
     public int countPoint() {
         return mapDatabase.countPoint();

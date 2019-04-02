@@ -125,6 +125,17 @@ public class ListaCriaderoMapa extends AppCompatActivity implements OnMapReadyCa
                 return false;
             }
         });
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                float maxZoom = 13.0f;
+                float zoom = mMap.getCameraPosition().zoom;
+                if (zoom>maxZoom){
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(maxZoom));
+
+                }
+            }
+        });
 
 
     }

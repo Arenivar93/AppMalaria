@@ -404,12 +404,17 @@ public class SettingActivity extends AppCompatActivity {
         claDao.insert(cla);
     }
     public void saveEstClave(long id, long idClave,long idEstablecimiento){
-        EstablecimientoClaveDao claDao = daoSession.getEstablecimientoClaveDao();
-        EstablecimientoClave cla = new EstablecimientoClave();
-        cla.setId(id);
-        cla.setIdClave(idClave);
-        cla.setIdEstablecimiento(idEstablecimiento);
-        claDao.insert(cla);
+        try {
+            EstablecimientoClaveDao claDao = daoSession.getEstablecimientoClaveDao();
+            EstablecimientoClave cla = new EstablecimientoClave();
+            cla.setId(id);
+            cla.setIdClave(idClave);
+            cla.setIdEstablecimiento(idEstablecimiento);
+            claDao.insert(cla);
+            Log.i("eess",String.valueOf(idEstablecimiento+"-"+idClave));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     /**
      *peticion de token al servidor,si la respuesta es corresta iniciara los metodos que suben los datos
@@ -472,13 +477,13 @@ public class SettingActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "Solicitando Datos al Servidor, espere...", Toast.LENGTH_SHORT).show();
            String imei = getIMEINumber();
+           Log.i("imei",imei);
             String url = "http://malaria-dev.salud.gob.sv/api/catalogos?imei="+imei;
             RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-
                             try {
                                 JSONObject jsonObject = new JSONObject(response);
                                 saveDowloadedCat e = new saveDowloadedCat();
@@ -510,7 +515,7 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
 
-    private class saveDowloadedCat extends AsyncTask<JSONObject, Integer, Boolean> {
+    private class saveDowloadedCat extends AsyncTask<JSONObject, Integer, Integer> {
 
         int num = 0;
 
@@ -526,7 +531,7 @@ public class SettingActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(JSONObject... jsonObjects) {
+        protected Integer doInBackground(JSONObject... jsonObjects) {
 
             try {
                 JSONObject jsTotal       = jsonObjects[0];
@@ -550,6 +555,9 @@ public class SettingActivity extends AppCompatActivity {
                 JSONArray jaColvolClave  = jsTotal.getJSONArray("colvolClave");
                 JSONArray jaEstClave     = jsTotal.getJSONArray("estClave");
                // JSONArray jsTotal22      = jsTotal.getJSONArray("total");
+                if (jaTablet.length()==0){
+                    return 2;
+                }
                 for (int i = 0; i < jaPaises.length(); i++) {
                     JSONObject joPais = jaPaises.getJSONObject(i);
                     saveCoutry(joPais.getLong("id"), joPais.getString("nombre"), joPais.getInt("activo"));
@@ -733,13 +741,14 @@ public class SettingActivity extends AppCompatActivity {
                 }
                 num++;
                 publishProgress(num);
+                return 1;
 
             } catch (Exception e) {
                 getApplicationContext().deleteDatabase("malaria");
                 e.printStackTrace();
-                return false;
+                return 0;
             }
-            return true;
+
 
         }
 
@@ -753,13 +762,15 @@ public class SettingActivity extends AppCompatActivity {
 
 
         @Override
-        protected void onPostExecute(Boolean resultado) {
+        protected void onPostExecute(Integer resultado) {
             //super.onPostExecute(aVoid);
-            if (resultado) {
+            if (resultado==1) {
                 Toast.makeText(getBaseContext(), "Descarga de datos con exito", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
                 finish();
+            }else if(resultado==2){
+                Toast.makeText(getBaseContext(), "Dispositivo no registrado para usar esta aplicacion", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getBaseContext(), "Ha ocurrido un error, Reinicia la App e intenta de nuevo", Toast.LENGTH_SHORT).show();
             }

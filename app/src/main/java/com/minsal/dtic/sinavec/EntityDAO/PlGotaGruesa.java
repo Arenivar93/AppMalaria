@@ -63,6 +63,7 @@ public class PlGotaGruesa {
     private String numeroDocIdePaciente;
     private String idDocIdePaciente;
     private String fechaNacimiento;
+    private Integer idEstablecimientoArea;
     private long idTablet;
     private long idSibasi;
     private long idCaserio;
@@ -133,7 +134,7 @@ public class PlGotaGruesa {
     }
 
     @Generated
-    public PlGotaGruesa(Long id, int idE6, int idSemanaEpidemiologica, int idSexo, int idEstado, int idUsuarioMod, int busquedaActiva, String primerNombre, int edad, String direccion, String fechaFiebre, String fechaToma, String fechaHoraReg, String fechaHoraMod, String fecha, int esPc, int tipoProcedencia, int anio, String idVectores, int extranjero, int sospecha, int idLabLectura, String detalleLectura, int estado_sync, int unidadEdad, String responsable, String segundoNombre, String primerApellido, String segundoApellido, String numeroDocIdePaciente, String idDocIdePaciente, String fechaNacimiento, long idTablet, long idSibasi, long idCaserio, long idUsuarioReg, long idClave, long idPais, long idResultado) {
+    public PlGotaGruesa(Long id, int idE6, int idSemanaEpidemiologica, int idSexo, int idEstado, int idUsuarioMod, int busquedaActiva, String primerNombre, int edad, String direccion, String fechaFiebre, String fechaToma, String fechaHoraReg, String fechaHoraMod, String fecha, int esPc, int tipoProcedencia, int anio, String idVectores, int extranjero, int sospecha, int idLabLectura, String detalleLectura, int estado_sync, int unidadEdad, String responsable, String segundoNombre, String primerApellido, String segundoApellido, String numeroDocIdePaciente, String idDocIdePaciente, String fechaNacimiento, Integer idEstablecimientoArea, long idTablet, long idSibasi, long idCaserio, long idUsuarioReg, long idClave, long idPais, long idResultado) {
         this.id = id;
         this.idE6 = idE6;
         this.idSemanaEpidemiologica = idSemanaEpidemiologica;
@@ -166,6 +167,7 @@ public class PlGotaGruesa {
         this.numeroDocIdePaciente = numeroDocIdePaciente;
         this.idDocIdePaciente = idDocIdePaciente;
         this.fechaNacimiento = fechaNacimiento;
+        this.idEstablecimientoArea = idEstablecimientoArea;
         this.idTablet = idTablet;
         this.idSibasi = idSibasi;
         this.idCaserio = idCaserio;
@@ -450,6 +452,14 @@ public class PlGotaGruesa {
 
     public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public Integer getIdEstablecimientoArea() {
+        return idEstablecimientoArea;
+    }
+
+    public void setIdEstablecimientoArea(Integer idEstablecimientoArea) {
+        this.idEstablecimientoArea = idEstablecimientoArea;
     }
 
     public long getIdTablet() {

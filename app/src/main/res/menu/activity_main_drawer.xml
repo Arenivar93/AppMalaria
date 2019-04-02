@@ -27,15 +27,12 @@
             <item
                 android:id="@+id/subir_datos"
                 android:icon="@drawable/ic_cambiar"
-                android:title="Sincronixar Datos Malaria" />
+                android:title="Sincronizar Datos Malaria" />
             <item
                 android:id="@+id/descargar_mapa"
                 android:icon="@drawable/ic_cambiar"
                 android:title="Descargar Mapa" />
-            <item
-                android:id="@+id/ver_mapa"
-                android:icon="@drawable/ic_cambiar"
-                android:title="ver mapa" />
+
         </menu>
     </item>
 

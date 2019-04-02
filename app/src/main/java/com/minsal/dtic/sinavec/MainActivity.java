@@ -164,10 +164,7 @@ public class MainActivity extends AppCompatActivity
             Intent map = new Intent(getApplicationContext(),MapOfflineActivity.class);
             startActivity(map);
         }
-        else if (id == R.id.ver_mapa) {
-            Intent map = new Intent(getApplicationContext(),VerMapsOffline.class);
-            startActivity(map);
-        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

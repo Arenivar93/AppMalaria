@@ -118,9 +118,9 @@ public class Validator {
     public static boolean hasSaveMap(Context c) {
         SQLiteMapCache db = new SQLiteMapCache(c);
         int cantidad = db.countTiles();
-        Log.i("**",String.valueOf(cantidad));
+        Log.i("*ver*",String.valueOf(cantidad));
 
-        return db.countTiles() >= 300;
+        return db.countTiles() >= 100;
     }
 
     /**

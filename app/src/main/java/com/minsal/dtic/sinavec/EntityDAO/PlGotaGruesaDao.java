@@ -57,13 +57,14 @@ public class PlGotaGruesaDao extends AbstractDao<PlGotaGruesa, Long> {
         public final static Property NumeroDocIdePaciente = new Property(29, String.class, "numeroDocIdePaciente", false, "NUMERO_DOC_IDE_PACIENTE");
         public final static Property IdDocIdePaciente = new Property(30, String.class, "idDocIdePaciente", false, "ID_DOC_IDE_PACIENTE");
         public final static Property FechaNacimiento = new Property(31, String.class, "fechaNacimiento", false, "FECHA_NACIMIENTO");
-        public final static Property IdTablet = new Property(32, long.class, "idTablet", false, "ID_TABLET");
-        public final static Property IdSibasi = new Property(33, long.class, "idSibasi", false, "ID_SIBASI");
-        public final static Property IdCaserio = new Property(34, long.class, "idCaserio", false, "ID_CASERIO");
-        public final static Property IdUsuarioReg = new Property(35, long.class, "idUsuarioReg", false, "ID_USUARIO_REG");
-        public final static Property IdClave = new Property(36, long.class, "idClave", false, "ID_CLAVE");
-        public final static Property IdPais = new Property(37, long.class, "idPais", false, "ID_PAIS");
-        public final static Property IdResultado = new Property(38, long.class, "idResultado", false, "ID_RESULTADO");
+        public final static Property IdEstablecimientoArea = new Property(32, Integer.class, "idEstablecimientoArea", false, "ID_ESTABLECIMIENTO_AREA");
+        public final static Property IdTablet = new Property(33, long.class, "idTablet", false, "ID_TABLET");
+        public final static Property IdSibasi = new Property(34, long.class, "idSibasi", false, "ID_SIBASI");
+        public final static Property IdCaserio = new Property(35, long.class, "idCaserio", false, "ID_CASERIO");
+        public final static Property IdUsuarioReg = new Property(36, long.class, "idUsuarioReg", false, "ID_USUARIO_REG");
+        public final static Property IdClave = new Property(37, long.class, "idClave", false, "ID_CLAVE");
+        public final static Property IdPais = new Property(38, long.class, "idPais", false, "ID_PAIS");
+        public final static Property IdResultado = new Property(39, long.class, "idResultado", false, "ID_RESULTADO");
     }
 
     private DaoSession daoSession;
@@ -114,13 +115,14 @@ public class PlGotaGruesaDao extends AbstractDao<PlGotaGruesa, Long> {
                 "\"NUMERO_DOC_IDE_PACIENTE\" TEXT," + // 29: numeroDocIdePaciente
                 "\"ID_DOC_IDE_PACIENTE\" TEXT," + // 30: idDocIdePaciente
                 "\"FECHA_NACIMIENTO\" TEXT," + // 31: fechaNacimiento
-                "\"ID_TABLET\" INTEGER NOT NULL ," + // 32: idTablet
-                "\"ID_SIBASI\" INTEGER NOT NULL ," + // 33: idSibasi
-                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 34: idCaserio
-                "\"ID_USUARIO_REG\" INTEGER NOT NULL ," + // 35: idUsuarioReg
-                "\"ID_CLAVE\" INTEGER NOT NULL ," + // 36: idClave
-                "\"ID_PAIS\" INTEGER NOT NULL ," + // 37: idPais
-                "\"ID_RESULTADO\" INTEGER NOT NULL );"); // 38: idResultado
+                "\"ID_ESTABLECIMIENTO_AREA\" INTEGER," + // 32: idEstablecimientoArea
+                "\"ID_TABLET\" INTEGER NOT NULL ," + // 33: idTablet
+                "\"ID_SIBASI\" INTEGER NOT NULL ," + // 34: idSibasi
+                "\"ID_CASERIO\" INTEGER NOT NULL ," + // 35: idCaserio
+                "\"ID_USUARIO_REG\" INTEGER NOT NULL ," + // 36: idUsuarioReg
+                "\"ID_CLAVE\" INTEGER NOT NULL ," + // 37: idClave
+                "\"ID_PAIS\" INTEGER NOT NULL ," + // 38: idPais
+                "\"ID_RESULTADO\" INTEGER NOT NULL );"); // 39: idResultado
     }
 
     /** Drops the underlying database table. */
@@ -204,13 +206,18 @@ public class PlGotaGruesaDao extends AbstractDao<PlGotaGruesa, Long> {
         if (fechaNacimiento != null) {
             stmt.bindString(32, fechaNacimiento);
         }
-        stmt.bindLong(33, entity.getIdTablet());
-        stmt.bindLong(34, entity.getIdSibasi());
-        stmt.bindLong(35, entity.getIdCaserio());
-        stmt.bindLong(36, entity.getIdUsuarioReg());
-        stmt.bindLong(37, entity.getIdClave());
-        stmt.bindLong(38, entity.getIdPais());
-        stmt.bindLong(39, entity.getIdResultado());
+ 
+        Integer idEstablecimientoArea = entity.getIdEstablecimientoArea();
+        if (idEstablecimientoArea != null) {
+            stmt.bindLong(33, idEstablecimientoArea);
+        }
+        stmt.bindLong(34, entity.getIdTablet());
+        stmt.bindLong(35, entity.getIdSibasi());
+        stmt.bindLong(36, entity.getIdCaserio());
+        stmt.bindLong(37, entity.getIdUsuarioReg());
+        stmt.bindLong(38, entity.getIdClave());
+        stmt.bindLong(39, entity.getIdPais());
+        stmt.bindLong(40, entity.getIdResultado());
     }
 
     @Override
@@ -288,13 +295,18 @@ public class PlGotaGruesaDao extends AbstractDao<PlGotaGruesa, Long> {
         if (fechaNacimiento != null) {
             stmt.bindString(32, fechaNacimiento);
         }
-        stmt.bindLong(33, entity.getIdTablet());
-        stmt.bindLong(34, entity.getIdSibasi());
-        stmt.bindLong(35, entity.getIdCaserio());
-        stmt.bindLong(36, entity.getIdUsuarioReg());
-        stmt.bindLong(37, entity.getIdClave());
-        stmt.bindLong(38, entity.getIdPais());
-        stmt.bindLong(39, entity.getIdResultado());
+ 
+        Integer idEstablecimientoArea = entity.getIdEstablecimientoArea();
+        if (idEstablecimientoArea != null) {
+            stmt.bindLong(33, idEstablecimientoArea);
+        }
+        stmt.bindLong(34, entity.getIdTablet());
+        stmt.bindLong(35, entity.getIdSibasi());
+        stmt.bindLong(36, entity.getIdCaserio());
+        stmt.bindLong(37, entity.getIdUsuarioReg());
+        stmt.bindLong(38, entity.getIdClave());
+        stmt.bindLong(39, entity.getIdPais());
+        stmt.bindLong(40, entity.getIdResultado());
     }
 
     @Override
@@ -343,13 +355,14 @@ public class PlGotaGruesaDao extends AbstractDao<PlGotaGruesa, Long> {
             cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29), // numeroDocIdePaciente
             cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30), // idDocIdePaciente
             cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31), // fechaNacimiento
-            cursor.getLong(offset + 32), // idTablet
-            cursor.getLong(offset + 33), // idSibasi
-            cursor.getLong(offset + 34), // idCaserio
-            cursor.getLong(offset + 35), // idUsuarioReg
-            cursor.getLong(offset + 36), // idClave
-            cursor.getLong(offset + 37), // idPais
-            cursor.getLong(offset + 38) // idResultado
+            cursor.isNull(offset + 32) ? null : cursor.getInt(offset + 32), // idEstablecimientoArea
+            cursor.getLong(offset + 33), // idTablet
+            cursor.getLong(offset + 34), // idSibasi
+            cursor.getLong(offset + 35), // idCaserio
+            cursor.getLong(offset + 36), // idUsuarioReg
+            cursor.getLong(offset + 37), // idClave
+            cursor.getLong(offset + 38), // idPais
+            cursor.getLong(offset + 39) // idResultado
         );
         return entity;
     }
@@ -388,13 +401,14 @@ public class PlGotaGruesaDao extends AbstractDao<PlGotaGruesa, Long> {
         entity.setNumeroDocIdePaciente(cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29));
         entity.setIdDocIdePaciente(cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30));
         entity.setFechaNacimiento(cursor.isNull(offset + 31) ? null : cursor.getString(offset + 31));
-        entity.setIdTablet(cursor.getLong(offset + 32));
-        entity.setIdSibasi(cursor.getLong(offset + 33));
-        entity.setIdCaserio(cursor.getLong(offset + 34));
-        entity.setIdUsuarioReg(cursor.getLong(offset + 35));
-        entity.setIdClave(cursor.getLong(offset + 36));
-        entity.setIdPais(cursor.getLong(offset + 37));
-        entity.setIdResultado(cursor.getLong(offset + 38));
+        entity.setIdEstablecimientoArea(cursor.isNull(offset + 32) ? null : cursor.getInt(offset + 32));
+        entity.setIdTablet(cursor.getLong(offset + 33));
+        entity.setIdSibasi(cursor.getLong(offset + 34));
+        entity.setIdCaserio(cursor.getLong(offset + 35));
+        entity.setIdUsuarioReg(cursor.getLong(offset + 36));
+        entity.setIdClave(cursor.getLong(offset + 37));
+        entity.setIdPais(cursor.getLong(offset + 38));
+        entity.setIdResultado(cursor.getLong(offset + 39));
      }
     
     @Override

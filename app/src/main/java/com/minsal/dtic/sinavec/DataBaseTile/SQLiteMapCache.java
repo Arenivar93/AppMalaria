@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.minsal.dtic.sinavec.MainActivity;
@@ -20,9 +21,11 @@ public class SQLiteMapCache extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "MapsTitle.db";
     public static final String TAG = ".dataBaseTile";
+    Context context;
     int depto = MainActivity.depto;
     public SQLiteMapCache(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context= context;
     }
 
     private static final String INTEGER_TYPE = " INTEGER";
@@ -71,7 +74,7 @@ public class SQLiteMapCache extends SQLiteOpenHelper {
 
     }
     public byte[] getTile(int x, int y, int z) {
-        Log.i(TAG, "Se esta solicitando en Tile X: " + x + " Y: " + y + " Z: " + z);
+        Log.i(TAG, "Se esta solicitando aqui en Tile X: " + x + " Y: " + y + " Z: " + z);
         SQLiteDatabase db = this.getReadableDatabase();
         String[] resultComlumns = {
                 Esquema.Tile.COLUMN_NAME_X,
@@ -111,7 +114,9 @@ public class SQLiteMapCache extends SQLiteOpenHelper {
 
                 //Obliga la descarga
                 if (date.getTime() < hoy.getTime()) {
-                    Log.d("AAA", "Supero la cantidad de tiempo en cache");
+                    deleteAllTile();
+                    Log.d("AAA", "Supero la cantidad de tiempo en cache 30 d");
+                    Toast.makeText(context,"El mapa ha vencido por favor descargue uno nuevo",Toast.LENGTH_LONG).show();
                     return null;
                 }
                 if (titleImage == null) {

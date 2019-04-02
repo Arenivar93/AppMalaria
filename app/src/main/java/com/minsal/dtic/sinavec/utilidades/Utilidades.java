@@ -2,6 +2,7 @@ package com.minsal.dtic.sinavec.utilidades;
 
 import android.database.Cursor;
 import android.util.Log;
+import android.widget.ListView;
 
 import com.minsal.dtic.sinavec.EntityDAO.ColvolCalve;
 import com.minsal.dtic.sinavec.EntityDAO.ColvolCalveDao;
@@ -274,7 +275,7 @@ public class Utilidades {
     }
 
     public int deptoUser(String username) {
-        Log.d("Error1",username);
+        Log.d("user",username);
         CtlDepartamentoDao departamentoDao = daoSession.getCtlDepartamentoDao();
         String sqlQUERY = "SELECT d.id FROM ctl_departamento d " +
                 "INNER JOIN ctl_municipio m on (m.id_departamento = d.id)\n" +
@@ -723,28 +724,28 @@ public class Utilidades {
         return listaPais;
     }
 
-    /*public List<CtlPlCriadero> loadCriaderosMap( int idMunicipio) {
+    public List<CtlEstablecimiento> getUscf(long idCaserio) {
+        long idMunicipio = getIdMunicipio(idCaserio);
+        List<CtlEstablecimiento> lista = daoSession.getCtlEstablecimientoDao()
+                .queryBuilder().where(CtlEstablecimientoDao.Properties.IdMunicipio.eq(idMunicipio)).list();
+        return  lista;
 
-        CtlPlCriaderoDao criaderoDao = daoSession.getCtlPlCriaderoDao();
 
-        criaderosMap = new ArrayList<CtlPlCriadero>();
-        if (idMunicipio>0){
-            QueryBuilder<CtlPlCriadero> qb = criaderoDao.queryBuilder().where(CtlPlCriaderoDao.Properties.Latitud.isNotNull()).where(CtlPlCriaderoDao.Properties.Estado_sync.notEq(1));
-            Join ctlCaserio = qb.join(CtlPlCriaderoDao.Properties.IdCaserio,CtlCaserio.class);
-            Join ctlCanton = qb.join(ctlCaserio,CtlCaserioDao.Properties.IdCanton,
-                    CtlCanton.class,CtlCantonDao.Properties.Id);
-            Join ctlMunicipio = qb.join(ctlCanton,CtlCantonDao.Properties.IdMunicipio,
-                    CtlMunicipio.class,CtlMunicipioDao.Properties.Id);
-            ctlMunicipio.where(CtlMunicipioDao.Properties.Id.eq(idMunicipio));
-            criaderosMap = qb.orderAsc(CtlPlCriaderoDao.Properties.Nombre).list();
-        }else {
-            criaderosMap = criaderoDao.queryBuilder()
-                    .where(CtlPlCriaderoDao.Properties.Latitud.isNotNull()).where(CtlPlCriaderoDao.Properties.Estado_sync.notEq(1)).list();
+    }
+
+    public long getIdMunicipio(long idCaserio){
+        CtlCaserio caserio= daoSession.getCtlCaserioDao().loadByRowId(idCaserio);
+        return caserio.getCtlCanton().getCtlMunicipio().getId();
+    }
+
+    public ArrayList<String> getListaUcsf(List<CtlEstablecimiento> ucsfs) {
+        ArrayList<String> listaUcsf = new ArrayList<>();
+        listaUcsf.add("seleccione");
+        for (CtlEstablecimiento e: ucsfs){
+            listaUcsf.add(e.getNombre());
         }
-
-        return criaderosMap;
-
-    }*/
+        return listaUcsf;
+    }
 
 
 }

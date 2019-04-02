@@ -318,6 +318,17 @@ public class MapaCriaderoActivity extends AppCompatActivity implements OnMapRead
                     longitudCriadero.setText(String.valueOf(latLng.longitude));
 
                 }
+            mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+                @Override
+                public void onCameraIdle() {
+                    float maxZoom = 13.0f;
+                    float zoom = mMap.getCameraPosition().zoom;
+                    if (zoom>maxZoom){
+                        mMap.animateCamera(CameraUpdateFactory.zoomTo(maxZoom));
+
+                    }
+                }
+            });
             }
         });
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {

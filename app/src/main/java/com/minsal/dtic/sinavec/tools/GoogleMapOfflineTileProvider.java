@@ -58,7 +58,9 @@ public class GoogleMapOfflineTileProvider implements TileProvider {
             }
             if(internet && imageMap == null){
                 return NO_TILE;
+
             }
+
             imageMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] image =  stream.toByteArray();
             if(b == true ) {

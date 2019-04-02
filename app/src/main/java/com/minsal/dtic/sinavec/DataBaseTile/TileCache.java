@@ -8,10 +8,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.maps.android.SphericalUtil;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.minsal.dtic.sinavec.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -100,12 +102,14 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
     @Override
     protected synchronized void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
-        progress.setMessage("Guardando cache: " + values[0] + " / " + cantDescargar);
+        Log.i("aaaaaaa",String.valueOf(values[0]));
+        progress.setMessage("se esta Guardando cache: " + values[0] + " / " + cantDescargar);
     }
 
     @Override
     protected Void doInBackground(Object... point) {
-        cantDescargar = point.length * 1063;
+        Log.d("verrerr", String.valueOf(point.length));
+        cantDescargar = point.length * 51;
         if (point.length == 0) {
             Log.d(TAG, "No se limito el area de cache de forma adecuada");
             return null;
@@ -251,13 +255,24 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
                         byte[] image = stream.toByteArray();
                         database.saveTile(x, y, z, image);
 
+                    }else{
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                TextView txtView = (TextView) activity.findViewById(R.id.msgmap);
+                                txtView.setText("No es posible descargar la imagen de mapa, Si usa intranet vefique estar logueado en: \n  http://passthrough.fw-notify.net/static/auth_transparent.html");
+                                //Toast.makeText(activity, "No es posible descargar la imagen", Toast.LENGTH_SHORT).show();
+
+
+                            }
+                        });
                     }
                 }
             }
 
             synchronized (cantDescagado) {
                 Log.i("cantidad descarga",String.valueOf(cantDescagado));
-              //  publishProgress(cantDescagado);
+                publishProgress(cantDescagado);
                 cantDescagado++;
             }
         }

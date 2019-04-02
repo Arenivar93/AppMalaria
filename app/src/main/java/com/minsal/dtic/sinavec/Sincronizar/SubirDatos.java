@@ -322,6 +322,7 @@ public class SubirDatos extends AppCompatActivity {
             joCriaderoUpdate.put("idPais",c.getIdPais());
             joCriaderoUpdate.put("idResultado",c.getIdResultado());
             joCriaderoUpdate.put("edad",c.getEdad());
+            joCriaderoUpdate.put("idEstablecimientoArea",c.getIdEstablecimientoArea());
             jaGotas.put(joCriaderoUpdate);
         }
         return jaGotas;
@@ -653,12 +654,10 @@ public class SubirDatos extends AppCompatActivity {
                         }
                     }
                 });
-
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
-
     }
     private void sendGotaGruesa(String tkn) throws JSONException {
         JSONArray json = getInsertGotaGruesa();
@@ -687,6 +686,7 @@ public class SubirDatos extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     try {
+                                        Log.i("envio",respuestaGota);
                                         JSONArray respuesta = new JSONArray(respuestaGota);
                                        updateGotaGruesaLocal(respuesta);
                                     } catch (JSONException e) {
@@ -695,6 +695,8 @@ public class SubirDatos extends AppCompatActivity {
                                     }
                                 }
                             });
+                        }else{
+                            Log.i("fail",response.body().string());
                         }
                     }
                 });

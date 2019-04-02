@@ -237,6 +237,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
                 datos.putLong("idUsuario",idUsuario);
                 datos.putLong("idClave",colvolClave.getIdClave());
                 datos.putString("nombreColvol",colvolClave.getPlColvol().getNombre());
+                datos.putLong("idCaserioColvol",colvolClave.getPlColvol().getIdCaserio());
                 dialog.setArguments(datos);
                 dialog.show(getFragmentManager(), "dialog");
                 return false;

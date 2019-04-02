@@ -81,11 +81,13 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
     private List<CtlMunicipio> municipios;
     private List<CtlCanton> cantones;
     private List<CtlCaserio> caserios;
+    private List<CtlEstablecimiento> ucsfs;
     private ArrayList<String> listaPaises=new ArrayList<>();
     private ArrayList<String> listaDepartamentos=new ArrayList<>();
     private ArrayList<String> listaMunicipios=new ArrayList<>();
     private ArrayList<String> listaCantones=new ArrayList<>();
     private ArrayList<String> listaCaserios=new ArrayList<>();
+    private ArrayList<String> listaUcsf=new ArrayList<>();
     ArrayAdapter<String> adapterPaises;
     ArrayAdapter<String> adapterDepartamento;
     ArrayAdapter<String> adapterMunicipio;
@@ -104,6 +106,7 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
     private Spinner spGgTipoDoc;
     String nombreColvol;
     boolean banderaEdad= false;
+    Spinner spUcsfReferente;
 
     Utilidades utilidades;
     private LinearLayout linearLocal,linearExtranjero;
@@ -166,12 +169,14 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
         titGgResponsable =(TextInputEditText)v.findViewById(R.id.titGgResponsable);
         tilFechaToma = (TextInputLayout)v.findViewById(R.id.tilGgFechaToma) ;
         tilFechaFiebre = (TextInputLayout)v.findViewById(R.id.tilGgFechaInicioFiebre) ;
+        spUcsfReferente = (Spinner) v.findViewById(R.id.spUcsfReferente) ;
 
 
         idSibasi=getArguments().getLong("idSibasi");
         idTablet=getArguments().getLong("idTablet");
         idUsuario=getArguments().getLong("idUsuario");
         idClave =getArguments().getLong("idClave");
+        long idCaserio = getArguments().getLong("idCaserioColvol");
         nombreColvol =getArguments().getString("nombreColvol");
         tvGge6.setText(String.valueOf(getMaxE6()));
         laboratorios=utilidades.obtenerLaboratorios(idSibasi);
@@ -179,6 +184,12 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
         ArrayAdapter adapterTipoDoc = new ArrayAdapter(getActivity(),R.layout.support_simple_spinner_dropdown_item, MetodosGlobales.getTipoDocumento());
         spGgTipoDoc.setAdapter(adapterTipoDoc);
         spGgTipoDoc.setSelection(7);
+        ucsfs = utilidades.getUscf(idCaserio);
+        listaUcsf = utilidades.getListaUcsf(ucsfs);
+        ArrayAdapter adapterUcsf = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1,listaUcsf);
+        spUcsfReferente.setAdapter(adapterUcsf);
+
+
 
         adapterLaboratorio=new ArrayAdapter
                 (getActivity(),android.R.layout.simple_list_item_1,listaLaboratorios);
@@ -219,7 +230,7 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
                 if (valida && validatefechaHoy()){
                     saveData();
                 }else{
-                    Toast.makeText(getActivity(),"Existen errores en el formulario",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"Ingrese",Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -568,6 +579,14 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             errorText.setText("Seleccione el sexo");
             errorText.setFocusableInTouchMode(true);
             errorText.requestFocus();
+        }else if(spUcsfReferente.getSelectedItemPosition()==0){
+            TextView errorText=(TextView)spUcsfReferente.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.BLUE);
+            errorText.setText("Seleccione la UCSF del AGI)");
+            errorText.setFocusableInTouchMode(true);
+            errorText.requestFocus();
+
         }else if(spGgTipoDoc.getSelectedItemPosition()!=0 && spGgTipoDoc.getSelectedItemPosition()!=7 && titGgNumeroDoc.getText().toString().trim().equals("")){
             titGgNumeroDoc.setError("Ingrese un numero de documento");
             titGgNumeroDoc.requestFocus();
@@ -653,6 +672,8 @@ public class nuevaGotaGruesaFragment extends DialogFragment {
             gota.setIdClave(idClaveColvol);
             gota.setIdSexo(idSexo);
             gota.setIdPais(idPais);
+            long idEstablecimiento = ucsfs.get(spUcsfReferente.getSelectedItemPosition()-1).getId();
+            gota.setIdEstablecimientoArea((int) idEstablecimiento);
             gota.setIdResultado(85); // por el momento siempre sera sin resultado ya que solo son de colvol
             if (idCaserio>0){
                 gota.setIdCaserio(idCaserio);

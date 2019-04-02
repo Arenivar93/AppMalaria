@@ -76,7 +76,7 @@
                 android:layout_height="35dp"
                 android:background="#5b5efa"
                 android:layout_weight="1"
-                android:text="Estado"/>
+                android:text="Estado \n sincronizado"/>
         </LinearLayout>
         <ListView
             android:id="@+id/lvDtalleGotaSemana"

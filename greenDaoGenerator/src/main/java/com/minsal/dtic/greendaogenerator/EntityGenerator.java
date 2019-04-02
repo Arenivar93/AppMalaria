@@ -356,6 +356,7 @@ public class EntityGenerator {
         plGotaGruesa.addStringProperty("numeroDocIdePaciente");
         plGotaGruesa.addStringProperty("idDocIdePaciente");
         plGotaGruesa.addStringProperty("fechaNacimiento");
+        plGotaGruesa.addIntProperty("idEstablecimientoArea");
         Property idTabletGota=plGotaGruesa.addLongProperty("idTablet").notNull().getProperty();
         Property idSibasiGota=plGotaGruesa.addLongProperty("idSibasi").notNull().getProperty();
         Property idCaserioGota=plGotaGruesa.addLongProperty("idCaserio").notNull().getProperty();
