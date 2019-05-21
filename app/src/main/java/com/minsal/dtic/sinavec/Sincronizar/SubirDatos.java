@@ -73,6 +73,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -80,6 +82,12 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 
+/**Los estados de sincronizacion son:
+ * 0=> sincronizado
+ * 1=> nuevo registro
+ * 2=> actualizacion
+ * 3=> error
+ * **/
 public class SubirDatos extends AppCompatActivity {
     private DaoSession daoSession;
     private SharedPreferences pref;
@@ -92,6 +100,7 @@ public class SubirDatos extends AppCompatActivity {
     long idSibasi;
     int idUltimoReg;
     int progres=0;
+
 
 
     @Override
@@ -509,7 +518,7 @@ public class SubirDatos extends AppCompatActivity {
                     tvCriaderos.setText(String.format("Criaderos nuevos para sincronizar: %d ",countCridero));
                     tvColvol.setText(String.format("ColVol actualizados para sincronizar: %d ",counColvolUpdate));
                     tvSeguimientos.setText(String.format("Seguimiento botiquin listos para sincronizarse: %d", countSeguimiento));
-                    String url = "http://malaria-dev.salud.gob.sv/api/login_check";
+                    String url = "http://malaria.salud.gob.sv/api/login_check";
                     RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                             new Response.Listener<String>() {
@@ -570,7 +579,7 @@ public class SubirDatos extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Lo sentimos no tiene conexion a Internet", Toast.LENGTH_SHORT).show();
 
         } else {
-                String url = "http://malaria-dev.salud.gob.sv/api/login_check";
+                String url = "http://malaria.salud.gob.sv/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
@@ -621,7 +630,7 @@ public class SubirDatos extends AppCompatActivity {
         progres++;
         incrementProgres(progres);
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/api/capturas";
+            String url = "http://malaria.salud.gob.sv/api/capturas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -664,7 +673,7 @@ public class SubirDatos extends AppCompatActivity {
         progres++;
         incrementProgres(progres);
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/api/gotas";
+            String url = "http://malaria.salud.gob.sv/api/gotas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -753,7 +762,7 @@ public class SubirDatos extends AppCompatActivity {
         progres++;
         incrementProgres(progres);
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/api/pesquisas";
+            String url = "http://malaria.salud.gob.sv/api/pesquisas";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -798,7 +807,7 @@ public class SubirDatos extends AppCompatActivity {
         progres++;
         incrementProgres(progres);
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/api/seguimientos";
+            String url = "http://malaria.salud.gob.sv/api/seguimientos";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -842,7 +851,7 @@ public class SubirDatos extends AppCompatActivity {
         JSONArray json = getInsetCriaderos();
         progres++;
         incrementProgres(progres);
-        String url = "http://malaria-dev.salud.gob.sv/api/criaderos";
+        String url = "http://malaria.salud.gob.sv/api/criaderos";
         RequestBody body = RequestBody.create(JSON, json.toString());
         final okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -891,7 +900,7 @@ public class SubirDatos extends AppCompatActivity {
         progres++;
         incrementProgres(progres);
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/api/criaderos";
+            String url = "http://malaria.salud.gob.sv/api/criaderos";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -934,7 +943,7 @@ public class SubirDatos extends AppCompatActivity {
         progres++;
         incrementProgres(progres);
         if (json.length()>0){
-            String url = "http://malaria-dev.salud.gob.sv/api/colvol";
+            String url = "http://malaria.salud.gob.sv/api/colvol";
             RequestBody body = RequestBody.create(JSON, json.toString());
             final okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(url)
@@ -986,7 +995,7 @@ public class SubirDatos extends AppCompatActivity {
     private void bajarBitacora(String tkn){
         idUltimoReg = ultimoRegistroBajado();
         long maxIdUSer= getMaxIdUser();
-        String url = "http://malaria-dev.salud.gob.sv/api/bitacora?accion" +
+        String url = "http://malaria.salud.gob.sv/api/bitacora?accion" +
                 "=cambiosTablet&idTablet="+idTablet+"&idSibasi="+idSibasi+"&idUltimoReg" +
                 "="+idUltimoReg+"&maxIdUSer="+maxIdUSer;
         final okhttp3.Request request = new okhttp3.Request.Builder()

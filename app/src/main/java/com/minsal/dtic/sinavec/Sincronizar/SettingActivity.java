@@ -81,6 +81,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class SettingActivity extends AppCompatActivity {
@@ -105,6 +107,8 @@ public class SettingActivity extends AppCompatActivity {
         username = "tablet"; // no se pueden usar las sharedpreferences ya que es la primera vez que se utiliza la tabelt
         password = "tablet";
         instance = this;
+
+
         getImeiPermission();
         //este evento debe ocurrir solo cuando se instala la aplicacioj por primera vez o por si se borra la base
         btnSetting.setOnClickListener(new View.OnClickListener() {
@@ -426,7 +430,7 @@ public class SettingActivity extends AppCompatActivity {
 
         } else {
             //antes de hacer una peticion vamos a comprobar que hay registros para enviar
-            String url = "http://malaria-dev.salud.gob.sv/api/login_check";
+            String url = "http://malaria.salud.gob.sv/api/login_check";
                 RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
@@ -478,7 +482,7 @@ public class SettingActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Solicitando Datos al Servidor, espere...", Toast.LENGTH_SHORT).show();
            String imei = getIMEINumber();
            Log.i("imei",imei);
-            String url = "http://malaria-dev.salud.gob.sv/api/catalogos?imei="+imei;
+            String url = "http://malaria.salud.gob.sv/api/catalogos?imei="+imei;
             RequestQueue cola = Volley.newRequestQueue(getApplicationContext());
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {

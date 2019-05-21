@@ -37,6 +37,7 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
     private SQLiteMapCache database;
     private Activity activity;
     private ExecutorService executorService;
+    boolean verificarImagen = true;
 
     /**
      * Plantilla de URL de descarga de los Tiles obtenidos desde internet
@@ -108,7 +109,7 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
 
     @Override
     protected Void doInBackground(Object... point) {
-        Log.d("verrerr", String.valueOf(point.length));
+        Log.d("ver", String.valueOf(point.length));
         cantDescargar = point.length * 51;
         if (point.length == 0) {
             Log.d(TAG, "No se limito el area de cache de forma adecuada");
@@ -116,24 +117,40 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
         }
 
         cantDescagado = 0;
+        boolean salir = false;
 
         executorService = Executors.newFixedThreadPool(point.length);
         for (int i = 0; i < point.length; i++) {
+            Log.i("ver2", "primer for");
             LatLngBounds limitesGPS = toBounds((LatLng) point[i]);
             //Descarga las imagenes del papa para cada zoom que se desea tenear
             for (int z = minZoom; z <= maxZoom; z++) {
-                Log.d(TAG, "Descargando zoom---- " + z);
+                Log.i("ver3", "segundo for");
                 int limeteXY1[] = getTile(limitesGPS.northeast, z);
                 int limeteXY2[] = getTile(limitesGPS.southwest, z);
-
                 for (int x = limeteXY2[0]; x <= limeteXY1[0]; x++) {
+                    Log.i("ver3", "tercer for");
                     for (int y = limeteXY1[1]; y <= limeteXY2[1]; y++) {
+                        if (verificarImagen) {
+                            Bitmap imageMap = getBitmapFromURL(x, y, z);
+                            if (imageMap == null) {
+                                salir = true;
+                                Log.i("nooo", "No  hay imagen");
+
+                            } else {
+                                Log.i("Sii", "si  hay imagen");
+                                verificarImagen = false;
+                            }
+                        }
                         Log.d(TAG, x + " " + y + " " + z);
                         Runnable downloader = new SaveCache(x, y, z);
+
                         executorService.execute(downloader);
+
                     }
                 }
             }
+            if (salir){break;}
         }
 
         executorService.shutdown();
@@ -244,13 +261,12 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
          */
         @Override
         public void run() {
-
             synchronized (database) {
                 if (database.getTile(x, y, z) == null) {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     Bitmap imageMap = getBitmapFromURL(x, y, z);
-
                     if (imageMap != null) {
+
                         imageMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                         byte[] image = stream.toByteArray();
                         database.saveTile(x, y, z, image);
@@ -259,10 +275,9 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+
                                 TextView txtView = (TextView) activity.findViewById(R.id.msgmap);
                                 txtView.setText("No es posible descargar la imagen de mapa, Si usa intranet vefique estar logueado en: \n  http://passthrough.fw-notify.net/static/auth_transparent.html");
-                                //Toast.makeText(activity, "No es posible descargar la imagen", Toast.LENGTH_SHORT).show();
-
 
                             }
                         });
@@ -275,6 +290,7 @@ public class TileCache extends AsyncTask<Object, Integer, Void> {
                 publishProgress(cantDescagado);
                 cantDescagado++;
             }
+
         }
     }
 }

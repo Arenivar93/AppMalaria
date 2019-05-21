@@ -95,12 +95,18 @@ public class ListaColvolMapa extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_NONE); // tiene que se type none para que funcione el de la BD
         mMap.getUiSettings().setZoomControlsEnabled(true);
         moverCamaraDepartamento();
         //solo preparamos el mapa luego mostraremos los puntos al presionar el botin buscar
-            // se muestra el mapa que esta en la base de datos
-        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
+        // se muestra el mapa que esta en la base de datos
+        if (!Validator.isNetDisponible(this)){
+            mMap.setMapType(GoogleMap.MAP_TYPE_NONE); // tiene que se type none para que funcione el de la BD
+            mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
+
+        }else{
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        }
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -135,7 +141,7 @@ public class ListaColvolMapa extends AppCompatActivity implements OnMapReadyCall
             for (PlColvol c: colvols){
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(Double.parseDouble(c.getLatitud()), Double.parseDouble(c.getLongitud())))
-                        .title(c.getNombre())).setTag(c);
+                        .title(c.getNombre()).snippet("sdf")).setTag(c);
             }
             tvCountColvol.setText("Total de Colvol encontrados:"+String.valueOf(colvols.size()));
         }else{

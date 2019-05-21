@@ -411,6 +411,12 @@ public class GotaGruesaEditActivity extends AppCompatActivity {
         });
         try {
              gota = daoSession.getPlGotaGruesaDao().loadByRowId(idRegistro);
+             if (gota.getEstado_sync()==0){//si ya esta sincronizado
+                 btnGuardar.setVisibility(View.INVISIBLE);
+                 btnCancelar.setVisibility(View.INVISIBLE);
+                 Toast.makeText(getApplicationContext(),"No se puede editar una Gota Gruesa ya sincronizada",Toast.LENGTH_LONG).show();
+
+             }
             titGgNombre.setText(gota.getPrimerNombre());
             titGgPrimerApellido.setText(gota.getPrimerApellido());
             titGgEdad.setText(String.valueOf(gota.getEdad()));

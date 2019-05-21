@@ -52,7 +52,7 @@ public class MapOfflineActivity extends FragmentActivity
     private HashMap<Circle, LatLng> areas;
     private SQLiteMapCache mapDatabase;
     List<LatLng> coordenadaPoligono;
-    TextView tvzoom_descarga;
+    TextView tvzoom_descarga,msgmap;
     ImageView imSaveMap,imcancelar;
 
     @Override
@@ -65,6 +65,7 @@ public class MapOfflineActivity extends FragmentActivity
         imSaveMap = (ImageView) findViewById(R.id.imSaveMap);
         imcancelar = (ImageView) findViewById(R.id.cancel_button);
         tvzoom_descarga = (TextView) findViewById(R.id.tvzoom_descarga);
+        msgmap = (TextView) findViewById(R.id.msgmap);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map2);
 
@@ -89,6 +90,7 @@ public class MapOfflineActivity extends FragmentActivity
 
 
     public void save(View v) {
+        msgmap.setText("");
         TileCache downloader = new TileCache(this, 10000, 1, 13);
         mapDatabase.deleteAllTile(); //Borra los datos de la tabla de Tile
         downloader.execute(areas.values().toArray());

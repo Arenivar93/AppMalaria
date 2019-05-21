@@ -2,6 +2,7 @@ package com.minsal.dtic.sinavec.CRUD.gotaGruesa.activityGotaGruesa;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -14,7 +15,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,9 +41,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.minsal.dtic.sinavec.CRUD.gotaGruesa.fragmentGotaGruesa.nuevaGotaGruesaFragment;
 import com.minsal.dtic.sinavec.CRUD.gotaGruesa.fragmentGotaGruesa.seleccionProcedenciaDialogFragment;
 import com.minsal.dtic.sinavec.CRUD.pesquisaLarvaria.NuevaPesquisaFragment;
+import com.minsal.dtic.sinavec.CRUD.seguimientoBotiquin.SeguimientoBotiquinActivity;
 import com.minsal.dtic.sinavec.EntityDAO.ColvolCalve;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCanton;
 import com.minsal.dtic.sinavec.EntityDAO.CtlCaserio;
@@ -55,9 +60,12 @@ import com.minsal.dtic.sinavec.EntityDAO.PlColvol;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvaria;
 import com.minsal.dtic.sinavec.EntityDAO.PlPesquisaLarvariaDao;
 import com.minsal.dtic.sinavec.MainActivity;
+import com.minsal.dtic.sinavec.MapOfflineActivity;
 import com.minsal.dtic.sinavec.MyMalaria;
 import com.minsal.dtic.sinavec.R;
+import com.minsal.dtic.sinavec.tools.GoogleMapOfflineTileProvider;
 import com.minsal.dtic.sinavec.utilidades.Utilidades;
+import com.minsal.dtic.sinavec.utilidades.Validator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -108,6 +116,10 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
 
         daoSession          =((MyMalaria)getApplicationContext()).getDaoSession();
         utilidades=new Utilidades(daoSession);
+        boolean countTiles = Validator.hasSaveMap(getApplication());
+        if (!countTiles) {
+            goDowloadMap();
+        }
 
         prefs               = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
         spMunicipio =(Spinner)findViewById(R.id.spMunicipioGota);
@@ -206,6 +218,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
             @Override
             public void onClick(View view) {
                 mMap.clear();
+                mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(getApplicationContext())).zIndex(-100)).clearTileCache();
                 long idMunicipio = getIdMunicipioGota();
                 long idCanton = getIdCantonGota();
                 long idCaserio = getIdCaserioGota();
@@ -221,7 +234,8 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(new GoogleMapOfflineTileProvider(this)).zIndex(-100)).clearTileCache();
         moverCamaraDepartamento();
         //solo preparamos el mapa luego mostraremos los puntos al presionar el botin buscar
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -322,15 +336,7 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
     public void onProviderDisabled(String s) {
 
     }
-    private void loadSpinerMun() {
-        Utilidades u   = new Utilidades(daoSession);
-        municipios     = u.loadspinnerMunicipio(depto);
-        listaMunicipio = u.getMunicipioTodos(municipios);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>
-                (this, android.R.layout.simple_list_item_1, listaMunicipio);
-        spMunicipio.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-    }
+
     public long getIdMunicipioGota() {
         int listIdMunicipio = spMunicipio.getSelectedItemPosition();
         int idMunicipio = 0;
@@ -398,23 +404,42 @@ public class nuevaGotaGruesaActivity extends AppCompatActivity implements OnMapR
         return semana;
     }
 
-    public void customToadSuccess(Context context, String message) {
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toad_exito,
-                (ViewGroup) findViewById(R.id.custom_toast_container_exito));
-        TextView text = (TextView) layout.findViewById(R.id.tvToasExito);
-        text.setText(message);
-        Toast toast = new Toast(context);
-        toast.setGravity(Gravity.BOTTOM, 0, 0);
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(layout);
-        toast.show();
-    }
     @Override
     public void onBackPressed() {
         Intent list =new Intent(getApplicationContext(),ListGotaGruesaActivity.class);
         startActivity(list);
         finish();
     }
+    public void goDowloadMap() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(nuevaGotaGruesaActivity.this);
+        builder.setMessage(Html.fromHtml("<font color='#FF0000'><b>Primero debe descargar el mapa!!</b></font>"))
+                .setNegativeButton(Html.fromHtml("Cancelar"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    }
+                })
+                .setPositiveButton(Html.fromHtml("Descargar Ahora"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), MapOfflineActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setCancelable(false);
+        //.create().show();
+        AlertDialog a = builder.create();
+        a.show();
+        Button btnPositivo = a.getButton(DialogInterface.BUTTON_POSITIVE);
+        btnPositivo.setTextColor(Color.RED);
+        Button btnNegativo = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        btnNegativo.setTextColor(Color.GREEN);
+
+    }
+
 
 }

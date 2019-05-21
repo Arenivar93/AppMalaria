@@ -264,7 +264,7 @@
             android:label="@string/title_activity_maps2"
             android:screenOrientation="landscape" />
         <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.GotaGruesaEditActivity" />
-        <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.DetalleSemanaGotaGruesa"></activity>
+        <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.DetalleSemanaGotaGruesa" />
     </application>
 
 </manifest>

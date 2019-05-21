@@ -18,6 +18,7 @@
         android:id="@+id/btnConfigurar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center_vertical|fill_vertical|center"
         android:text="Configurar Tablet" />
 

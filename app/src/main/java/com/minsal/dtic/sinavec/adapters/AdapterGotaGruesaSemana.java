@@ -57,13 +57,15 @@ public class AdapterGotaGruesaSemana extends BaseAdapter {
             tv7 = (TextView) v.findViewById(R.id.tvgg7);//sin resultado
             String municipio ="Extranjero";
             String canton ="Extranjero";
+            String caserio ="Extrajero";
             String nombre=  lista.get(position).getPrimerNombre();
             String apellido=  lista.get(position).getPrimerApellido();
             String fechaToma=  lista.get(position).getFechaToma();
             String edad= String.valueOf(lista.get(position).getEdad());
-            if (lista.get(position).getCtlCaserio().getId()!=1){ //si caserio trae id 1 es porqu es extranjer
+            if (lista.get(position).getIdCaserio()!=1){ //si caserio trae id 1 es porqu es extranjer
                 municipio = lista.get(position).getCtlCaserio().getCtlCanton().getCtlMunicipio().getNombre();
                 canton = lista.get(position).getCtlCaserio().getCtlCanton().getNombre();
+                caserio = lista.get(position).getCtlCaserio().getNombre();
             }
             int estadoSync = lista.get(position).getEstado_sync();
             if(estadoSync==0){
@@ -74,7 +76,7 @@ public class AdapterGotaGruesaSemana extends BaseAdapter {
                 tv7.setText("Pendiente");
             }
 
-            String caserio = lista.get(position).getCtlCaserio().getNombre();
+
 
             tv1.setText(String.format("%s %s", nombre, apellido));
             tv2.setText(edad);
