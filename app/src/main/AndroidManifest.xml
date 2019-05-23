@@ -263,7 +263,8 @@
             android:name=".VerMapsOffline"
             android:label="@string/title_activity_maps2"
             android:screenOrientation="landscape" />
-        <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.GotaGruesaEditActivity" />
+        <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.GotaGruesaEditActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".CRUD.gotaGruesa.activityGotaGruesa.DetalleSemanaGotaGruesa" />
     </application>
 
